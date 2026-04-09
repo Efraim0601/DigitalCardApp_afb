@@ -1,0 +1,48 @@
+{
+  "nav": {
+    "card": "Carte",
+    "login": "Connexion",
+    "admin": "Admin"
+  },
+  "login": {
+    "brand": "Afriland First Bank",
+    "subtitle": "Portail d'identité numérique",
+    "banner": {
+      "title": "Espace Employé",
+      "text": "Accédez à votre carte de visite numérique"
+    },
+    "welcome": "Bienvenue",
+    "hint": {
+      "employee": "Saisissez votre email professionnel pour accéder à votre carte de visite numérique.",
+      "admin": "Compte administrateur détecté. Saisissez votre mot de passe pour continuer."
+    },
+    "email": {
+      "label": "Email professionnel",
+      "placeholder": "ex. nom@afrilandfirstbank.com"
+    },
+    "password": {
+      "label": "Mot de passe administrateur",
+      "placeholder": "Mot de passe secret",
+      "hint": "Accès réservé aux administrateurs. Votre session sera sécurisée."
+    },
+    "cta": "Voir ma carte",
+    "footer": "Accès sécurisé réservé au personnel autorisé. © 2026 Afriland First Bank Group.",
+    "loading": "Vérification de l'email…",
+    "errors": {
+      "emailRequired": "L'email est requis.",
+      "emailInvalid": "Email invalide.",
+      "passwordRequired": "Le mot de passe est requis.",
+      "generic": "Email ou mot de passe incorrect.",
+      "noCard": "Aucune carte n'est associée à cet email."
+    }
+  },
+  "card": {
+    "title": "Carte de visite",
+    "loading": "Chargement de votre carte…",
+    "back": "Retour",
+    "errors": {
+      "missingEmail": "Veuillez fournir un email (paramètre ?email=...).",
+      "notFound": "Carte introuvable pour cet email."
+    }
+  }
+}

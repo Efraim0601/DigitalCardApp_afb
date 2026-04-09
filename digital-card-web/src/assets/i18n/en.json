@@ -1,0 +1,48 @@
+{
+  "nav": {
+    "card": "Card",
+    "login": "Login",
+    "admin": "Admin"
+  },
+  "login": {
+    "brand": "Afriland First Bank",
+    "subtitle": "Digital identity portal",
+    "banner": {
+      "title": "Employee area",
+      "text": "Access your digital business card"
+    },
+    "welcome": "Welcome",
+    "hint": {
+      "employee": "Enter your professional email to access your digital business card.",
+      "admin": "Admin account detected. Enter your password to continue."
+    },
+    "email": {
+      "label": "Work email",
+      "placeholder": "e.g. name@afrilandfirstbank.com"
+    },
+    "password": {
+      "label": "Admin password",
+      "placeholder": "Secret password",
+      "hint": "Admin-only access. Your session will be secured."
+    },
+    "cta": "View my card",
+    "footer": "Secure access for authorized staff only. © 2026 Afriland First Bank Group.",
+    "loading": "Checking email…",
+    "errors": {
+      "emailRequired": "Email is required.",
+      "emailInvalid": "Invalid email.",
+      "passwordRequired": "Password is required.",
+      "generic": "Invalid email or password.",
+      "noCard": "No card is associated with this email."
+    }
+  },
+  "card": {
+    "title": "Business card",
+    "loading": "Loading your card…",
+    "back": "Back",
+    "errors": {
+      "missingEmail": "Please provide an email (?email=...).",
+      "notFound": "Card not found for this email."
+    }
+  }
+}

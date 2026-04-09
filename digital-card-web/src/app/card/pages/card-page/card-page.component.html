@@ -1,0 +1,66 @@
+<div class="mx-auto flex max-w-5xl flex-col items-center px-0 py-6 sm:px-4">
+  @if (isLoading()) {
+    <div class="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-6 text-center text-sm text-slate-600 shadow-sm">
+      {{ 'card.loading' | translate }}
+    </div>
+  } @else if (errorKey()) {
+    <div class="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm">
+      <div class="text-sm font-semibold text-slate-900">{{ 'card.title' | translate }}</div>
+      <div class="mt-2 text-sm text-slate-600">{{ errorKey()! | translate }}</div>
+      <button
+        type="button"
+        class="mt-4 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+        (click)="backToLogin()"
+      >
+        {{ 'card.back' | translate }}
+      </button>
+    </div>
+  } @else if (card()) {
+    <div class="flex w-full flex-col items-center gap-4">
+      <!-- Header actions from template 02 -->
+      <div class="sticky top-0 z-10 flex w-full justify-between border-b border-slate-100 bg-white px-4 py-2 sm:rounded-xl sm:border sm:border-slate-200">
+        <button
+          type="button"
+          class="flex h-9 w-9 items-center justify-center rounded-lg border border-[#f5c6c6] bg-[#fff5f5] text-[#d32f2f] transition hover:bg-[#fce8e8]"
+          title="Retour au portail"
+          (click)="backToLogin()"
+        >
+          <svg viewBox="0 0 20 20" fill="none" class="h-4 w-4">
+            <path d="M13 4l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="flex gap-2">
+          <button
+            type="button"
+            class="h-9 rounded-lg border border-[#f5c6c6] bg-[#fff5f5] px-3 text-[13px] font-bold text-[#d32f2f] transition hover:bg-[#fce8e8]"
+            (click)="lang.toggle()"
+          >
+            {{ lang.lang() === 'fr' ? 'EN' : 'FR' }}
+          </button>
+          <button
+            type="button"
+            class="flex h-9 w-9 items-center justify-center rounded-lg border border-[#f5c6c6] bg-[#fff5f5] text-[#d32f2f] transition hover:bg-[#fce8e8]"
+            title="Thème"
+          >
+            <svg viewBox="0 0 20 20" fill="none" class="h-[18px] w-[18px]">
+              <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.5" />
+              <path
+                d="M10 2v2M10 16v2M2 10h2M16 10h2M4.22 4.22l1.42 1.42M14.36 14.36l1.42 1.42M4.22 15.78l1.42-1.42M14.36 5.64l1.42-1.42"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <app-business-card
+        [card]="card()!"
+        [isCreator]="false"
+        [config]="{ cardBackground: 'assets/carte-digitale-bg.png' }"
+      />
+    </div>
+  }
+</div>
+

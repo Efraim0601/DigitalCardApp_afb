@@ -1,0 +1,125 @@
+<header class="sticky top-0 z-20 flex items-center justify-between border-b border-slate-200 bg-white px-4 py-4 sm:px-7">
+  <h1 class="text-[17px] font-bold text-slate-900 sm:text-[22px]">Gestion des cartes de visite</h1>
+  <div class="flex items-center gap-2">
+    <button
+      type="button"
+      class="inline-flex h-[34px] w-[34px] items-center justify-center rounded-lg border border-[#f5c6c6] bg-[#fff5f5] text-[13px] font-bold text-[#d32f2f] transition hover:bg-[#fce8e8]"
+      (click)="lang.toggle()"
+    >
+      {{ lang.lang() === 'fr' ? 'EN' : 'FR' }}
+    </button>
+    <button
+      type="button"
+      class="inline-flex h-[34px] w-[34px] items-center justify-center rounded-lg border border-[#f5c6c6] bg-[#fff5f5] text-[#d32f2f] transition hover:bg-[#fce8e8]"
+      title="Thème"
+    >
+      <svg viewBox="0 0 18 18" fill="none" class="h-4 w-4">
+        <circle cx="9" cy="9" r="3.5" stroke="currentColor" stroke-width="1.5" />
+        <path
+          d="M9 1v2M9 15v2M1 9h2M15 9h2M3.22 3.22l1.42 1.42M13.36 13.36l1.42 1.42M3.22 14.78l1.42-1.42M13.36 4.64l1.42-1.42"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+      </svg>
+    </button>
+    <button
+      type="button"
+      class="inline-flex h-[34px] w-[34px] items-center justify-center rounded-lg border border-[#f5c6c6] bg-[#fff5f5] text-[#d32f2f] transition hover:bg-[#fce8e8]"
+      title="PDF/Print"
+    >
+      <svg viewBox="0 0 18 18" fill="none" class="h-4 w-4">
+        <rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.5" />
+        <path d="M5 7h8M5 10h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+      </svg>
+    </button>
+    <a
+      routerLink="/login"
+      class="hidden items-center gap-2 rounded-lg border border-[#d32f2f] bg-white px-3 py-1.5 text-xs font-semibold text-[#d32f2f] transition hover:bg-[#fff5f5] sm:inline-flex"
+      (click)="logout()"
+    >
+      <svg viewBox="0 0 16 16" fill="none" class="h-3.5 w-3.5">
+        <path
+          d="M3 8h10M9 4l4 4-4 4"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      Déconnexion
+    </a>
+  </div>
+</header>
+
+<div class="mx-auto max-w-[1400px] px-4 py-4 sm:px-7">
+  <!-- Transfer banner -->
+  <div class="mb-6 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 sm:px-[18px]">
+    <p class="mb-2 text-xs leading-[1.55] text-slate-500">
+      Export : archive ZIP avec trois fichiers CSV. Import : .xlsx, .zip (departments.csv, job_titles.csv, cards.csv) ou un
+      seul .csv selon le type. Réimport : fusion par identifiants (libellés et cartes par email).
+    </p>
+    <div class="flex flex-wrap gap-2">
+      <button
+        type="button"
+        class="inline-flex items-center gap-2 rounded-lg border border-[#d32f2f] bg-white px-3 py-1.5 text-xs font-semibold text-[#d32f2f] transition hover:bg-[#fff5f5]"
+      >
+        <svg viewBox="0 0 16 16" fill="none" class="h-3.5 w-3.5">
+          <path d="M2 10v3h12v-3M8 2v8M5 7l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        Exporter (CSV en ZIP)
+      </button>
+      <button
+        type="button"
+        class="inline-flex items-center gap-2 rounded-lg border border-[#d32f2f] bg-white px-3 py-1.5 text-xs font-semibold text-[#d32f2f] transition hover:bg-[#fff5f5]"
+      >
+        <svg viewBox="0 0 16 16" fill="none" class="h-3.5 w-3.5">
+          <path d="M2 10v3h12v-3M8 10V2M5 5l3-3 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        Importer (Excel / CSV / ZIP)
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <nav class="mb-6 flex flex-wrap border-b border-slate-200">
+    <a
+      routerLink="/admin/cards"
+      routerLinkActive="text-[#d32f2f] bg-[#fff5f5]"
+      class="rounded-t-lg px-3 py-2 text-sm font-medium text-slate-500 transition hover:text-slate-700 sm:px-5"
+    >
+      Cartes
+    </a>
+    <a
+      routerLink="/admin/departments"
+      routerLinkActive="text-[#d32f2f] bg-[#fff5f5]"
+      class="rounded-t-lg px-3 py-2 text-sm font-medium text-slate-500 transition hover:text-slate-700 sm:px-5"
+    >
+      Directions / Départements
+    </a>
+    <a
+      routerLink="/admin/job-titles"
+      routerLinkActive="text-[#d32f2f] bg-[#fff5f5]"
+      class="rounded-t-lg px-3 py-2 text-sm font-medium text-slate-500 transition hover:text-slate-700 sm:px-5"
+    >
+      Titres / Postes
+    </a>
+    <a
+      routerLink="/admin/account"
+      routerLinkActive="text-[#d32f2f] bg-[#fff5f5]"
+      class="rounded-t-lg px-3 py-2 text-sm font-medium text-slate-500 transition hover:text-slate-700 sm:px-5"
+    >
+      Compte admin
+    </a>
+    <a
+      routerLink="/admin/smtp"
+      routerLinkActive="text-[#d32f2f] bg-[#fff5f5]"
+      class="rounded-t-lg px-3 py-2 text-sm font-medium text-slate-500 transition hover:text-slate-700 sm:px-5"
+    >
+      SMTP / Notifications
+    </a>
+  </nav>
+
+  <router-outlet />
+</div>
+

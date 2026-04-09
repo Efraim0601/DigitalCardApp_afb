@@ -1,0 +1,123 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Card } from '../models/card.model';
+
+export type PagedResult<T> = {
+  items: T[];
+  total: number;
+  limit: number;
+  offset: number;
+};
+
+export type Label = { id: string; labelFr: string; labelEn: string };
+
+export type SmtpSettings = {
+  enabled: boolean;
+  host: string | null;
+  port: number;
+  username: string | null;
+  hasPassword: boolean;
+  protocol: string;
+  auth: boolean;
+  starttlsEnabled: boolean;
+  sslEnabled: boolean;
+  fromEmail: string | null;
+  fromName: string | null;
+  updatedAt: string | null;
+};
+
+export type SmtpSettingsUpdatePayload = {
+  enabled: boolean;
+  host: string;
+  port: number;
+  username: string;
+  password?: string;
+  clearPassword?: boolean;
+  protocol: string;
+  auth: boolean;
+  starttlsEnabled: boolean;
+  sslEnabled: boolean;
+  fromEmail: string;
+  fromName: string;
+};
+
+@Injectable({ providedIn: 'root' })
+export class AdminService {
+  constructor(private readonly http: HttpClient) {}
+
+  export(scope: 'cards' | 'departments' | 'job_titles'): Observable<Blob> {
+    const params = new HttpParams().set('scope', scope);
+    return this.http.get('/api/admin/data-export', { params, responseType: 'blob' });
+  }
+
+  import(scope: 'cards' | 'departments' | 'job_titles', file: File): Observable<void> {
+    const params = new HttpParams().set('scope', scope);
+    const form = new FormData();
+    form.append('file', file);
+    return this.http.post<void>('/api/admin/data-import', form, { params });
+  }
+
+  listCards(params: { q?: string; limit: number; offset: number }): Observable<PagedResult<Card>> {
+    let httpParams = new HttpParams().set('limit', params.limit).set('offset', params.offset);
+    if (params.q) httpParams = httpParams.set('q', params.q);
+    return this.http.get<PagedResult<Card>>('/api/cards', { params: httpParams });
+  }
+
+  createOrUpsertCard(payload: {
+    email: string;
+    firstName?: string | null;
+    lastName?: string | null;
+    title?: string | null;
+    mobile?: string | null;
+    departmentId?: string | null;
+    jobTitleId?: string | null;
+  }): Observable<Card> {
+    return this.http.post<Card>('/api/cards', payload);
+  }
+
+  bulkDeleteCards(ids: string[]): Observable<{ success: boolean; deleted: number }> {
+    return this.http.post<{ success: boolean; deleted: number }>('/api/cards/bulk-delete', { ids });
+  }
+
+  listDepartments(params: { q?: string; limit: number; offset: number }): Observable<PagedResult<Label>> {
+    let httpParams = new HttpParams().set('limit', params.limit).set('offset', params.offset);
+    if (params.q) httpParams = httpParams.set('q', params.q);
+    return this.http.get<PagedResult<Label>>('/api/departments', { params: httpParams });
+  }
+
+  createDepartment(dep: { labelFr: string; labelEn: string }): Observable<Label> {
+    return this.http.post<Label>('/api/departments', dep);
+  }
+
+  deleteDepartment(id: string): Observable<void> {
+    return this.http.delete<void>(`/api/departments/${id}`);
+  }
+
+  listJobTitles(params: { q?: string; limit: number; offset: number }): Observable<PagedResult<Label>> {
+    let httpParams = new HttpParams().set('limit', params.limit).set('offset', params.offset);
+    if (params.q) httpParams = httpParams.set('q', params.q);
+    return this.http.get<PagedResult<Label>>('/api/job-titles', { params: httpParams });
+  }
+
+  createJobTitle(title: { labelFr: string; labelEn: string }): Observable<Label> {
+    return this.http.post<Label>('/api/job-titles', title);
+  }
+
+  deleteJobTitle(id: string): Observable<void> {
+    return this.http.delete<void>(`/api/job-titles/${id}`);
+  }
+
+  getSmtpSettings(): Observable<SmtpSettings> {
+    return this.http.get<SmtpSettings>('/api/admin/smtp-settings');
+  }
+
+  updateSmtpSettings(payload: SmtpSettingsUpdatePayload): Observable<SmtpSettings> {
+    return this.http.put<SmtpSettings>('/api/admin/smtp-settings', payload);
+  }
+
+  sendSmtpTestEmail(toEmail: string): Observable<{ success: boolean }> {
+    return this.http.post<{ success: boolean }>('/api/admin/smtp-settings/test', { toEmail });
+  }
+}
+
