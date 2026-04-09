@@ -20,6 +20,7 @@ services:
     build:
       context: ./vcard-api
       dockerfile: Dockerfile
+      network: host
     ports:
       - "8767:8080"
     environment:
@@ -41,6 +42,7 @@ services:
     build:
       context: ./digital-card-web
       dockerfile: Dockerfile
+      network: host
     ports:
       - "8766:80"
     depends_on:
