@@ -92,14 +92,24 @@ export class CardActionsComponent {
 
   async copyLink(): Promise<void> {
     if (!this.publicUrl) return;
-    await this.shareService.copyText(this.publicUrl);
-    this.showFeedback('copySuccess');
+    const result = await this.shareService.shareUrl({
+      title: this.shareTitle(),
+      text: this.shareText(),
+      url: this.publicUrl
+    });
+    if (result === 'copied') this.showFeedback('copySuccess');
+    this.closePopovers();
   }
 
   async copyEmployeeLink(): Promise<void> {
     if (!this.employeeUrl) return;
-    await this.shareService.copyText(this.employeeUrl);
-    this.showFeedback('share.employeeLinkCopied');
+    const result = await this.shareService.shareUrl({
+      title: this.shareTitle(),
+      text: this.shareText(),
+      url: this.employeeUrl
+    });
+    if (result === 'copied') this.showFeedback('share.employeeLinkCopied');
+    this.closePopovers();
   }
 
   async downloadCardImage(): Promise<void> {

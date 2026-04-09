@@ -1,4 +1,4 @@
-<div class="mx-auto flex max-w-5xl flex-col items-center px-0 py-6 sm:px-4">
+<div class="mx-auto flex min-h-[100dvh] w-full max-w-5xl flex-col items-center justify-center px-3 py-4 sm:px-4 sm:py-6">
   @if (isLoading()) {
     <div class="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-6 text-center text-sm text-slate-600 shadow-sm">
       {{ 'card.loading' | translate }}
@@ -16,9 +16,9 @@
       </button>
     </div>
   } @else if (card()) {
-    <div class="flex w-full flex-col items-center gap-4">
+    <div class="flex w-full flex-1 flex-col items-center justify-center gap-4">
       <!-- Header actions from template 02 -->
-      <div class="sticky top-0 z-10 flex w-full justify-between border-b border-slate-100 bg-white px-4 py-2 sm:rounded-xl sm:border sm:border-slate-200">
+      <div class="z-10 flex w-full max-w-[min(100%,760px)] justify-between rounded-xl border border-slate-200 bg-white px-4 py-2 sm:sticky sm:top-0">
         <button
           type="button"
           class="flex h-9 w-9 items-center justify-center rounded-lg border border-[#f5c6c6] bg-[#fff5f5] text-[#d32f2f] transition hover:bg-[#fce8e8]"
