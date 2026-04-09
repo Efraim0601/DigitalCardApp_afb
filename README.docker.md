@@ -5,7 +5,7 @@ Cette configuration lance toute l'application:
 - Frontend Angular (Nginx): http://localhost:4200
 - Backend Spring Boot: http://localhost:8766
 - Swagger UI: http://localhost:4200/swagger-ui/index.html
-- PostgreSQL: localhost:5433
+- PostgreSQL: localhost:5455
 
 ## Prerequis
 
