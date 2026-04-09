@@ -41,9 +41,13 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/api/auth/admin/login",
+                    "/api/auth/admin/login/",
                     "/api/auth/admin/logout",
+                    "/api/auth/admin/logout/",
                     "/api/auth/admin/me",
-                    "/api/auth/login-hint"
+                    "/api/auth/admin/me/",
+                    "/api/auth/login-hint",
+                    "/api/auth/login-hint/"
                 ).permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/cards").permitAll()
                 .requestMatchers("/api/convertImage").permitAll()
