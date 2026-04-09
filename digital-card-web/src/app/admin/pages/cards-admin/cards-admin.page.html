@@ -91,16 +91,55 @@
       <div class="mt-4 grid gap-3 sm:grid-cols-2">
         <div>
           <label class="mb-1 block text-xs font-semibold text-slate-700">Département</label>
-          <input
-            class="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-600 outline-none"
-            [value]="''"
-            readonly
-          />
-          <p class="mt-1 text-xs text-slate-400">À brancher: sélection via /api/departments (departmentId).</p>
+          <div class="flex items-center gap-2">
+            <select
+              class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500"
+              formControlName="departmentId"
+              (focus)="loadReferenceData()"
+            >
+              <option value="">-- Sélectionner une direction / département --</option>
+              @for (dep of departments(); track dep.id) {
+                <option [value]="dep.id">{{ dep.labelFr || dep.labelEn }}</option>
+              }
+            </select>
+            <button
+              type="button"
+              class="rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+              [disabled]="isOptionsLoading()"
+              (click)="loadReferenceData()"
+            >
+              ↻
+            </button>
+          </div>
+          <p class="mt-1 text-xs text-slate-400">
+            Les directions créées dans l'onglet dédié apparaissent ici après rafraîchissement.
+          </p>
         </div>
         <div>
           <label class="mb-1 block text-xs font-semibold text-slate-700">Titre / Poste</label>
-          <input class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500" formControlName="title" />
+          <div class="flex items-center gap-2">
+            <select
+              class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500"
+              formControlName="jobTitleId"
+              (focus)="loadReferenceData()"
+            >
+              <option value="">-- Sélectionner un titre / poste --</option>
+              @for (job of jobTitles(); track job.id) {
+                <option [value]="job.id">{{ job.labelFr || job.labelEn }}</option>
+              }
+            </select>
+            <button
+              type="button"
+              class="rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+              [disabled]="isOptionsLoading()"
+              (click)="loadReferenceData()"
+            >
+              ↻
+            </button>
+          </div>
+          <p class="mt-1 text-xs text-slate-400">
+            Les titres / postes créés dans l'onglet dédié apparaissent ici après rafraîchissement.
+          </p>
         </div>
       </div>
 
@@ -186,7 +225,7 @@
                   {{ (c.firstName || '') + ' ' + (c.lastName || '') }}
                 </td>
                 <td class="border-b border-slate-100 px-3 py-2 text-sm text-slate-700">{{ c.department?.labelFr || '' }}</td>
-                <td class="border-b border-slate-100 px-3 py-2 text-sm text-slate-700">{{ c.title || '' }}</td>
+                <td class="border-b border-slate-100 px-3 py-2 text-sm text-slate-700">{{ c.jobTitle?.labelFr || c.title || '' }}</td>
                 <td class="border-b border-slate-100 px-3 py-2 text-right text-sm text-slate-700" (click)="$event.stopPropagation()">
                   <button
                     type="button"
