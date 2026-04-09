@@ -72,8 +72,15 @@ export class BusinessCardComponent implements AfterViewInit {
   }
 
   private recomputeScale() {
-    const available = Math.max(280, window.innerWidth - 32);
-    this.applyScale(Math.min(1, available / this.cardWidth));
+    const horizontalPadding = window.innerWidth < 640 ? 24 : 48;
+    const verticalReserve = window.innerWidth < 640 ? 320 : 240;
+
+    const availableWidth = Math.max(280, window.innerWidth - horizontalPadding);
+    const availableHeight = Math.max(160, window.innerHeight - verticalReserve);
+
+    const byWidth = availableWidth / this.cardWidth;
+    const byHeight = availableHeight / this.cardHeight;
+    this.applyScale(Math.min(1, byWidth, byHeight));
   }
 
   async getCardImageFile(): Promise<File> {
