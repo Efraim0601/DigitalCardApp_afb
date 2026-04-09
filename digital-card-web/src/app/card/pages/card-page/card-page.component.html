@@ -55,10 +55,14 @@
         </div>
       </div>
 
-      <app-business-card
+      <app-business-card #businessCard [card]="card()!" [config]="{ cardBackground: 'assets/carte-digitale-bg.png' }" />
+
+      <app-card-actions
         [card]="card()!"
-        [isCreator]="false"
-        [config]="{ cardBackground: 'assets/carte-digitale-bg.png' }"
+        [isCreator]="isCreator()"
+        [publicUrl]="publicUrl()"
+        [employeeUrl]="employeeUrl()"
+        [businessCard]="businessCard"
       />
     </div>
   }

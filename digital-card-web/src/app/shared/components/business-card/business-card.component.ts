@@ -11,27 +11,28 @@ import {
 } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { toPng } from 'html-to-image';
-import { QRCodeModule } from 'angularx-qrcode';
 import { Card, CardBackgroundConfig } from '../../models/card.model';
+import { LanguageService } from '../../services/language.service';
+import { nextPaint } from '../../utils/next-paint';
 
 @Component({
   selector: 'app-business-card',
   standalone: true,
-  imports: [CommonModule, TranslateModule, QRCodeModule],
-  templateUrl: './business-card.component.html'
+  imports: [CommonModule, TranslateModule],
+  templateUrl: './business-card.component.html',
+  styleUrl: './business-card.component.css'
 })
 export class BusinessCardComponent implements AfterViewInit {
+  readonly cardWidth = 600;
+  readonly cardHeight = 340;
+
   @Input({ required: true }) card!: Card;
-  @Input() isCreator = false;
   @Input() config: CardBackgroundConfig = { cardBackground: 'assets/carte-digitale-bg.png' };
 
   @ViewChild('cardEl', { static: true }) cardEl!: ElementRef<HTMLElement>;
   @ViewChild('outerEl', { static: true }) outerEl!: ElementRef<HTMLElement>;
 
   readonly scale = signal(1);
-  readonly shareOpen = signal(false);
-  readonly qrOpen = signal(false);
-  readonly isDownloading = signal(false);
 
   readonly fullName = computed(() => {
     const f = (this.card?.firstName ?? '').trim();
@@ -40,12 +41,26 @@ export class BusinessCardComponent implements AfterViewInit {
     return name || this.card?.email || '';
   });
 
-  readonly cardUrl = computed(() => {
-    const url = new URL(window.location.origin);
-    url.pathname = '/card';
-    url.searchParams.set('email', this.card?.email ?? '');
-    return url.toString();
+  readonly displayedTitle = computed(() => {
+    const locale = this.lang.lang();
+    return locale === 'en'
+      ? this.card?.jobTitle?.labelEn || this.card?.title || '—'
+      : this.card?.jobTitle?.labelFr || this.card?.title || '—';
   });
+
+  readonly displayedDepartment = computed(() => {
+    const locale = this.lang.lang();
+    return locale === 'en'
+      ? this.card?.department?.labelEn || this.card?.company || '—'
+      : this.card?.department?.labelFr || this.card?.company || '—';
+  });
+
+  readonly fixedPhone = computed(() => this.card?.phone?.trim() || '222 233 068');
+  readonly fixedFax = computed(() => this.card?.fax?.trim() || '222 221 785');
+  readonly website = 'www.afrilandfirstbank.com';
+  readonly websiteUrl = 'https://www.afrilandfirstbank.com';
+
+  constructor(private readonly lang: LanguageService) {}
 
   ngAfterViewInit(): void {
     this.recomputeScale();
@@ -58,159 +73,76 @@ export class BusinessCardComponent implements AfterViewInit {
 
   private recomputeScale() {
     const available = Math.max(280, window.innerWidth - 32);
-    const scale = Math.min(1, available / 600);
-    this.scale.set(scale);
-
-    const outer = this.outerEl.nativeElement;
-    outer.style.height = `${340 * scale}px`;
-    outer.style.width = `${600 * scale}px`;
+    this.applyScale(Math.min(1, available / this.cardWidth));
   }
 
-  closePopovers() {
-    this.shareOpen.set(false);
-    this.qrOpen.set(false);
-  }
+  async getCardImageFile(): Promise<File> {
+    const previousScale = this.scale();
+    this.applyScale(1);
+    await nextPaint();
 
-  toggleShare() {
-    const next = !this.shareOpen();
-    this.shareOpen.set(next);
-    if (next) this.qrOpen.set(false);
-  }
-
-  toggleQr() {
-    const next = !this.qrOpen();
-    this.qrOpen.set(next);
-    if (next) this.shareOpen.set(false);
-  }
-
-  async share() {
-    await this.shareCardLink();
-  }
-
-  private async makeCardPngBlob(): Promise<Blob> {
-    const dataUrl = await toPng(this.cardEl.nativeElement, {
-      cacheBust: true,
-      pixelRatio: 2,
-      backgroundColor: '#ffffff'
-    });
-    const res = await fetch(dataUrl);
-    return await res.blob();
-  }
-
-  async shareCardImage() {
-    this.isDownloading.set(true);
     try {
-      const pngBlob = await this.makeCardPngBlob();
-      const file = new File(
-        [pngBlob],
-        `${(this.card.email || 'business-card').replace(/[^a-z0-9_.-]/gi, '_')}.png`,
-        { type: 'image/png' }
-      );
-
-      if (navigator.share && navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file], title: this.fullName() });
-      } else {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(pngBlob);
-        a.download = file.name;
-        a.click();
-        URL.revokeObjectURL(a.href);
-      }
-      this.closePopovers();
-    } finally {
-      this.isDownloading.set(false);
-    }
-  }
-
-  async shareCardLink() {
-    const url = this.cardUrl();
-    const title = this.fullName();
-    try {
-      if (navigator.share) {
-        await navigator.share({ title, url });
-        this.closePopovers();
-        return;
-      }
-    } catch {
-      // ignore, fallback below
-    }
-    await navigator.clipboard.writeText(url);
-    this.closePopovers();
-  }
-
-  openQrFromShare() {
-    this.shareOpen.set(false);
-    this.qrOpen.set(true);
-  }
-
-  async downloadPng() {
-    this.isDownloading.set(true);
-    try {
+      await this.waitForBackgroundImage(this.config.cardBackground ?? undefined);
+      await this.waitForImages(this.cardEl.nativeElement);
       const dataUrl = await toPng(this.cardEl.nativeElement, {
         cacheBust: true,
         pixelRatio: 2,
         backgroundColor: '#ffffff'
       });
-      const a = document.createElement('a');
-      a.href = dataUrl;
-      a.download = `${(this.card.email || 'business-card').replace(/[^a-z0-9_.-]/gi, '_')}.png`;
-      a.click();
+      const res = await fetch(dataUrl);
+      const blob = await res.blob();
+      return new File([blob], this.buildImageFileName(), { type: 'image/png' });
     } finally {
-      this.isDownloading.set(false);
+      this.applyScale(previousScale);
+      await nextPaint();
     }
   }
 
-  call() {
-    window.location.href = 'tel:222233068';
+  private applyScale(scale: number) {
+    this.scale.set(scale);
+
+    const outer = this.outerEl.nativeElement;
+    outer.style.height = `${this.cardHeight * scale}px`;
+    outer.style.width = `${this.cardWidth * scale}px`;
   }
 
-  email() {
-    window.location.href = `mailto:${this.card?.email ?? ''}`;
+  private async waitForBackgroundImage(url?: string): Promise<void> {
+    if (!url?.trim()) return;
+
+    await new Promise<void>((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve();
+      img.onerror = () => resolve();
+      img.src = url;
+      if (img.complete) resolve();
+    });
+    await nextPaint();
   }
 
-  downloadVcf() {
-    const vcf = this.buildVcf();
-    const blob = new Blob([vcf], { type: 'text/vcard;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${(this.card.email || 'contact').replace(/[^a-z0-9_.-]/gi, '_')}.vcf`;
-    a.click();
-    URL.revokeObjectURL(url);
+  private async waitForImages(root: HTMLElement): Promise<void> {
+    const images = Array.from(root.querySelectorAll('img'));
+    await Promise.all(
+      images.map(
+        (img) =>
+          new Promise<void>((resolve) => {
+            if (img.complete) {
+              resolve();
+              return;
+            }
+            img.onload = () => resolve();
+            img.onerror = () => resolve();
+          })
+      )
+    );
   }
 
-  private buildVcf() {
-    const f = (this.card?.firstName ?? '').trim();
-    const l = (this.card?.lastName ?? '').trim();
-    const n = `${l};${f};;;`;
-    const fn = this.fullName();
-    const org = 'Afriland First Bank';
-    const title = (this.card?.title ?? '').trim();
-    const dept = (this.card?.department?.labelFr ?? '').trim();
-    const mobile = (this.card?.mobile ?? '').trim();
-    const email = (this.card?.email ?? '').trim();
-    const url = 'https://www.afrilandfirstbank.com';
-
-    const lines = [
-      'BEGIN:VCARD',
-      'VERSION:3.0',
-      `N:${this.escapeVcf(n)}`,
-      `FN:${this.escapeVcf(fn)}`,
-      `ORG:${this.escapeVcf(org)}${dept ? ';' + this.escapeVcf(dept) : ''}`,
-      title ? `TITLE:${this.escapeVcf(title)}` : '',
-      email ? `EMAIL;TYPE=INTERNET:${this.escapeVcf(email)}` : '',
-      mobile ? `TEL;TYPE=CELL:${this.escapeVcf(mobile)}` : '',
-      'TEL;TYPE=WORK:222233068',
-      'TEL;TYPE=FAX:222221785',
-      `URL:${url}`,
-      'END:VCARD'
-    ].filter(Boolean);
-
-    return lines.join('\r\n') + '\r\n';
+  private buildImageFileName(): string {
+    const base = (this.fullName() || this.card.email || 'business-card').replace(/[^a-z0-9_.-]/gi, '_');
+    return `${base}.png`;
   }
 
-  private escapeVcf(v: string) {
-    return v.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+  telHref(value: string | null | undefined): string {
+    return `tel:${(value || '').replace(/\s+/g, '')}`;
   }
 }
 

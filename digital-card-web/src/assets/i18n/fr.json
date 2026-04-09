@@ -1,9 +1,36 @@
 {
+  "common": {
+    "close": "Fermer"
+  },
   "nav": {
     "card": "Carte",
     "login": "Connexion",
     "admin": "Admin"
   },
+  "action": {
+    "share": "Partager",
+    "copyLink": "Copier le lien",
+    "downloadCard": "Télécharger la carte de visite",
+    "saveContact": "Enregistrer le contact",
+    "showQR": "Afficher le QR code",
+    "scanQR": "Scannez pour ouvrir la carte ou enregistrer le contact",
+    "call": "Appeler",
+    "sendEmail": "Envoyer un email"
+  },
+  "share": {
+    "cardTitle": "Carte de visite - {{name}}",
+    "cardTitleDefault": "Carte de visite - Afriland First Bank",
+    "discover": "Découvrez ma carte de visite : {{name}}",
+    "discoverDefault": "Découvrez cette carte de visite.",
+    "cardImage": "Image de la carte",
+    "shareCardImage": "Partager l'image de la carte",
+    "cardLink": "Lien de la carte",
+    "shareCardLink": "Partager le lien de la carte",
+    "shareQRCode": "Partager le QR code (vers la carte)",
+    "copyEmployeeLink": "Copier le lien employé (envoyer à l'employé)",
+    "employeeLinkCopied": "Lien employé copié dans le presse-papier."
+  },
+  "copySuccess": "Lien copié dans le presse-papier.",
   "login": {
     "brand": "Afriland First Bank",
     "subtitle": "Portail d'identité numérique",
@@ -40,6 +67,13 @@
     "title": "Carte de visite",
     "loading": "Chargement de votre carte…",
     "back": "Retour",
+    "bp": "B.P :",
+    "telex": "Telex :",
+    "email": "E-mail :",
+    "website": "Site Web :",
+    "phone": "Tél :",
+    "fax": "Fax :",
+    "mobile": "Mob :",
     "errors": {
       "missingEmail": "Veuillez fournir un email (paramètre ?email=...).",
       "notFound": "Carte introuvable pour cet email."

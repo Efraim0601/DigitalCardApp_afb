@@ -1,9 +1,36 @@
 {
+  "common": {
+    "close": "Close"
+  },
   "nav": {
     "card": "Card",
     "login": "Login",
     "admin": "Admin"
   },
+  "action": {
+    "share": "Share",
+    "copyLink": "Copy link",
+    "downloadCard": "Download business card",
+    "saveContact": "Save contact",
+    "showQR": "Show QR code",
+    "scanQR": "Scan to open card or save contact",
+    "call": "Call",
+    "sendEmail": "Send email"
+  },
+  "share": {
+    "cardTitle": "Business card - {{name}}",
+    "cardTitleDefault": "Business card - Afriland First Bank",
+    "discover": "Discover my business card: {{name}}",
+    "discoverDefault": "Discover this business card.",
+    "cardImage": "Card image",
+    "shareCardImage": "Share card image",
+    "cardLink": "Card link",
+    "shareCardLink": "Share card link",
+    "shareQRCode": "Share QR code (to card)",
+    "copyEmployeeLink": "Copy employee link (send to employee)",
+    "employeeLinkCopied": "Employee link copied to clipboard."
+  },
+  "copySuccess": "Link copied to clipboard.",
   "login": {
     "brand": "Afriland First Bank",
     "subtitle": "Digital identity portal",
@@ -40,6 +67,13 @@
     "title": "Business card",
     "loading": "Loading your card…",
     "back": "Back",
+    "bp": "P.O. Box:",
+    "telex": "Telex:",
+    "email": "Email:",
+    "website": "Website:",
+    "phone": "Phone:",
+    "fax": "Fax:",
+    "mobile": "Mobile:",
     "errors": {
       "missingEmail": "Please provide an email (?email=...).",
       "notFound": "Card not found for this email."
