@@ -5,6 +5,7 @@ import {
   ElementRef,
   HostListener,
   Input,
+  OnDestroy,
   ViewChild,
   computed,
   signal
@@ -22,7 +23,7 @@ import { nextPaint } from '../../utils/next-paint';
   templateUrl: './business-card.component.html',
   styleUrl: './business-card.component.css'
 })
-export class BusinessCardComponent implements AfterViewInit {
+export class BusinessCardComponent implements AfterViewInit, OnDestroy {
   readonly cardWidth = 600;
   readonly cardHeight = 340;
 
@@ -59,11 +60,19 @@ export class BusinessCardComponent implements AfterViewInit {
   readonly fixedFax = computed(() => this.card?.fax?.trim() || '222 221 785');
   readonly website = 'www.afrilandfirstbank.com';
   readonly websiteUrl = 'https://www.afrilandfirstbank.com';
+  private resizeObserver?: ResizeObserver;
 
   constructor(private readonly lang: LanguageService) {}
 
   ngAfterViewInit(): void {
+    this.startResizeTracking();
     this.recomputeScale();
+  }
+
+  ngOnDestroy(): void {
+    this.resizeObserver?.disconnect();
+    window.visualViewport?.removeEventListener('resize', this.onVisualViewportResize);
+    window.visualViewport?.removeEventListener('scroll', this.onVisualViewportResize);
   }
 
   @HostListener('window:resize')
@@ -71,12 +80,30 @@ export class BusinessCardComponent implements AfterViewInit {
     this.recomputeScale();
   }
 
-  private recomputeScale() {
-    const horizontalPadding = window.innerWidth < 640 ? 24 : 48;
-    const verticalReserve = window.innerWidth < 640 ? 320 : 240;
+  private onVisualViewportResize = () => {
+    this.recomputeScale();
+  };
 
-    const availableWidth = Math.max(280, window.innerWidth - horizontalPadding);
-    const availableHeight = Math.max(160, window.innerHeight - verticalReserve);
+  private startResizeTracking() {
+    const host = this.outerEl.nativeElement.parentElement;
+    if (host && typeof ResizeObserver !== 'undefined') {
+      this.resizeObserver = new ResizeObserver(() => this.recomputeScale());
+      this.resizeObserver.observe(host);
+    }
+
+    window.visualViewport?.addEventListener('resize', this.onVisualViewportResize);
+    window.visualViewport?.addEventListener('scroll', this.onVisualViewportResize);
+  }
+
+  private recomputeScale() {
+    const hostWidth = this.outerEl.nativeElement.parentElement?.getBoundingClientRect().width ?? window.innerWidth;
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+
+    const horizontalPadding = window.innerWidth < 640 ? 8 : 24;
+    const verticalReserve = window.innerWidth < 640 ? 280 : 220;
+
+    const availableWidth = Math.max(240, hostWidth - horizontalPadding);
+    const availableHeight = Math.max(160, viewportHeight - verticalReserve);
 
     const byWidth = availableWidth / this.cardWidth;
     const byHeight = availableHeight / this.cardHeight;

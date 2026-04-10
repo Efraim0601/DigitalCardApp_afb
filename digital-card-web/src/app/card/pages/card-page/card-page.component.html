@@ -16,49 +16,61 @@
       </button>
     </div>
   } @else if (card()) {
-    <div class="relative flex w-full flex-1 flex-col items-center justify-center">
+    <div class="relative flex w-full flex-1 flex-col items-center justify-center pt-16">
+
+      <!-- Barre de navigation -->
       <div class="absolute left-0 right-0 top-0 z-20 flex w-full justify-center px-2 sm:px-0">
         <div class="flex w-full max-w-[min(100%,760px)] justify-between rounded-xl border border-slate-200 bg-white/95 px-4 py-2 backdrop-blur">
-        <button
-          type="button"
-          class="flex h-9 w-9 items-center justify-center rounded-lg border border-[#f5c6c6] bg-[#fff5f5] text-[#d32f2f] transition hover:bg-[#fce8e8]"
-          title="Retour au portail"
-          (click)="backToLogin()"
-        >
-          <svg viewBox="0 0 20 20" fill="none" class="h-4 w-4">
-            <path d="M13 4l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </button>
-        <div class="flex gap-2">
-          <button
-            type="button"
-            class="h-9 rounded-lg border border-[#f5c6c6] bg-[#fff5f5] px-3 text-[13px] font-bold text-[#d32f2f] transition hover:bg-[#fce8e8]"
-            (click)="lang.toggle()"
-          >
-            {{ lang.lang() === 'fr' ? 'EN' : 'FR' }}
-          </button>
           <button
             type="button"
             class="flex h-9 w-9 items-center justify-center rounded-lg border border-[#f5c6c6] bg-[#fff5f5] text-[#d32f2f] transition hover:bg-[#fce8e8]"
-            title="Thème"
+            title="Retour au portail"
+            (click)="backToLogin()"
           >
-            <svg viewBox="0 0 20 20" fill="none" class="h-[18px] w-[18px]">
-              <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.5" />
-              <path
-                d="M10 2v2M10 16v2M2 10h2M16 10h2M4.22 4.22l1.42 1.42M14.36 14.36l1.42 1.42M4.22 15.78l1.42-1.42M14.36 5.64l1.42-1.42"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
+            <svg viewBox="0 0 20 20" fill="none" class="h-4 w-4">
+              <path d="M13 4l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </button>
+          <div class="flex gap-2">
+            <button
+              type="button"
+              class="h-9 rounded-lg border border-[#f5c6c6] bg-[#fff5f5] px-3 text-[13px] font-bold text-[#d32f2f] transition hover:bg-[#fce8e8]"
+              (click)="lang.toggle()"
+            >
+              {{ lang.lang() === 'fr' ? 'EN' : 'FR' }}
+            </button>
+            <button
+              type="button"
+              class="flex h-9 w-9 items-center justify-center rounded-lg border border-[#f5c6c6] bg-[#fff5f5] text-[#d32f2f] transition hover:bg-[#fce8e8]"
+              title="Thème"
+            >
+              <svg viewBox="0 0 20 20" fill="none" class="h-[18px] w-[18px]">
+                <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.5" />
+                <path
+                  d="M10 2v2M10 16v2M2 10h2M16 10h2M4.22 4.22l1.42 1.42M14.36 14.36l1.42 1.42M4.22 15.78l1.42-1.42M14.36 5.64l1.42-1.42"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-      <div class="mt-24 flex w-full max-w-2xl flex-col items-center gap-2 pb-10 sm:mt-60">
-        <div class="flex w-full flex-col items-center gap-4 px-1 sm:px-0 touch-manipulation">
-          <app-business-card #businessCard [card]="card()!" [config]="{ cardBackground: 'assets/carte-digitale-bg.png' }" />
+      <!-- Contenu principal -->
+      <div class="flex w-full max-w-2xl flex-col items-center gap-2 py-4">
+
+        <!-- Wrapper responsif de la carte -->
+        <div class="w-full touch-manipulation overflow-hidden px-1 sm:px-0">
+          <div class="w-full scale-[var(--card-scale,1)] origin-top">
+            <app-business-card
+              #businessCard
+              [card]="card()!"
+              [config]="{ cardBackground: 'assets/carte-digitale-bg.png' }"
+              class="block w-full"
+            />
+          </div>
         </div>
 
         <div class="w-full max-w-2xl">
@@ -74,4 +86,3 @@
     </div>
   }
 </div>
-
