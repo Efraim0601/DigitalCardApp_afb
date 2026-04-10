@@ -14,7 +14,12 @@ import { buildPublicCardUrl, withEmployeeQuery } from '../../../shared/utils/car
   selector: 'app-card-page',
   standalone: true,
   imports: [CommonModule, TranslateModule, BusinessCardComponent, CardActionsComponent],
-  templateUrl: './card-page.component.html'
+  templateUrl: './card-page.component.html',
+  styles: [`
+    :host {
+      display: block;
+    }
+  `]
 })
 export class CardPageComponent {
   readonly isLoading = signal(true);
@@ -78,4 +83,3 @@ export class CardPageComponent {
     this.router.navigate(['/login']);
   }
 }
-
