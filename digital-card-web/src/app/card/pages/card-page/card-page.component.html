@@ -1,4 +1,4 @@
-<div class="mx-auto flex min-h-screen min-h-[100dvh] w-full max-w-5xl flex-col items-center justify-center overflow-x-hidden px-3 py-4 sm:px-4 sm:py-6">
+<div class="mx-auto flex min-h-screen min-h-[100dvh] w-full max-w-5xl flex-col items-center justify-center gap-4 overflow-x-hidden px-3 py-6 sm:px-4">
   @if (isLoading()) {
     <div class="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-6 text-center text-sm text-slate-600 shadow-sm">
       {{ 'card.loading' | translate }}
@@ -16,9 +16,9 @@
       </button>
     </div>
   } @else if (card()) {
-    <div class="flex w-full flex-1 flex-col items-center justify-center gap-4">
-      <!-- Header actions from template 02 -->
-      <div class="z-10 flex w-full max-w-[min(100%,760px)] justify-between rounded-xl border border-slate-200 bg-white px-4 py-2 sm:sticky sm:top-0">
+    <div class="relative flex w-full flex-1 flex-col items-center justify-center">
+      <div class="absolute left-0 right-0 top-0 z-20 flex w-full justify-center px-2 sm:px-0">
+        <div class="flex w-full max-w-[min(100%,760px)] justify-between rounded-xl border border-slate-200 bg-white/95 px-4 py-2 backdrop-blur">
         <button
           type="button"
           class="flex h-9 w-9 items-center justify-center rounded-lg border border-[#f5c6c6] bg-[#fff5f5] text-[#d32f2f] transition hover:bg-[#fce8e8]"
@@ -54,16 +54,23 @@
           </button>
         </div>
       </div>
+    </div>
 
-      <app-business-card #businessCard [card]="card()!" [config]="{ cardBackground: 'assets/carte-digitale-bg.png' }" />
+      <div class="mt-24 flex w-full max-w-2xl flex-col items-center gap-2 pb-10 sm:mt-60">
+        <div class="flex w-full flex-col items-center gap-4 px-1 sm:px-0 touch-manipulation">
+          <app-business-card #businessCard [card]="card()!" [config]="{ cardBackground: 'assets/carte-digitale-bg.png' }" />
+        </div>
 
-      <app-card-actions
-        [card]="card()!"
-        [isCreator]="isCreator()"
-        [publicUrl]="publicUrl()"
-        [employeeUrl]="employeeUrl()"
-        [businessCard]="businessCard"
-      />
+        <div class="w-full max-w-2xl">
+          <app-card-actions
+            [card]="card()!"
+            [isCreator]="isCreator()"
+            [publicUrl]="publicUrl()"
+            [employeeUrl]="employeeUrl()"
+            [businessCard]="businessCard"
+          />
+        </div>
+      </div>
     </div>
   }
 </div>
