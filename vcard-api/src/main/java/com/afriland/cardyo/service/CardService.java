@@ -126,8 +126,11 @@ public class CardService {
     }
 
     @Transactional
-    public int bulkDelete(List<UUID> ids) {
-        return cardRepository.bulkDeleteByIds(ids);
+    public void incrementShareCount(String email) {
+        int updated = cardRepository.incrementShareCount(email.toLowerCase().trim());
+        if (updated == 0) {
+            throw new EntityNotFoundException("Card not found for email: " + email);
+        }
     }
 
     public CardDto toDto(Card card) {
@@ -159,6 +162,7 @@ public class CardService {
                 .mobile(card.getMobile())
                 .department(deptDto)
                 .jobTitle(jtDto)
+                .shareCount(card.getShareCount())
                 .createdAt(card.getCreatedAt())
                 .updatedAt(card.getUpdatedAt())
                 .build();

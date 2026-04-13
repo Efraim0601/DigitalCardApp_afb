@@ -69,5 +69,6 @@ public interface CardRepository extends JpaRepository<Card, UUID> {
     @Query("DELETE FROM Card c WHERE c.id IN :ids")
     int bulkDeleteByIds(@Param("ids") List<UUID> ids);
 
-    boolean existsByEmailIgnoreCase(String email);
-}
+    @Modifying
+    @Query("UPDATE Card c SET c.shareCount = c.shareCount + 1 WHERE c.email = :email")
+    int incrementShareCount(@Param("email") String email);

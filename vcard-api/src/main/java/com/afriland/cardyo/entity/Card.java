@@ -41,8 +41,8 @@ public class Card {
     @Column(name = "created_at", updatable = false)
     private Instant createdAt;
 
-    @Column(name = "updated_at")
-    private Instant updatedAt;
+    @Column(name = "share_count", columnDefinition = "integer default 0")
+    private Integer shareCount = 0;
 
     @PrePersist
     void onCreate() {

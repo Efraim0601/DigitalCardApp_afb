@@ -21,6 +21,7 @@ public class CardDto {
     private String mobile;
     private LabelDto department;
     private LabelDto jobTitle;
+    private Integer shareCount;
     private Instant createdAt;
     private Instant updatedAt;
 }

@@ -33,9 +33,11 @@ export const ADMIN_ROUTES: Routes = [
           import('./pages/account-admin/account-admin.page').then((m) => m.AccountAdminPageComponent)
       },
       {
-        path: 'smtp',
+        path: 'share-stats',
         loadComponent: () =>
-          import('./pages/smtp-admin/smtp-admin.page').then((m) => m.SmtpAdminPageComponent)
+          import('./pages/share-stats-admin/share-stats-admin.page').then(
+            (m) => m.ShareStatsAdminPageComponent
+          )
       },
       { path: '', pathMatch: 'full', redirectTo: 'cards' }
     ]

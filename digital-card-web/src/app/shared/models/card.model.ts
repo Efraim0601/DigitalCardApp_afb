@@ -17,6 +17,7 @@ export type Card = {
   mobile?: string | null;
   department?: LabelDto | null;
   jobTitle?: LabelDto | null;
+  shareCount?: number | null;
 };
 
 export type CardBackgroundConfig = {

@@ -11,5 +11,9 @@ export class CardsService {
     const params = new HttpParams().set('email', email);
     return this.http.get<Card>('/api/cards', { params });
   }
+
+  incrementShareCount(email: string): Observable<{ success: boolean }> {
+    return this.http.post<{ success: boolean }>(`/api/cards/increment-share/${encodeURIComponent(email)}`, {});
+  }
 }
 

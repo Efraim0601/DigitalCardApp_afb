@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, HostListener, Input, ViewChild, computed, signal } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Card } from '../../models/card.model';
+import { CardsService } from '../../services/cards.service';
 import { ShareService } from '../../services/share.service';
 import { BusinessCardComponent } from '../business-card/business-card.component';
 import { QrCodeComponent } from '../qr-code/qr-code.component';
@@ -36,7 +37,8 @@ export class CardActionsComponent {
 
   constructor(
     private readonly shareService: ShareService,
-    private readonly translate: TranslateService
+    private readonly translate: TranslateService,
+    private readonly cardsService: CardsService
   ) {}
 
   @HostListener('document:click')
@@ -68,6 +70,7 @@ export class CardActionsComponent {
     await this.runBusy(async () => {
       const file = await this.businessCard!.getCardImageFile();
       await this.shareService.shareFiles([file], { title: this.shareTitle(), text: this.shareText() });
+      await this.incrementShareCount();
       this.closePopovers();
     });
   }
@@ -79,7 +82,8 @@ export class CardActionsComponent {
       text: this.shareText(),
       url: this.publicUrl
     });
-    if (result === 'copied') this.showFeedback('copySuccess');
+    if (result === 'copied') this.feedbackKey.set('copySuccess');
+    await this.incrementShareCount();
     this.closePopovers();
   }
 
@@ -87,6 +91,7 @@ export class CardActionsComponent {
     const file = await this.qrCode?.getQRAsFile();
     if (!file) return;
     await this.shareService.shareFiles([file], { title: this.shareTitle(), text: this.shareText() });
+    await this.incrementShareCount();
     this.closePopovers();
   }
 
@@ -97,7 +102,8 @@ export class CardActionsComponent {
       text: this.shareText(),
       url: this.publicUrl
     });
-    if (result === 'copied') this.showFeedback('copySuccess');
+    if (result === 'copied') this.feedbackKey.set('copySuccess');
+    await this.incrementShareCount();
     this.closePopovers();
   }
 
@@ -108,7 +114,8 @@ export class CardActionsComponent {
       text: this.shareText(),
       url: this.employeeUrl
     });
-    if (result === 'copied') this.showFeedback('share.employeeLinkCopied');
+    if (result === 'copied') this.feedbackKey.set('share.employeeLinkCopied');
+    await this.incrementShareCount();
     this.closePopovers();
   }
 
@@ -156,10 +163,12 @@ export class CardActionsComponent {
     }
   }
 
-  private showFeedback(key: string): void {
-    this.feedbackKey.set(key);
-    window.setTimeout(() => {
-      if (this.feedbackKey() === key) this.feedbackKey.set(null);
-    }, 2500);
+  private async incrementShareCount(): Promise<void> {
+    try {
+      await this.cardsService.incrementShareCount(this.card.email).toPromise();
+    } catch (error) {
+      // Silently fail - don't interrupt the user experience
+      console.warn('Failed to increment share count:', error);
+    }
   }
-}
+  }
