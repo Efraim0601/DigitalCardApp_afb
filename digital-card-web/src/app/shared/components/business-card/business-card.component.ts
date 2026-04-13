@@ -97,17 +97,12 @@ export class BusinessCardComponent implements AfterViewInit, OnDestroy {
 
   private recomputeScale() {
     const hostWidth = this.outerEl.nativeElement.parentElement?.getBoundingClientRect().width ?? window.innerWidth;
-    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
-
     const horizontalPadding = window.innerWidth < 640 ? 8 : 24;
-    const verticalReserve = window.innerWidth < 640 ? 280 : 220;
-
     const availableWidth = Math.max(240, hostWidth - horizontalPadding);
-    const availableHeight = Math.max(160, viewportHeight - verticalReserve);
 
+    // Keep sizing stable on mobile: width is the real constraint for this card layout.
     const byWidth = availableWidth / this.cardWidth;
-    const byHeight = availableHeight / this.cardHeight;
-    this.applyScale(Math.min(1, byWidth, byHeight));
+    this.applyScale(Math.min(1, byWidth));
   }
 
   async getCardImageFile(): Promise<File> {

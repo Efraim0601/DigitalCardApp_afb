@@ -1,9 +1,9 @@
-<div class="relative w-full max-w-2xl" (click)="$event.stopPropagation()">
+<div class="relative mx-auto w-full max-w-[680px]" (click)="$event.stopPropagation()">
   <div class="absolute -left-[9999px] top-0 h-48 w-48 overflow-hidden opacity-0 pointer-events-none">
     <app-qr-code #qrCode [url]="publicUrl" [card]="card" />
   </div>
 
-  <div class="card-cta-zone w-full">
+  <div class="card-cta-zone mx-auto w-fit max-w-full">
     <button type="button" class="card-cta-icon" [title]="'action.share' | translate" (click)="toggleShare($event)">
       <svg viewBox="0 0 20 20" fill="none" class="h-5 w-5">
         <circle cx="15" cy="4" r="2" stroke="currentColor" stroke-width="1.5" />

@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5433}/${PGDATABASE:vcard}
+    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5555}/${PGDATABASE:vcard}
     username: ${PGUSER:vcard}
     password: ${PGPASSWORD:vcard}
   jpa:

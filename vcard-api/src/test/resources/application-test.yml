@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/vcard_test
+    url: jdbc:postgresql://localhost:5555/vcard_test
     username: vcard
     password: vcard
   jpa:
