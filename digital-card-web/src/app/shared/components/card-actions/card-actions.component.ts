@@ -27,6 +27,8 @@ export class CardActionsComponent {
   readonly sharePopoverOpen = signal(false);
   readonly qrPopoverOpen = signal(false);
   readonly busy = signal(false);
+  readonly toastMessage = signal<string | null>(null);
+  private toastTimer?: ReturnType<typeof setTimeout>;
 
   readonly fullName = computed(() => {
     const first = (this.card?.firstName || '').trim();
@@ -68,7 +70,11 @@ export class CardActionsComponent {
     if (!this.businessCard) return;
     await this.runBusy(async () => {
       const file = await this.businessCard!.getCardImageFile();
-      await this.shareService.shareFiles([file], { title: this.shareTitle(), text: this.shareText() });
+      const result = await this.shareService.shareFiles([file], {
+        title: this.shareTitle(),
+        text: this.shareText()
+      });
+      this.showToast(result === 'shared' ? 'toast.shared' : 'toast.imageDownloaded');
       await this.incrementShareCount();
       this.closePopovers();
     });
@@ -76,11 +82,12 @@ export class CardActionsComponent {
 
   async shareCardLink(): Promise<void> {
     if (!this.publicUrl) return;
-    await this.shareService.shareUrl({
+    const result = await this.shareService.shareUrl({
       title: this.shareTitle(),
       text: this.shareText(),
       url: this.publicUrl
     });
+    this.showToast(result === 'shared' ? 'toast.shared' : 'toast.linkCopied');
     await this.incrementShareCount();
     this.closePopovers();
   }
@@ -88,18 +95,23 @@ export class CardActionsComponent {
   async shareQRCode(): Promise<void> {
     const file = await this.qrCode?.getQRAsFile();
     if (!file) return;
-    await this.shareService.shareFiles([file], { title: this.shareTitle(), text: this.shareText() });
+    const result = await this.shareService.shareFiles([file], {
+      title: this.shareTitle(),
+      text: this.shareText()
+    });
+    this.showToast(result === 'shared' ? 'toast.shared' : 'toast.imageDownloaded');
     await this.incrementShareCount();
     this.closePopovers();
   }
 
   async copyEmployeeLink(): Promise<void> {
     if (!this.employeeUrl) return;
-    await this.shareService.shareUrl({
+    const result = await this.shareService.shareUrl({
       title: this.shareTitle(),
       text: this.shareText(),
       url: this.employeeUrl
     });
+    this.showToast(result === 'shared' ? 'toast.shared' : 'toast.linkCopied');
     await this.incrementShareCount();
     this.closePopovers();
   }
@@ -109,6 +121,7 @@ export class CardActionsComponent {
     await this.runBusy(async () => {
       const file = await this.businessCard!.getCardImageFile();
       this.shareService.downloadFile(file, file.name);
+      this.showToast('toast.imageDownloaded');
     });
   }
 
@@ -139,6 +152,12 @@ export class CardActionsComponent {
       : this.translate.instant('share.discoverDefault');
   }
 
+  private showToast(key: string): void {
+    this.toastMessage.set(this.translate.instant(key));
+    clearTimeout(this.toastTimer);
+    this.toastTimer = setTimeout(() => this.toastMessage.set(null), 2500);
+  }
+
   private async runBusy(task: () => Promise<void>): Promise<void> {
     this.busy.set(true);
     try {
@@ -152,8 +171,7 @@ export class CardActionsComponent {
     try {
       await this.cardsService.incrementShareCount(this.card.email).toPromise();
     } catch (error) {
-      // Silently fail - don't interrupt the user experience
       console.warn('Failed to increment share count:', error);
     }
   }
-  }
+}

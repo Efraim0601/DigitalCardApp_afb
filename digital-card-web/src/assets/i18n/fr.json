@@ -31,6 +31,11 @@
     "employeeLinkCopied": "Lien employé copié dans le presse-papier."
   },
   "copySuccess": "Lien copié dans le presse-papier.",
+  "toast": {
+    "linkCopied": "Lien copié dans le presse-papier",
+    "imageDownloaded": "Image téléchargée",
+    "shared": "Partagé"
+  },
   "login": {
     "brand": "Afriland First Bank",
     "subtitle": "Portail d'identité numérique",

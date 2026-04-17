@@ -49,14 +49,19 @@ export class ShareService {
     files: File[],
     data: { title?: string; text?: string }
   ): Promise<'shared' | 'downloaded'> {
-    if (navigator.share && navigator.canShare?.({ files })) {
+    const canShareFiles =
+      typeof navigator.canShare === 'function'
+        ? navigator.canShare({ files })
+        : typeof navigator.share === 'function';
+
+    if (canShareFiles) {
       try {
         await navigator.share({ ...data, files });
         return 'shared';
       } catch (error) {
-        if ((error as Error)?.name === 'AbortError') {
-          return 'shared';
-        }
+        const name = (error as Error)?.name;
+        if (name === 'AbortError') return 'shared';
+        // Any other error (NotAllowedError, TypeError on unsupported files) → fallback to download.
       }
     }
 

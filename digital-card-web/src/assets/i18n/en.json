@@ -31,6 +31,11 @@
     "employeeLinkCopied": "Employee link copied to clipboard."
   },
   "copySuccess": "Link copied to clipboard.",
+  "toast": {
+    "linkCopied": "Link copied to clipboard",
+    "imageDownloaded": "Image downloaded",
+    "shared": "Shared"
+  },
   "login": {
     "brand": "Afriland First Bank",
     "subtitle": "Digital identity portal",
