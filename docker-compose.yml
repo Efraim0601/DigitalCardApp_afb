@@ -22,7 +22,7 @@ services:
       dockerfile: Dockerfile
       network: host
     ports:
-      - "8767:8080"
+      - "8767:9999"
     environment:
       PGHOST: db
       PGPORT: "5432"

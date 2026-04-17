@@ -18,7 +18,7 @@ services:
   app:
     build: .
     ports:
-      - "8766:8080"
+      - "8766:9999"
     environment:
       PGHOST: db
       PGPORT: "5432"

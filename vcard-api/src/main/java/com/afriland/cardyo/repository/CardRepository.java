@@ -34,6 +34,8 @@ public interface CardRepository extends JpaRepository<Card, UUID> {
         """)
     Page<Card> search(@Param("q") String q, Pageable pageable);
 
+    boolean existsByEmailIgnoreCase(String email);
+
     @Modifying
     @Query(value = """
         INSERT INTO cards (id, email, first_name, last_name, company, title,
@@ -72,3 +74,4 @@ public interface CardRepository extends JpaRepository<Card, UUID> {
     @Modifying
     @Query("UPDATE Card c SET c.shareCount = c.shareCount + 1 WHERE c.email = :email")
     int incrementShareCount(@Param("email") String email);
+}
