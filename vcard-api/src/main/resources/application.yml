@@ -27,7 +27,7 @@ app:
     password: ${ADMIN_PASSWORD:admin}
     session-secret: ${ADMIN_SESSION_SECRET:change-me-in-production}
   cors:
-    allowed-origins: ${CORS_ORIGINS:http://localhost:4200}
+    allowed-origins: ${CORS_ORIGINS:http://localhost:[*],http://127.0.0.1:[*]}
   card:
     fixed-phone: "222 233 068"
     fixed-fax: "222 221 785"
