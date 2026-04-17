@@ -66,14 +66,10 @@
     [isOpen]="sharePopoverOpen()"
     [isBusy]="busy()"
     [isCreator]="isCreator"
-    [publicUrl]="publicUrl"
-    [feedbackKey]="feedbackKey()"
     (shareImage)="shareCardImage()"
     (shareLink)="shareCardLink()"
     (shareQr)="shareQRCode()"
-    (copyLink)="copyLink()"
     (copyEmployeeLink)="copyEmployeeLink()"
-    (close)="closePopovers()"
   />
 
   @if (qrPopoverOpen()) {

@@ -12,13 +12,9 @@ export class SharePopoverComponent {
   @Input() isOpen = false;
   @Input() isBusy = false;
   @Input() isCreator = false;
-  @Input() publicUrl = '';
-  @Input() feedbackKey: string | null = null;
 
   @Output() shareImage = new EventEmitter<void>();
   @Output() shareLink = new EventEmitter<void>();
   @Output() shareQr = new EventEmitter<void>();
-  @Output() copyLink = new EventEmitter<void>();
   @Output() copyEmployeeLink = new EventEmitter<void>();
-  @Output() close = new EventEmitter<void>();
 }

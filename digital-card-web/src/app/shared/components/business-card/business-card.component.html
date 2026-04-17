@@ -4,48 +4,48 @@
       <div #outerEl class="max-w-full overflow-hidden">
         <div
           #cardEl
-          class="business-card relative overflow-hidden rounded-[14px] border-2 border-[#b0b0b0] bg-white shadow-[0_4px_20px_rgba(0,0,0,0.12)]"
+          class="business-card relative overflow-hidden rounded-[14px] border-2 border-gray-400 bg-white shadow-[0_4px_20px_rgba(0,0,0,0.15)]"
           [style.transform]="'scale(' + scale() + ')'"
           style="transform-origin: top left"
           [style.backgroundImage]="config.cardBackground ? 'url(' + config.cardBackground + ')' : null"
           [style.backgroundSize]="'cover'"
           [style.backgroundPosition]="'center'"
         >
-          <div class="relative z-10 flex h-full flex-col px-7 pb-[18px] pt-6 font-sans">
-            <div class="pt-[88px]">
-              <div class="text-[20px] font-bold leading-[1.2] text-[#1a1a2e]">
+          <div class="relative z-[1] flex h-full flex-col px-8 pb-5 pt-[113px] font-[Arial,Helvetica,sans-serif]">
+            <div class="mb-2">
+              <h1 class="text-[20px] font-bold leading-tight text-[#1a1a2e]">
                 {{ fullName() }}
-              </div>
-              <div class="mt-1 text-[13px] font-bold leading-[1.35] text-[#333]">
+              </h1>
+              <p class="mt-1 text-sm font-bold leading-[1.35] text-[#333]">
                 {{ displayedTitle() }}
-              </div>
-              <div class="mt-0.5 text-[12px] font-medium leading-[1.4] text-[#444]">
+              </p>
+              <p class="mt-0.5 text-xs font-medium leading-[1.4] text-[#2d2d2d]">
                 {{ displayedDepartment() }}
-              </div>
+              </p>
             </div>
 
-            <div class="mt-auto flex items-end justify-between gap-4">
-              <div class="text-[11px] leading-none text-[#222]">
-                <div class="mb-1 text-[11.5px] font-bold">Place de l'Indépendance</div>
+            <div class="mt-5 flex items-end justify-between gap-4">
+              <div class="text-[11px] leading-[1.7] text-[#222]">
+                <div class="text-[11.5px] font-bold">Place de l'Indépendance</div>
                 <table class="border-collapse">
                   <tr>
-                    <td class="whitespace-nowrap pr-1.5 text-[#555]">{{ 'card.bp' | translate }}</td>
-                    <td class="leading-[1.55]">11834 Yaoundé - Cameroun</td>
+                    <td class="whitespace-nowrap pr-2 align-top text-[11px] leading-[1.55] text-[#333]">{{ 'card.bp' | translate }}</td>
+                    <td class="align-top text-[11px] leading-[1.55]">11834 Yaoundé - Cameroun</td>
                   </tr>
                   <tr>
-                    <td class="whitespace-nowrap pr-1.5 text-[#555]">{{ 'card.telex' | translate }}</td>
-                    <td class="leading-[1.55]">8907 KN</td>
+                    <td class="whitespace-nowrap pr-2 align-top text-[11px] leading-[1.55] text-[#333]">{{ 'card.telex' | translate }}</td>
+                    <td class="align-top text-[11px] leading-[1.55]">8907 KN</td>
                   </tr>
                   <tr>
-                    <td class="whitespace-nowrap pr-1.5 text-[#555]">{{ 'card.email' | translate }}</td>
-                    <td class="leading-[1.55]">
-                      <a class="text-[#222] no-underline" [href]="'mailto:' + (card.email || '')">{{ card.email }}</a>
+                    <td class="whitespace-nowrap pr-2 align-top text-[11px] leading-[1.55] text-[#333]">{{ 'card.email' | translate }}</td>
+                    <td class="align-top text-[11px] leading-[1.55]">
+                      <a class="break-all text-[#222] hover:underline" [href]="'mailto:' + (card.email || '')">{{ card.email }}</a>
                     </td>
                   </tr>
                   <tr>
-                    <td class="whitespace-nowrap pr-1.5 text-[#555]">{{ 'card.website' | translate }}</td>
-                    <td class="leading-[1.55]">
-                      <a class="text-[#222] no-underline" [href]="websiteUrl" target="_blank" rel="noreferrer">
+                    <td class="whitespace-nowrap pr-2 align-top text-[11px] leading-[1.55] text-[#333]">{{ 'card.website' | translate }}</td>
+                    <td class="align-top text-[11px] leading-[1.55]">
+                      <a class="text-[#222] hover:underline" [href]="websiteUrl" target="_blank" rel="noopener noreferrer">
                         {{ website }}
                       </a>
                     </td>
@@ -53,26 +53,28 @@
                 </table>
               </div>
 
-              <div class="text-right text-[11px] leading-none text-[#222]">
+              <div class="text-right text-[11px] text-[#222]">
                 <table class="border-collapse">
                   <tr>
-                    <td class="whitespace-nowrap pl-1.5 text-left text-[#555]">{{ 'card.phone' | translate }}</td>
-                    <td class="leading-[1.55]">
-                      <a class="text-[#222] no-underline" [href]="telHref(fixedPhone())">{{ fixedPhone() }}</a>
+                    <td class="whitespace-nowrap pl-1.5 text-left text-[11px] leading-[1.55] text-[#333]">{{ 'card.phone' | translate }}</td>
+                    <td class="whitespace-nowrap pl-1.5 text-[11px] leading-[1.55]">
+                      <a class="text-[#222] hover:underline" [href]="telHref(fixedPhone())">{{ fixedPhone() }}</a>
                     </td>
                   </tr>
                   <tr>
-                    <td class="whitespace-nowrap pl-1.5 text-left text-[#555]">{{ 'card.fax' | translate }}</td>
-                    <td class="leading-[1.55]">
-                      <a class="text-[#222] no-underline" [href]="telHref(fixedFax())">{{ fixedFax() }}</a>
+                    <td class="whitespace-nowrap pl-1.5 text-left text-[11px] leading-[1.55] text-[#333]">{{ 'card.fax' | translate }}</td>
+                    <td class="whitespace-nowrap pl-1.5 text-[11px] leading-[1.55]">
+                      <a class="text-[#222] hover:underline" [href]="telHref(fixedFax())">{{ fixedFax() }}</a>
                     </td>
                   </tr>
-                  <tr>
-                    <td class="whitespace-nowrap pl-1.5 text-left text-[#555]">{{ 'card.mobile' | translate }}</td>
-                    <td class="leading-[1.55]">
-                      <a class="text-[#222] no-underline" [href]="telHref(card.mobile)">{{ card.mobile || '—' }}</a>
-                    </td>
-                  </tr>
+                  @if (card.mobile) {
+                    <tr>
+                      <td class="whitespace-nowrap pl-1.5 text-left text-[11px] leading-[1.55] text-[#333]">{{ 'card.mobile' | translate }}</td>
+                      <td class="whitespace-nowrap pl-1.5 text-[11px] leading-[1.55]">
+                        <a class="text-[#222] hover:underline" [href]="telHref(card.mobile)">{{ card.mobile }}</a>
+                      </td>
+                    </tr>
+                  }
                 </table>
               </div>
             </div>
@@ -82,4 +84,3 @@
     </div>
   </div>
 </div>
-

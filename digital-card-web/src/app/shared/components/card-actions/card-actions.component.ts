@@ -27,7 +27,6 @@ export class CardActionsComponent {
   readonly sharePopoverOpen = signal(false);
   readonly qrPopoverOpen = signal(false);
   readonly busy = signal(false);
-  readonly feedbackKey = signal<string | null>(null);
 
   readonly fullName = computed(() => {
     const first = (this.card?.firstName || '').trim();
@@ -77,12 +76,11 @@ export class CardActionsComponent {
 
   async shareCardLink(): Promise<void> {
     if (!this.publicUrl) return;
-    const result = await this.shareService.shareUrl({
+    await this.shareService.shareUrl({
       title: this.shareTitle(),
       text: this.shareText(),
       url: this.publicUrl
     });
-    if (result === 'copied') this.feedbackKey.set('copySuccess');
     await this.incrementShareCount();
     this.closePopovers();
   }
@@ -95,26 +93,13 @@ export class CardActionsComponent {
     this.closePopovers();
   }
 
-  async copyLink(): Promise<void> {
-    if (!this.publicUrl) return;
-    const result = await this.shareService.shareUrl({
-      title: this.shareTitle(),
-      text: this.shareText(),
-      url: this.publicUrl
-    });
-    if (result === 'copied') this.feedbackKey.set('copySuccess');
-    await this.incrementShareCount();
-    this.closePopovers();
-  }
-
   async copyEmployeeLink(): Promise<void> {
     if (!this.employeeUrl) return;
-    const result = await this.shareService.shareUrl({
+    await this.shareService.shareUrl({
       title: this.shareTitle(),
       text: this.shareText(),
       url: this.employeeUrl
     });
-    if (result === 'copied') this.feedbackKey.set('share.employeeLinkCopied');
     await this.incrementShareCount();
     this.closePopovers();
   }
