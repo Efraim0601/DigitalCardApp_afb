@@ -31,6 +31,11 @@ app:
   card:
     fixed-phone: "222 233 068"
     fixed-fax: "222 221 785"
+  cookie:
+    # Set APP_COOKIE_SECURE=true in environments served over HTTPS.
+    # Kept false by default so plain-HTTP dev/staging still receives the session cookie.
+    secure: ${APP_COOKIE_SECURE:false}
+    same-site: ${APP_COOKIE_SAME_SITE:Strict}
 
 springdoc:
   api-docs:

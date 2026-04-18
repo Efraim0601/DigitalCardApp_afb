@@ -17,7 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AdminSessionTokenService {
 
-    private static final long SESSION_DURATION_SECONDS = 8 * 60 * 60;
+    private static final long SESSION_DURATION_SECONDS = 8L * 60 * 60;
     private static final String HMAC_ALGO = "HmacSHA256";
 
     private final AppProperties appProperties;

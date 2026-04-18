@@ -21,7 +21,7 @@ public class CardController {
     private final CardService cardService;
 
     @GetMapping
-    public ResponseEntity<?> getCards(
+    public ResponseEntity<Object> getCards(
             @RequestParam(required = false) String email,
             @RequestParam(defaultValue = "20") int limit,
             @RequestParam(defaultValue = "0") int offset,
@@ -34,32 +34,32 @@ public class CardController {
 
         if (auth == null || !auth.isAuthenticated()) {
             return ResponseEntity.status(401)
-                    .body(Map.of("error", "Unauthorized"));
+                    .body(Map.of(ApiKeys.ERROR, "Unauthorized"));
         }
         return ResponseEntity.ok(cardService.findAll(limit, offset, q));
     }
 
     @PostMapping
-    public ResponseEntity<?> createCard(
+    public ResponseEntity<Object> createCard(
             @Valid @RequestBody CardCreateRequest request) {
         return ResponseEntity.ok(cardService.upsert(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCard(@PathVariable UUID id,
+    public ResponseEntity<Object> updateCard(@PathVariable UUID id,
                                         @RequestBody CardUpdateRequest request) {
         return ResponseEntity.ok(cardService.update(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCard(@PathVariable UUID id) {
+    public ResponseEntity<Object> deleteCard(@PathVariable UUID id) {
         cardService.delete(id);
-        return ResponseEntity.ok(Map.of("success", true));
+        return ResponseEntity.ok(Map.of(ApiKeys.SUCCESS, true));
     }
 
     @PostMapping("/increment-share/{email}")
-    public ResponseEntity<?> incrementShareCount(@PathVariable String email) {
+    public ResponseEntity<Object> incrementShareCount(@PathVariable String email) {
         cardService.incrementShareCount(email);
-        return ResponseEntity.ok(Map.of("success", true));
+        return ResponseEntity.ok(Map.of(ApiKeys.SUCCESS, true));
     }
 }

@@ -18,19 +18,19 @@ public class AdminSmtpController {
     private final SmtpSettingsService smtpSettingsService;
 
     @GetMapping
-    public ResponseEntity<?> getSettings() {
+    public ResponseEntity<Object> getSettings() {
         return ResponseEntity.ok(smtpSettingsService.getSettings());
     }
 
     @PutMapping
-    public ResponseEntity<?> updateSettings(
+    public ResponseEntity<Object> updateSettings(
             @Valid @RequestBody SmtpSettingsUpdateRequest request) {
         return ResponseEntity.ok(smtpSettingsService.updateSettings(request));
     }
 
     @PostMapping("/test")
-    public ResponseEntity<?> sendTestEmail(@Valid @RequestBody SmtpTestRequest request) {
+    public ResponseEntity<Object> sendTestEmail(@Valid @RequestBody SmtpTestRequest request) {
         smtpSettingsService.sendTestEmail(request.getToEmail());
-        return ResponseEntity.ok(Map.of("success", true));
+        return ResponseEntity.ok(Map.of(ApiKeys.SUCCESS, true));
     }
 }

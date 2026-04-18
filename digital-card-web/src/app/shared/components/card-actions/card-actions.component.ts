@@ -30,6 +30,11 @@ export class CardActionsComponent {
   readonly toastMessage = signal<string | null>(null);
   private toastTimer?: ReturnType<typeof setTimeout>;
 
+  // Pre-generate share files on popover open so navigator.share is called
+  // within the same user-gesture tick on mobile (prevents NotAllowedError).
+  private preparedImagePromise: Promise<File> | null = null;
+  private preparedQrPromise: Promise<File | null> | null = null;
+
   readonly fullName = computed(() => {
     const first = (this.card?.firstName || '').trim();
     const last = (this.card?.lastName || '').trim();
@@ -51,7 +56,10 @@ export class CardActionsComponent {
     event.stopPropagation();
     const next = !this.sharePopoverOpen();
     this.sharePopoverOpen.set(next);
-    if (next) this.qrPopoverOpen.set(false);
+    if (next) {
+      this.qrPopoverOpen.set(false);
+      this.preheatShareFiles();
+    }
   }
 
   toggleQr(event: MouseEvent): void {
@@ -64,12 +72,15 @@ export class CardActionsComponent {
   closePopovers(): void {
     this.sharePopoverOpen.set(false);
     this.qrPopoverOpen.set(false);
+    this.preparedImagePromise = null;
+    this.preparedQrPromise = null;
   }
 
   async shareCardImage(): Promise<void> {
-    if (!this.businessCard) return;
+    const filePromise = this.preparedImagePromise ?? this.generateImageFile();
+    this.preparedImagePromise = filePromise;
     await this.runBusy(async () => {
-      const file = await this.businessCard!.getCardImageFile();
+      const file = await filePromise;
       const result = await this.shareService.shareFiles([file], {
         title: this.shareTitle(),
         text: this.shareText()
@@ -93,7 +104,9 @@ export class CardActionsComponent {
   }
 
   async shareQRCode(): Promise<void> {
-    const file = await this.qrCode?.getQRAsFile();
+    const filePromise = this.preparedQrPromise ?? this.generateQrFile();
+    this.preparedQrPromise = filePromise;
+    const file = await filePromise;
     if (!file) return;
     const result = await this.shareService.shareFiles([file], {
       title: this.shareTitle(),
@@ -138,6 +151,21 @@ export class CardActionsComponent {
 
   saveContact(): void {
     void this.qrCode?.downloadVCard();
+  }
+
+  private preheatShareFiles(): void {
+    if (!this.preparedImagePromise) this.preparedImagePromise = this.generateImageFile();
+    if (!this.preparedQrPromise) this.preparedQrPromise = this.generateQrFile();
+  }
+
+  private generateImageFile(): Promise<File> {
+    if (!this.businessCard) return Promise.reject(new Error('business card not ready'));
+    return this.businessCard.getCardImageFile();
+  }
+
+  private generateQrFile(): Promise<File | null> {
+    if (!this.qrCode) return Promise.resolve(null);
+    return this.qrCode.getQRAsFile();
   }
 
   private shareTitle(): string {

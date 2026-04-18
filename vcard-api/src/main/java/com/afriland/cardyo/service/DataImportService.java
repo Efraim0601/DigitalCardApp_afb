@@ -280,7 +280,7 @@ public class DataImportService {
         String s = Normalizer.normalize(header.trim().toLowerCase(), Normalizer.Form.NFD)
                 .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
                 .replaceAll("[^a-z0-9]+", "_")
-                .replaceAll("^_|_$", "");
+                .replaceAll("(?:^_)|(?:_$)", "");
         return s;
     }
 

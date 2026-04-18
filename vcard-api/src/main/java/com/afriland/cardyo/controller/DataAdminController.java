@@ -18,7 +18,7 @@ public class DataAdminController {
     private final DataExportService exportService;
 
     @PostMapping("/data-import")
-    public ResponseEntity<?> importData(
+    public ResponseEntity<Object> importData(
             @RequestParam String scope,
             @RequestParam("file") MultipartFile file) throws Exception {
         return ResponseEntity.ok(importService.importData(file, scope));

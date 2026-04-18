@@ -24,7 +24,7 @@ public class DepartmentController {
     }
 
     @GetMapping
-    public ResponseEntity<?> findAll(
+    public ResponseEntity<Object> findAll(
             @RequestParam(defaultValue = "20") int limit,
             @RequestParam(defaultValue = "0") int offset,
             @RequestParam(required = false) String q) {
@@ -32,27 +32,27 @@ public class DepartmentController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(
+    public ResponseEntity<Object> create(
             @Valid @RequestBody LabelCreateRequest request) {
         return ResponseEntity.ok(labelService.create(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable UUID id,
+    public ResponseEntity<Object> update(@PathVariable UUID id,
                                     @RequestBody LabelCreateRequest request) {
         return ResponseEntity.ok(labelService.update(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable UUID id) {
+    public ResponseEntity<Object> delete(@PathVariable UUID id) {
         labelService.delete(id);
-        return ResponseEntity.ok(Map.of("success", true));
+        return ResponseEntity.ok(Map.of(ApiKeys.SUCCESS, true));
     }
 
     @PostMapping("/bulk-delete")
-    public ResponseEntity<?> bulkDelete(
+    public ResponseEntity<Object> bulkDelete(
             @Valid @RequestBody BulkDeleteRequest request) {
         int deleted = labelService.bulkDelete(request.getIds());
-        return ResponseEntity.ok(Map.of("success", true, "deleted", deleted));
+        return ResponseEntity.ok(Map.of(ApiKeys.SUCCESS, true, ApiKeys.DELETED, deleted));
     }
 }

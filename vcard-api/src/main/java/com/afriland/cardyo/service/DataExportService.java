@@ -94,8 +94,8 @@ public class DataExportService {
     }
 
     private PrintWriter csvWriter(ByteArrayOutputStream baos) {
-        try { baos.write(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF}); }
-        catch (Exception ignored) {}
+        // UTF-8 BOM for Excel compatibility; ByteArrayOutputStream.write never throws.
+        baos.writeBytes(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF});
         return new PrintWriter(new OutputStreamWriter(baos, StandardCharsets.UTF_8));
     }
 

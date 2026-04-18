@@ -19,13 +19,17 @@ public class ImageProxyController {
     private final ImageProxyService imageProxyService;
 
     @GetMapping("/convertImage")
-    public ResponseEntity<?> convertImage(@RequestParam String url) {
+    public ResponseEntity<Object> convertImage(@RequestParam String url) {
         try {
             String base64 = imageProxyService.fetchAsBase64(url);
             return ResponseEntity.ok(new ImageConvertResponse(base64));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return ResponseEntity.status(503)
+                    .body(Map.of(ApiKeys.ERROR, "Image fetch interrupted"));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
-                    .body(Map.of("error", "Failed to fetch image: " + e.getMessage()));
+                    .body(Map.of(ApiKeys.ERROR, "Failed to fetch image: " + e.getMessage()));
         }
     }
 }

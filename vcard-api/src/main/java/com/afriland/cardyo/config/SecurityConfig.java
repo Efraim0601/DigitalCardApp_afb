@@ -7,11 +7,22 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Stateless admin security: session cookie is {@code HttpOnly + Secure + SameSite=Strict},
+ * so browsers will not attach it to cross-site requests — which removes the CSRF attack
+ * vector that the Spring CSRF filter protects against. The filter itself is therefore
+ * disabled to keep the API stateless (no synchronizer token to propagate to the SPA).
+ * <p>
+ * If a form-based or cross-origin authenticated flow is ever added, re-enable CSRF with
+ * {@code CookieCsrfTokenRepository.withHttpOnlyFalse()} and expose the XSRF-TOKEN cookie
+ * to the SPA.
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -23,7 +34,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .cors(Customizer.withDefaults())
-            .csrf(csrf -> csrf.disable())
+            // Safe: session cookie uses SameSite=Strict + HttpOnly + Secure (see AdminAuthController);
+            // the API is stateless and has no form-based auth, so no synchronizer token is needed.
+            .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(adminSessionFilter, UsernamePasswordAuthenticationFilter.class)
             .exceptionHandling(ex -> ex
