@@ -7,36 +7,55 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 
 /**
- * Stateless admin security: session cookie is {@code HttpOnly + Secure + SameSite=Strict},
- * so browsers will not attach it to cross-site requests — which removes the CSRF attack
- * vector that the Spring CSRF filter protects against. The filter itself is therefore
- * disabled to keep the API stateless (no synchronizer token to propagate to the SPA).
- * <p>
- * If a form-based or cross-origin authenticated flow is ever added, re-enable CSRF with
- * {@code CookieCsrfTokenRepository.withHttpOnlyFalse()} and expose the XSRF-TOKEN cookie
- * to the SPA.
+ * Stateless admin security:
+ * <ul>
+ *   <li>Session cookie is {@code HttpOnly + Secure + SameSite=Strict} (see AdminAuthController).</li>
+ *   <li>CSRF protection is active on every mutating request: token issued via a cookie
+ *       ({@link CookieCsrfTokenRepository#withHttpOnlyFalse()}) and validated against the
+ *       {@code X-XSRF-TOKEN} header (Spring Security's XOR handler adds BREACH protection).</li>
+ *   <li>Eager resolution ({@code setCsrfRequestAttributeName(null)}) ensures the XSRF-TOKEN
+ *       cookie is emitted on the first GET, so the SPA has a token before the login POST.</li>
+ * </ul>
+ *
+ * <p><b>Why the XSRF cookie is not HttpOnly (S3330):</b> the browser-side Angular HttpClient
+ * must read the cookie value to echo it back in the {@code X-XSRF-TOKEN} header. Marking the
+ * cookie HttpOnly would break the double-submit-cookie pattern and disable CSRF protection
+ * altogether. The token is short-lived and bound to the session; its only sensitive use is
+ * CSRF mitigation.</p>
  */
+@SuppressWarnings("java:S3330") // XSRF-TOKEN must be JS-readable for the double-submit-cookie pattern
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     private final AdminSessionFilter adminSessionFilter;
+    private final AppProperties appProperties;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        CookieCsrfTokenRepository csrfRepo = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        csrfRepo.setCookieCustomizer(c -> c
+                .sameSite(appProperties.getCookie().getSameSite())
+                .secure(appProperties.getCookie().isSecure())
+                .path("/"));
+
+        XorCsrfTokenRequestAttributeHandler csrfHandler = new XorCsrfTokenRequestAttributeHandler();
+        csrfHandler.setCsrfRequestAttributeName(null);
+
         http
             .cors(Customizer.withDefaults())
-            // Safe: session cookie uses SameSite=Strict + HttpOnly + Secure (see AdminAuthController);
-            // the API is stateless and has no form-based auth, so no synchronizer token is needed.
-            .csrf(AbstractHttpConfigurer::disable)
+            .csrf(csrf -> csrf
+                .csrfTokenRepository(csrfRepo)
+                .csrfTokenRequestHandler(csrfHandler))
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(adminSessionFilter, UsernamePasswordAuthenticationFilter.class)
             .exceptionHandling(ex -> ex

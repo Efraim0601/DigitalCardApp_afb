@@ -1,8 +1,7 @@
 package com.afriland.cardyo.service;
 
 import com.afriland.cardyo.entity.Card;
-import com.afriland.cardyo.entity.Department;
-import com.afriland.cardyo.entity.JobTitle;
+import com.afriland.cardyo.entity.LabelEntity;
 import com.afriland.cardyo.repository.CardRepository;
 import com.afriland.cardyo.repository.DepartmentRepository;
 import com.afriland.cardyo.repository.JobTitleRepository;
@@ -68,26 +67,19 @@ public class DataExportService {
     }
 
     private byte[] exportDepartments() {
-        List<Department> list = departmentRepository.findAll(
-                Sort.by("createdAt").descending());
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintWriter w = csvWriter(baos);
-        w.println(csvLine("label_fr", "label_en"));
-        for (Department d : list) {
-            w.println(csvLine(d.getLabelFr(), d.getLabelEn()));
-        }
-        w.flush();
-        return baos.toByteArray();
+        return exportLabels(departmentRepository.findAll(Sort.by("createdAt").descending()));
     }
 
     private byte[] exportJobTitles() {
-        List<JobTitle> list = jobTitleRepository.findAll(
-                Sort.by("createdAt").descending());
+        return exportLabels(jobTitleRepository.findAll(Sort.by("createdAt").descending()));
+    }
+
+    private byte[] exportLabels(List<? extends LabelEntity> rows) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintWriter w = csvWriter(baos);
         w.println(csvLine("label_fr", "label_en"));
-        for (JobTitle jt : list) {
-            w.println(csvLine(jt.getLabelFr(), jt.getLabelEn()));
+        for (LabelEntity l : rows) {
+            w.println(csvLine(l.getLabelFr(), l.getLabelEn()));
         }
         w.flush();
         return baos.toByteArray();

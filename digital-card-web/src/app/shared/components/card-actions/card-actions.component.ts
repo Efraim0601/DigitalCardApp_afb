@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, Input, ViewChild, computed, signal } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { firstValueFrom } from 'rxjs';
 import { Card } from '../../models/card.model';
 import { CardsService } from '../../services/cards.service';
 import { ShareService } from '../../services/share.service';
@@ -141,12 +142,12 @@ export class CardActionsComponent {
   call(): void {
     const phone = this.card.mobile || this.card.phone;
     if (!phone) return;
-    window.location.href = `tel:${phone.replace(/\s+/g, '')}`;
+    globalThis.window.location.href = `tel:${phone.replace(/\s+/g, '')}`;
   }
 
   email(): void {
     if (!this.card.email) return;
-    window.location.href = `mailto:${this.card.email}`;
+    globalThis.window.location.href = `mailto:${this.card.email}`;
   }
 
   saveContact(): void {
@@ -197,7 +198,7 @@ export class CardActionsComponent {
 
   private async incrementShareCount(): Promise<void> {
     try {
-      await this.cardsService.incrementShareCount(this.card.email).toPromise();
+      await firstValueFrom(this.cardsService.incrementShareCount(this.card.email));
     } catch (error) {
       console.warn('Failed to increment share count:', error);
     }

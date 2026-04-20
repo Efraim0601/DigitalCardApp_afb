@@ -235,8 +235,8 @@ export class SmtpAdminPageComponent {
     this.admin
       .updateSmtpSettings(payload)
       .pipe(
-        catchError((err) => {
-          this.error.set(err?.error?.error || "Impossible d'enregistrer la configuration SMTP.");
+        catchError((err: { error?: { error?: string } }) => {
+          this.error.set(err?.error?.error ?? "Impossible d'enregistrer la configuration SMTP.");
           return of(null);
         }),
         finalize(() => this.isSaving.set(false))
@@ -264,8 +264,8 @@ export class SmtpAdminPageComponent {
     this.admin
       .sendSmtpTestEmail(toEmail)
       .pipe(
-        catchError((err) => {
-          this.error.set(err?.error?.error || "Impossible d'envoyer l'email de test.");
+        catchError((err: { error?: { error?: string } }) => {
+          this.error.set(err?.error?.error ?? "Impossible d'envoyer l'email de test.");
           return of(null);
         }),
         finalize(() => this.isTesting.set(false))

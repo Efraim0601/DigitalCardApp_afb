@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, signal } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { firstValueFrom } from 'rxjs';
 import { Card } from '../../../shared/models/card.model';
-import { AdminService, PagedResult } from '../../../shared/services/admin.service';
+import { AdminService } from '../../../shared/services/admin.service';
 
 @Component({
   selector: 'app-share-stats-admin-page',
@@ -12,7 +13,7 @@ import { AdminService, PagedResult } from '../../../shared/services/admin.servic
   templateUrl: './share-stats-admin.page.html',
   styleUrl: './share-stats-admin.page.css'
 })
-export class ShareStatsAdminPageComponent {
+export class ShareStatsAdminPageComponent implements OnInit {
   readonly pageSize = 1000; // Load all cards for stats
 
   readonly q = signal('');
@@ -26,8 +27,10 @@ export class ShareStatsAdminPageComponent {
   readonly sortBy = signal<'shareCount' | 'email' | 'firstName'>('shareCount');
   readonly sortOrder = signal<'asc' | 'desc'>('desc');
 
-  constructor(private readonly adminService: AdminService) {
-    this.loadCards();
+  constructor(private readonly adminService: AdminService) {}
+
+  ngOnInit(): void {
+    void this.loadCards();
   }
 
   private async loadCards(): Promise<void> {
@@ -35,9 +38,9 @@ export class ShareStatsAdminPageComponent {
     this.error.set(null);
 
     try {
-      const result = await this.adminService
-        .listCards({ limit: this.pageSize, offset: 0 })
-        .toPromise();
+      const result = await firstValueFrom(
+        this.adminService.listCards({ limit: this.pageSize, offset: 0 })
+      );
       if (result) {
         this.cards.set(result.items);
         this.total.set(result.total);
@@ -57,7 +60,6 @@ export class ShareStatsAdminPageComponent {
   readonly filteredCards = computed(() => {
     let filtered = this.cards();
 
-    // Filter by search query
     const query = this.searchQuery().toLowerCase().trim();
     if (query) {
       filtered = filtered.filter(card =>
@@ -68,9 +70,10 @@ export class ShareStatsAdminPageComponent {
       );
     }
 
-    // Sort
-    filtered.sort((a, b) => {
-      let aValue: any, bValue: any;
+    const sorted = [...filtered];
+    sorted.sort((a, b) => {
+      let aValue: string | number;
+      let bValue: string | number;
 
       switch (this.sortBy()) {
         case 'shareCount':
@@ -94,7 +97,7 @@ export class ShareStatsAdminPageComponent {
       return 0;
     });
 
-    return filtered;
+    return sorted;
   });
 
   onSearchChange(query: string): void {

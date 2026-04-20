@@ -144,42 +144,41 @@ public class DataImportService {
 
     private UUID resolveDepartment(Map<String, String> row,
                                    List<String> warnings, int rowIdx) {
-        String label = getField(row, "department", "direction",
-                "department_fr", "departement");
-        if (label == null || label.isBlank()) return null;
-        String normalizedLabel = label.trim();
-
-        Optional<Department> dept = departmentRepository.findByLabelFrIgnoreCase(normalizedLabel);
-        if (dept.isEmpty()) dept = departmentRepository.findByLabelEnIgnoreCase(normalizedLabel);
-        if (dept.isEmpty()) {
-            Department created = new Department();
-            created.setLabelFr(normalizedLabel);
-            created.setLabelEn(normalizedLabel);
-            dept = Optional.of(departmentRepository.save(created));
-            warnings.add("Row " + (rowIdx + 2)
-                + ": department '" + normalizedLabel + "' created automatically");
-        }
-        return dept.get().getId();
+        return resolveLabel(row, warnings, rowIdx, "department",
+                departmentRepository, Department::new,
+                "department", "direction", "department_fr", "departement");
     }
 
     private UUID resolveJobTitle(Map<String, String> row,
                                  List<String> warnings, int rowIdx) {
-        String label = getField(row, "job_title", "jobtitle",
-                "titre_poste", "titreposte", "poste");
+        return resolveLabel(row, warnings, rowIdx, "job title",
+                jobTitleRepository, JobTitle::new,
+                "job_title", "jobtitle", "titre_poste", "titreposte", "poste");
+    }
+
+    private <T extends LabelEntity> UUID resolveLabel(
+            Map<String, String> row,
+            List<String> warnings,
+            int rowIdx,
+            String kind,
+            LabelEntityRepository<T> repository,
+            Supplier<T> factory,
+            String... fieldKeys) {
+        String label = getField(row, fieldKeys);
         if (label == null || label.isBlank()) return null;
         String normalizedLabel = label.trim();
 
-        Optional<JobTitle> jt = jobTitleRepository.findByLabelFrIgnoreCase(normalizedLabel);
-        if (jt.isEmpty()) jt = jobTitleRepository.findByLabelEnIgnoreCase(normalizedLabel);
-        if (jt.isEmpty()) {
-            JobTitle created = new JobTitle();
+        Optional<T> found = repository.findByLabelFrIgnoreCase(normalizedLabel);
+        if (found.isEmpty()) found = repository.findByLabelEnIgnoreCase(normalizedLabel);
+        if (found.isEmpty()) {
+            T created = factory.get();
             created.setLabelFr(normalizedLabel);
             created.setLabelEn(normalizedLabel);
-            jt = Optional.of(jobTitleRepository.save(created));
+            found = Optional.of(repository.save(created));
             warnings.add("Row " + (rowIdx + 2)
-                + ": job title '" + normalizedLabel + "' created automatically");
+                    + ": " + kind + " '" + normalizedLabel + "' created automatically");
         }
-        return jt.get().getId();
+        return found.get().getId();
     }
 
     // ---- parsing helpers ----
@@ -280,7 +279,8 @@ public class DataImportService {
         String s = Normalizer.normalize(header.trim().toLowerCase(), Normalizer.Form.NFD)
                 .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
                 .replaceAll("[^a-z0-9]+", "_")
-                .replaceAll("(?:^_)|(?:_$)", "");
+                .replaceAll("^_", "")
+                .replaceAll("_$", "");
         return s;
     }
 

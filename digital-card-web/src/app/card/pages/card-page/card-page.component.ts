@@ -47,8 +47,12 @@ export class CardPageComponent {
             query[key] = values.length > 1 ? values : values[0];
           }
 
-          if (typeof window !== 'undefined') {
-            const publicUrl = buildPublicCardUrl(window.location.origin, this.router.url.split('?')[0] || '/card', query);
+          if (typeof globalThis.window !== 'undefined') {
+            const publicUrl = buildPublicCardUrl(
+              globalThis.window.location.origin,
+              this.router.url.split('?')[0] || '/card',
+              query
+            );
             this.publicUrl.set(publicUrl);
             this.employeeUrl.set(withEmployeeQuery(publicUrl));
           }

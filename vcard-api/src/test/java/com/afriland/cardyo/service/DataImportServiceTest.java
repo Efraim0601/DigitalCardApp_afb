@@ -149,8 +149,10 @@ class DataImportServiceTest {
 
     @Test
     void importCards_upsertsWithResolvedIdsAndWarnsAboutCreated() throws Exception {
-        String csv = "email;first_name;last_name;department;job_title;mobile\n"
-                + "a@b.com;Alice;Dupont;Risques;Ingenieur;690 111 222\n";
+        String csv = """
+                email;first_name;last_name;department;job_title;mobile
+                a@b.com;Alice;Dupont;Risques;Ingenieur;690 111 222
+                """;
         MockMultipartFile file = new MockMultipartFile(
                 "file", "cards.csv", "text/csv", csv.getBytes(StandardCharsets.UTF_8));
 
@@ -170,8 +172,9 @@ class DataImportServiceTest {
 
         ImportResultDto r = service.importData(file, "cards");
         assertThat(r.getImported().getCards()).isEqualTo(1);
-        assertThat(r.getWarnings()).anyMatch(w -> w.contains("department 'Risques'"));
-        assertThat(r.getWarnings()).anyMatch(w -> w.contains("job title 'Ingenieur'"));
+        assertThat(r.getWarnings())
+                .anyMatch(w -> w.contains("department 'Risques'"))
+                .anyMatch(w -> w.contains("job title 'Ingenieur'"));
         verify(cardRepository).upsertByEmail(eq("a@b.com"), eq("Alice"), eq("Dupont"),
                 any(), any(), eq("222 233 068"), eq("222 221 785"),
                 anyString(), any(UUID.class), any(UUID.class));

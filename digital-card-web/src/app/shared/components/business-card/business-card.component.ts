@@ -71,8 +71,8 @@ export class BusinessCardComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.resizeObserver?.disconnect();
-    window.visualViewport?.removeEventListener('resize', this.onVisualViewportResize);
-    window.visualViewport?.removeEventListener('scroll', this.onVisualViewportResize);
+    globalThis.window.visualViewport?.removeEventListener('resize', this.onVisualViewportResize);
+    globalThis.window.visualViewport?.removeEventListener('scroll', this.onVisualViewportResize);
   }
 
   @HostListener('window:resize')
@@ -91,13 +91,13 @@ export class BusinessCardComponent implements AfterViewInit, OnDestroy {
       this.resizeObserver.observe(host);
     }
 
-    window.visualViewport?.addEventListener('resize', this.onVisualViewportResize);
-    window.visualViewport?.addEventListener('scroll', this.onVisualViewportResize);
+    globalThis.window.visualViewport?.addEventListener('resize', this.onVisualViewportResize);
+    globalThis.window.visualViewport?.addEventListener('scroll', this.onVisualViewportResize);
   }
 
   private recomputeScale() {
-    const hostWidth = this.outerEl.nativeElement.parentElement?.getBoundingClientRect().width ?? window.innerWidth;
-    const horizontalPadding = window.innerWidth < 640 ? 8 : 24;
+    const hostWidth = this.outerEl.nativeElement.parentElement?.getBoundingClientRect().width ?? globalThis.window.innerWidth;
+    const horizontalPadding = globalThis.window.innerWidth < 640 ? 8 : 24;
     const availableWidth = Math.max(240, hostWidth - horizontalPadding);
 
     // Keep sizing stable on mobile: width is the real constraint for this card layout.

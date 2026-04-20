@@ -44,7 +44,7 @@ services:
       dockerfile: Dockerfile
       network: host
     ports:
-      - "8766:80"
+      - "8766:8080"
     depends_on:
       - backend
     restart: unless-stopped
