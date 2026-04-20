@@ -142,7 +142,7 @@ export class CardActionsComponent {
   call(): void {
     const phone = this.card.mobile || this.card.phone;
     if (!phone) return;
-    globalThis.window.location.href = `tel:${phone.replace(/\s+/g, '')}`;
+    globalThis.window.location.href = `tel:${phone.replaceAll(/\s+/g, '')}`;
   }
 
   email(): void {

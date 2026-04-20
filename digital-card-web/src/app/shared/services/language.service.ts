@@ -6,7 +6,7 @@ export class LanguageService {
   readonly lang = signal<'fr' | 'en'>('fr');
 
   constructor(private readonly translate: TranslateService) {
-    const initial = (translate.currentLang ?? translate.defaultLang) as 'fr' | 'en' | null;
+    const initial = (translate.getCurrentLang() ?? translate.getFallbackLang()) as 'fr' | 'en' | null;
     this.set(initial === 'en' ? 'en' : 'fr');
   }
 

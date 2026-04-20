@@ -3,8 +3,16 @@ import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from './language.service';
 
 class TranslateStub {
-  currentLang: string | undefined;
+  private current: string | null = null;
+  private fallback: string | null = null;
   lastUsed?: string;
+
+  setCurrent(lang: string | null) { this.current = lang; }
+  setFallback(lang: string | null) { this.fallback = lang; }
+
+  getCurrentLang() { return this.current; }
+  getFallbackLang() { return this.fallback; }
+
   use(lang: string) {
     this.lastUsed = lang;
     return { subscribe: () => {} } as any;
@@ -12,9 +20,10 @@ class TranslateStub {
 }
 
 describe('LanguageService', () => {
-  function setup(currentLang?: string) {
+  function setup(current: string | null, fallback: string | null = null) {
     const stub = new TranslateStub();
-    stub.currentLang = currentLang;
+    stub.setCurrent(current);
+    stub.setFallback(fallback);
     TestBed.configureTestingModule({
       providers: [
         LanguageService,
@@ -24,15 +33,20 @@ describe('LanguageService', () => {
     return { stub, service: TestBed.inject(LanguageService) };
   }
 
-  it('defaults to fr when translate has no default', () => {
-    const { service } = setup(undefined);
+  it('defaults to fr when translate has no current or fallback', () => {
+    const { service } = setup(null);
     expect(service.lang()).toBe('fr');
   });
 
-  it('uses en when default is en', () => {
+  it('uses en when current is en', () => {
     const { service, stub } = setup('en');
     expect(service.lang()).toBe('en');
     expect(stub.lastUsed).toBe('en');
+  });
+
+  it('falls back to fallbackLang when no currentLang', () => {
+    const { service } = setup(null, 'en');
+    expect(service.lang()).toBe('en');
   });
 
   it('toggle flips language', () => {

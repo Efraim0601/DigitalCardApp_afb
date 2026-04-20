@@ -47,7 +47,7 @@ export class CardPageComponent {
             query[key] = values.length > 1 ? values : values[0];
           }
 
-          if (typeof globalThis.window !== 'undefined') {
+          if (globalThis.window !== undefined) {
             const publicUrl = buildPublicCardUrl(
               globalThis.window.location.origin,
               this.router.url.split('?')[0] || '/card',
