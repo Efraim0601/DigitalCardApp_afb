@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { catchError, finalize, of, switchMap, tap } from 'rxjs';
 import { AuthService, LoginHintResponse } from '../shared/services/auth.service';
+import { LanguageService } from '../shared/services/language.service';
 
 type LoginForm = {
   email: FormControl<string>;
@@ -33,7 +34,8 @@ export class LoginComponent {
 
   constructor(
     private readonly auth: AuthService,
-    private readonly router: Router
+    private readonly router: Router,
+    readonly lang: LanguageService
   ) {
     effect(() => {
       // If email changed and we are not admin anymore, clear password.

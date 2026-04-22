@@ -76,6 +76,22 @@ export class AdminService {
     return this.http.post<Card>('/api/cards', payload);
   }
 
+  updateCard(id: string, payload: {
+    email?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    title?: string | null;
+    mobile?: string | null;
+    departmentId?: string | null;
+    jobTitleId?: string | null;
+  }): Observable<Card> {
+    return this.http.put<Card>(`/api/cards/${id}`, payload);
+  }
+
+  deleteCard(id: string): Observable<void> {
+    return this.http.delete<void>(`/api/cards/${id}`);
+  }
+
   bulkDeleteCards(ids: string[]): Observable<{ success: boolean; deleted: number }> {
     return this.http.post<{ success: boolean; deleted: number }>('/api/cards/bulk-delete', { ids });
   }
@@ -90,6 +106,10 @@ export class AdminService {
     return this.http.post<Label>('/api/departments', dep);
   }
 
+  updateDepartment(id: string, dep: { labelFr: string; labelEn: string }): Observable<Label> {
+    return this.http.put<Label>(`/api/departments/${id}`, dep);
+  }
+
   deleteDepartment(id: string): Observable<void> {
     return this.http.delete<void>(`/api/departments/${id}`);
   }
@@ -102,6 +122,10 @@ export class AdminService {
 
   createJobTitle(title: { labelFr: string; labelEn: string }): Observable<Label> {
     return this.http.post<Label>('/api/job-titles', title);
+  }
+
+  updateJobTitle(id: string, title: { labelFr: string; labelEn: string }): Observable<Label> {
+    return this.http.put<Label>(`/api/job-titles/${id}`, title);
   }
 
   deleteJobTitle(id: string): Observable<void> {

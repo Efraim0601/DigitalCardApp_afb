@@ -1,6 +1,24 @@
 {
   "common": {
-    "close": "Fermer"
+    "close": "Fermer",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "loading": "Chargement…",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "shortPrev": "← Préc.",
+    "shortNext": "Suiv. →",
+    "search": "Rechercher…",
+    "required": "*",
+    "resultsCount": "{{count}} résultat(s)",
+    "pageOf": "{{current}} / {{total}}",
+    "logout": "Déconnexion",
+    "themeTitle": "Thème",
+    "pdfPrintTitle": "PDF/Impression",
+    "backToPortal": "Retour au portail",
+    "languageToggleTitle": "Changer la langue"
   },
   "nav": {
     "card": "Carte",
@@ -82,6 +100,148 @@
     "errors": {
       "missingEmail": "Veuillez fournir un email (paramètre ?email=...).",
       "notFound": "Carte introuvable pour cet email."
+    }
+  },
+  "admin": {
+    "shell": {
+      "title": "Gestion des cartes de visite",
+      "transferBanner": "Export : archive ZIP avec trois fichiers CSV. Import : .xlsx, .zip (departments.csv, job_titles.csv, cards.csv) ou un seul .csv selon le type. Réimport : fusion par identifiants (libellés et cartes par email).",
+      "exportBtn": "Exporter (CSV en ZIP)",
+      "importBtn": "Importer (Excel / CSV / ZIP)"
+    },
+    "tabs": {
+      "cards": "Cartes",
+      "departments": "Directions / Départements",
+      "jobTitles": "Titres / Postes",
+      "account": "Compte admin",
+      "shareStats": "Statistiques de partage",
+      "smtp": "SMTP"
+    },
+    "cards": {
+      "create": "Créer une carte",
+      "deleteSelected": "Supprimer ({{count}})",
+      "selectAllPage": "Tout sélectionner (page)",
+      "searchPlaceholder": "Rechercher (email, prénom…)",
+      "formTitleCreate": "Créer une carte",
+      "formTitleEdit": "Modifier une carte",
+      "formHint": "Les RH peuvent créer ou mettre à jour les cartes. L'employé y accède via son email uniquement.",
+      "sections": {
+        "identity": "Identité",
+        "organization": "Organisation",
+        "contact": "Coordonnées"
+      },
+      "fields": {
+        "email": "Email",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "department": "Département",
+        "jobTitle": "Titre / Poste",
+        "phone": "Téléphone",
+        "fax": "Fax",
+        "mobile": "Mobile"
+      },
+      "selectDepartment": "-- Sélectionner une direction / département --",
+      "selectJobTitle": "-- Sélectionner un titre / poste --",
+      "departmentHint": "Les directions créées dans l'onglet dédié apparaissent ici après rafraîchissement.",
+      "jobTitleHint": "Les titres / postes créés dans l'onglet dédié apparaissent ici après rafraîchissement.",
+      "table": {
+        "email": "Email",
+        "name": "Nom",
+        "department": "Département",
+        "title": "Titre",
+        "actions": "Actions"
+      },
+      "confirmBulkDelete": "Supprimer {{count}} carte(s) ?",
+      "confirmDeleteOne": "Supprimer cette carte ?",
+      "errors": {
+        "loadError": "Impossible de charger les cartes.",
+        "saveError": "Impossible d'enregistrer.",
+        "deleteError": "Impossible de supprimer."
+      }
+    },
+    "label": {
+      "labelFr": "Libellé (français)",
+      "labelEn": "Libellé (anglais)"
+    },
+    "departments": {
+      "addBtn": "Ajouter une direction",
+      "formTitle": "Ajouter une direction",
+      "editTitle": "Modifier la direction",
+      "empty": "Aucune direction enregistrée.",
+      "loadError": "Impossible de charger les directions.",
+      "saveError": "Impossible d'enregistrer.",
+      "deleteError": "Impossible de supprimer.",
+      "deleteConfirm": "Supprimer cette direction ?"
+    },
+    "jobTitles": {
+      "addBtn": "Ajouter un titre",
+      "formTitle": "Ajouter un titre / poste",
+      "editTitle": "Modifier le titre / poste",
+      "empty": "Aucun titre / poste enregistré.",
+      "loadError": "Impossible de charger les titres.",
+      "saveError": "Impossible d'enregistrer.",
+      "deleteError": "Impossible de supprimer.",
+      "deleteConfirm": "Supprimer ce titre ?"
+    },
+    "account": {
+      "title": "Identifiants de connexion administrateur",
+      "description": "Après enregistrement, les identifiants sont stockés en base et remplacent les variables d'environnement pour la connexion.",
+      "source": "Source : configuration (variables d'environnement)",
+      "currentPassword": "Mot de passe actuel",
+      "newEmail": "Nouvel email (optionnel)",
+      "newPassword": "Nouveau mot de passe (optionnel)",
+      "submit": "Mettre à jour les identifiants",
+      "success": "Identifiants mis à jour avec succès.",
+      "errors": {
+        "currentPasswordRequired": "Le mot de passe actuel est requis.",
+        "noChanges": "Aucune modification à enregistrer.",
+        "saveError": "Impossible d'enregistrer."
+      }
+    },
+    "smtp": {
+      "title": "Configuration SMTP et notifications employé",
+      "description": "Lorsqu'activé, un email est envoyé automatiquement à l'employé après création ou mise à jour de sa carte.",
+      "saved": "Configuration SMTP enregistrée.",
+      "testSent": "Email de test envoyé.",
+      "enableAuto": "Activer les notifications email automatiques",
+      "smtpAuth": "SMTP Auth",
+      "starttls": "STARTTLS",
+      "sslTls": "SSL/TLS",
+      "host": "Hôte SMTP",
+      "port": "Port",
+      "protocol": "Protocole",
+      "username": "Username SMTP",
+      "password": "Mot de passe SMTP",
+      "passwordPlaceholder": "Laisser vide pour conserver",
+      "clearPassword": "Effacer le mot de passe stocké",
+      "fromEmail": "Email expéditeur",
+      "fromName": "Nom expéditeur",
+      "testSection": "Test d'envoi SMTP",
+      "testDescription": "Envoie un email de test avec la configuration courante.",
+      "testTo": "Email destinataire du test",
+      "sendTest": "Envoyer un test",
+      "errors": {
+        "loadError": "Impossible de charger la configuration SMTP.",
+        "invalidFields": "Veuillez corriger les champs invalides.",
+        "saveError": "Impossible d'enregistrer la configuration SMTP.",
+        "testToRequired": "Veuillez saisir l'email destinataire du test.",
+        "testSendError": "Impossible d'envoyer l'email de test."
+      }
+    },
+    "shareStats": {
+      "title": "Statistiques de partage",
+      "description": "Suivi du nombre de partages de cartes de visite par personne",
+      "total": "Total des partages:",
+      "searchPlaceholder": "Rechercher par nom, email ou titre...",
+      "columns": {
+        "name": "Nom",
+        "email": "Email",
+        "shareCount": "Nombre de partages"
+      },
+      "empty": "Aucune carte trouvée",
+      "errors": {
+        "loadError": "Erreur lors du chargement des cartes"
+      }
     }
   }
 }

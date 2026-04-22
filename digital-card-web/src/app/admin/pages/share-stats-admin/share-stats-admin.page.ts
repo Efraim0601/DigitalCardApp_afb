@@ -50,7 +50,7 @@ export class ShareStatsAdminPageComponent implements OnInit {
       }
     } catch (err) {
       console.error('Failed to load cards:', err);
-      this.error.set('Erreur lors du chargement des cartes');
+      this.error.set('admin.shareStats.errors.loadError');
       this.cards.set([]);
     } finally {
       this.isLoading.set(false);

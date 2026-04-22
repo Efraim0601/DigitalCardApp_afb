@@ -39,7 +39,7 @@ describe('ShareStatsAdminPageComponent', () => {
   it('handles error', fakeAsync(() => {
     const fixture = create(throwError(() => new Error('x')));
     tick();
-    expect(fixture.componentInstance.error()).toContain('Erreur');
+    expect(fixture.componentInstance.error()).toBe('admin.shareStats.errors.loadError');
   }));
 
   it('filters and sorts', fakeAsync(() => {

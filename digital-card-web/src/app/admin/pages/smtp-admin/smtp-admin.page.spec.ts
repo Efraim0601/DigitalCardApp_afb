@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { AdminService } from '../../../shared/services/admin.service';
 import { SmtpAdminPageComponent } from './smtp-admin.page';
@@ -19,7 +20,7 @@ describe('SmtpAdminPageComponent', () => {
       sendSmtpTestEmail: jasmine.createSpy().and.returnValue(of({ success: true }))
     };
     TestBed.configureTestingModule({
-      imports: [SmtpAdminPageComponent],
+      imports: [SmtpAdminPageComponent, TranslateModule.forRoot()],
       providers: [{ provide: AdminService, useValue: admin }]
     });
     fixture = TestBed.createComponent(SmtpAdminPageComponent);

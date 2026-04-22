@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { AdminService } from '../../../shared/services/admin.service';
 import { JobTitlesAdminPageComponent } from './job-titles-admin.page';
@@ -12,10 +13,11 @@ describe('JobTitlesAdminPageComponent', () => {
     admin = {
       listJobTitles: jasmine.createSpy().and.returnValue(of({ items: [{ id: 'j1', labelFr: 'F', labelEn: 'E' }], total: 1, limit: 20, offset: 0 })),
       createJobTitle: jasmine.createSpy().and.returnValue(of({ id: 'j2', labelFr: 'A', labelEn: 'B' })),
+      updateJobTitle: jasmine.createSpy().and.returnValue(of({ id: 'j1', labelFr: 'FUp', labelEn: 'EUp' })),
       deleteJobTitle: jasmine.createSpy().and.returnValue(of(null))
     };
     TestBed.configureTestingModule({
-      imports: [JobTitlesAdminPageComponent],
+      imports: [JobTitlesAdminPageComponent, TranslateModule.forRoot()],
       providers: [{ provide: AdminService, useValue: admin }]
     });
     fixture = TestBed.createComponent(JobTitlesAdminPageComponent);
@@ -99,5 +101,18 @@ describe('JobTitlesAdminPageComponent', () => {
     component.load();
     tick();
     expect(component.error()).toBeTruthy();
+  }));
+
+  it('startEdit populates form and save calls updateJobTitle', fakeAsync(() => {
+    component.startEdit({ id: 'j1', labelFr: 'F', labelEn: 'E' });
+    expect(component.isEditing()).toBeTrue();
+    expect(component.currentTitleKey()).toBe('admin.jobTitles.editTitle');
+
+    component.form.controls.labelFr.setValue('New');
+    component.form.controls.labelEn.setValue('NewEn');
+    component.save();
+    tick();
+    expect(admin.updateJobTitle).toHaveBeenCalledWith('j1', { labelFr: 'New', labelEn: 'NewEn' });
+    expect(admin.createJobTitle).not.toHaveBeenCalled();
   }));
 });

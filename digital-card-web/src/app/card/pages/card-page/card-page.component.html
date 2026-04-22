@@ -22,7 +22,7 @@
           <button
             type="button"
             class="flex h-9 w-9 items-center justify-center rounded-lg border border-[#f5c6c6] bg-[#fff5f5] text-[#d32f2f] transition hover:bg-[#fce8e8]"
-            title="Retour au portail"
+            [title]="'common.backToPortal' | translate"
             (click)="backToLogin()"
           >
             <svg viewBox="0 0 20 20" fill="none" class="h-4 w-4">
@@ -33,6 +33,7 @@
             <button
               type="button"
               class="h-9 rounded-lg border border-[#f5c6c6] bg-[#fff5f5] px-3 text-[13px] font-bold text-[#d32f2f] transition hover:bg-[#fce8e8]"
+              [title]="'common.languageToggleTitle' | translate"
               (click)="lang.toggle()"
             >
               {{ lang.lang() === 'fr' ? 'EN' : 'FR' }}
@@ -40,7 +41,7 @@
             <button
               type="button"
               class="flex h-9 w-9 items-center justify-center rounded-lg border border-[#f5c6c6] bg-[#fff5f5] text-[#d32f2f] transition hover:bg-[#fce8e8]"
-              title="Thème"
+              [title]="'common.themeTitle' | translate"
             >
               <svg viewBox="0 0 20 20" fill="none" class="h-[18px] w-[18px]">
                 <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.5" />

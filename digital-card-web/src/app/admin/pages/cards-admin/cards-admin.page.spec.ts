@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { AdminService } from '../../../shared/services/admin.service';
 import { CardsAdminPageComponent } from './cards-admin.page';
@@ -14,11 +15,12 @@ describe('CardsAdminPageComponent', () => {
       listJobTitles: jasmine.createSpy().and.returnValue(of({ items: [{ id: 'j1', labelFr: 'Fr', labelEn: 'En' }], total: 1, limit: 200, offset: 0 })),
       listCards: jasmine.createSpy().and.returnValue(of({ items: [{ id: 'c1', email: 'a@b.com' }], total: 1, limit: 20, offset: 0 })),
       createOrUpsertCard: jasmine.createSpy().and.returnValue(of({ id: 'c1', email: 'a@b.com' })),
+      updateCard: jasmine.createSpy().and.returnValue(of({ id: 'c1', email: 'a@b.com' })),
       bulkDeleteCards: jasmine.createSpy().and.returnValue(of({ success: true, deleted: 1 })),
       ...overrides
     };
     TestBed.configureTestingModule({
-      imports: [CardsAdminPageComponent],
+      imports: [CardsAdminPageComponent, TranslateModule.forRoot()],
       providers: [{ provide: AdminService, useValue: admin }]
     });
     fixture = TestBed.createComponent(CardsAdminPageComponent);
@@ -65,7 +67,7 @@ describe('CardsAdminPageComponent', () => {
   it('startCreate resets form', () => {
     component.startCreate();
     expect(component.isEditing()).toBeFalse();
-    expect(component.formTitle()).toContain('Créer');
+    expect(component.formTitle()).toBe('admin.cards.formTitleCreate');
   });
 
   it('startEdit populates form', () => {
@@ -92,6 +94,18 @@ describe('CardsAdminPageComponent', () => {
     component.form.controls.jobTitleId.setValue('j1');
     component.save();
     expect(admin.createOrUpsertCard).toHaveBeenCalled();
+    expect(admin.updateCard).not.toHaveBeenCalled();
+  });
+
+  it('save while editing calls updateCard (PUT) and not createOrUpsertCard', () => {
+    component.startEdit({ id: 'c1', email: 'a@b.com', firstName: 'A', lastName: 'B',
+      department: { id: 'd1', labelFr: 'F', labelEn: 'E' },
+      jobTitle: { id: 'j1', labelFr: 'Fr', labelEn: 'En' }, mobile: '1' } as any);
+    component.form.controls.firstName.setValue('Updated');
+    component.save();
+    expect(admin.updateCard).toHaveBeenCalled();
+    expect(admin.updateCard.calls.mostRecent().args[0]).toBe('c1');
+    expect(admin.createOrUpsertCard).not.toHaveBeenCalled();
   });
 
   it('save error sets error', fakeAsync(() => {

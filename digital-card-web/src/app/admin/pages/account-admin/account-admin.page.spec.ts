@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { AuthService } from '../../../shared/services/auth.service';
 import { AccountAdminPageComponent } from './account-admin.page';
@@ -11,7 +12,7 @@ describe('AccountAdminPageComponent', () => {
   beforeEach(async () => {
     auth = { updateAdminCredentials: jasmine.createSpy().and.returnValue(of(null)) };
     await TestBed.configureTestingModule({
-      imports: [AccountAdminPageComponent],
+      imports: [AccountAdminPageComponent, TranslateModule.forRoot()],
       providers: [{ provide: AuthService, useValue: auth }]
     }).compileComponents();
     fixture = TestBed.createComponent(AccountAdminPageComponent);
@@ -20,13 +21,13 @@ describe('AccountAdminPageComponent', () => {
 
   it('submit with invalid form sets error', () => {
     component.submit();
-    expect(component.error()).toContain('requis');
+    expect(component.error()).toBe('admin.account.errors.currentPasswordRequired');
   });
 
   it('submit with no changes errors', () => {
     component.form.controls.currentPassword.setValue('cur');
     component.submit();
-    expect(component.error()).toContain('Aucune');
+    expect(component.error()).toBe('admin.account.errors.noChanges');
   });
 
   it('submit success', fakeAsync(() => {

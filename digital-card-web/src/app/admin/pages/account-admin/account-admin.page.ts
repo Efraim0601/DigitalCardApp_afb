@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { catchError, finalize, of } from 'rxjs';
 import { AuthService } from '../../../shared/services/auth.service';
 
@@ -13,18 +14,18 @@ type AccountForm = {
 @Component({
   selector: 'app-account-admin-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   template: `
     <div class="max-w-[520px] rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 class="text-[17px] font-semibold text-slate-900">Identifiants de connexion administrateur</h2>
+      <h2 class="text-[17px] font-semibold text-slate-900">{{ 'admin.account.title' | translate }}</h2>
       <p class="mt-2 text-sm leading-[1.55] text-slate-500">
-        Après enregistrement, les identifiants sont stockés en base et remplacent les variables d'environnement pour la connexion.
+        {{ 'admin.account.description' | translate }}
       </p>
-      <p class="mt-1 text-xs text-slate-500">Source : configuration (variables d'environnement)</p>
+      <p class="mt-1 text-xs text-slate-500">{{ 'admin.account.source' | translate }}</p>
 
       <form class="mt-5" [formGroup]="form" (ngSubmit)="submit()">
         <div class="mb-4">
-          <label class="mb-1 block text-xs font-semibold text-slate-700">Mot de passe actuel</label>
+          <label class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.account.currentPassword' | translate }}</label>
           <input
             class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500"
             type="password"
@@ -34,7 +35,7 @@ type AccountForm = {
         </div>
 
         <div class="mb-4">
-          <label class="mb-1 block text-xs font-semibold text-slate-700">Nouvel email (optionnel)</label>
+          <label class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.account.newEmail' | translate }}</label>
           <input
             class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500"
             type="email"
@@ -44,7 +45,7 @@ type AccountForm = {
         </div>
 
         <div class="mb-3">
-          <label class="mb-1 block text-xs font-semibold text-slate-700">Nouveau mot de passe (optionnel)</label>
+          <label class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.account.newPassword' | translate }}</label>
           <input
             class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500"
             type="password"
@@ -54,10 +55,10 @@ type AccountForm = {
         </div>
 
         @if (error()) {
-          <p class="-mt-1 mb-3 text-sm text-[#d32f2f]">{{ error() }}</p>
+          <p class="-mt-1 mb-3 text-sm text-[#d32f2f]">{{ error()! | translate }}</p>
         }
         @if (success()) {
-          <p class="-mt-1 mb-3 text-sm text-green-700">Identifiants mis à jour avec succès.</p>
+          <p class="-mt-1 mb-3 text-sm text-green-700">{{ 'admin.account.success' | translate }}</p>
         }
 
         <button
@@ -65,7 +66,7 @@ type AccountForm = {
           type="submit"
           [disabled]="isSaving()"
         >
-          Mettre à jour les identifiants
+          {{ 'admin.account.submit' | translate }}
         </button>
       </form>
     </div>
@@ -90,7 +91,7 @@ export class AccountAdminPageComponent {
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.error.set('Le mot de passe actuel est requis.');
+      this.error.set('admin.account.errors.currentPasswordRequired');
       return;
     }
 
@@ -98,7 +99,7 @@ export class AccountAdminPageComponent {
     const newPassword = this.form.controls.newPassword.value;
 
     if (!newEmail && !newPassword) {
-      this.error.set('Aucune modification à enregistrer.');
+      this.error.set('admin.account.errors.noChanges');
       return;
     }
 
@@ -111,7 +112,7 @@ export class AccountAdminPageComponent {
       })
       .pipe(
         catchError(() => {
-          this.error.set("Impossible d'enregistrer.");
+          this.error.set('admin.account.errors.saveError');
           return of(null);
         }),
         finalize(() => this.isSaving.set(false))
@@ -119,4 +120,3 @@ export class AccountAdminPageComponent {
       .subscribe(() => this.success.set(true));
   }
 }
-

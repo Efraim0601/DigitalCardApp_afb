@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { AdminService } from '../../../shared/services/admin.service';
 import { DepartmentsAdminPageComponent } from './departments-admin.page';
@@ -12,10 +13,11 @@ describe('DepartmentsAdminPageComponent', () => {
     admin = {
       listDepartments: jasmine.createSpy().and.returnValue(of({ items: [{ id: 'd1', labelFr: 'Fr', labelEn: 'En' }], total: 25, limit: 20, offset: 0 })),
       createDepartment: jasmine.createSpy().and.returnValue(of({ id: 'd2', labelFr: 'F', labelEn: 'E' })),
+      updateDepartment: jasmine.createSpy().and.returnValue(of({ id: 'd1', labelFr: 'FUp', labelEn: 'EUp' })),
       deleteDepartment: jasmine.createSpy().and.returnValue(of(null))
     };
     TestBed.configureTestingModule({
-      imports: [DepartmentsAdminPageComponent],
+      imports: [DepartmentsAdminPageComponent, TranslateModule.forRoot()],
       providers: [{ provide: AdminService, useValue: admin }]
     });
     fixture = TestBed.createComponent(DepartmentsAdminPageComponent);
@@ -106,4 +108,30 @@ describe('DepartmentsAdminPageComponent', () => {
     tick();
     expect(component.error()).toBeTruthy();
   }));
+
+  it('startEdit populates form and marks edit mode', () => {
+    component.startEdit({ id: 'd1', labelFr: 'Fr', labelEn: 'En' });
+    expect(component.isEditing()).toBeTrue();
+    expect(component.editingId()).toBe('d1');
+    expect(component.form.controls.labelFr.value).toBe('Fr');
+    expect(component.currentTitleKey()).toBe('admin.departments.editTitle');
+  });
+
+  it('save while editing calls updateDepartment', fakeAsync(() => {
+    component.startEdit({ id: 'd1', labelFr: 'Fr', labelEn: 'En' });
+    component.form.controls.labelFr.setValue('New');
+    component.form.controls.labelEn.setValue('NewEn');
+    component.save();
+    tick();
+    expect(admin.updateDepartment).toHaveBeenCalledWith('d1', { labelFr: 'New', labelEn: 'NewEn' });
+    expect(admin.createDepartment).not.toHaveBeenCalled();
+    expect(component.isEditing()).toBeFalse();
+  }));
+
+  it('cancelForm clears edit mode', () => {
+    component.startEdit({ id: 'd1', labelFr: 'Fr', labelEn: 'En' });
+    component.cancelForm();
+    expect(component.isEditing()).toBeFalse();
+    expect(component.editingId()).toBeNull();
+  });
 });

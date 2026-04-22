@@ -8,6 +8,7 @@ import { firstValueFrom } from 'rxjs';
 
 import { routes } from './app.routes';
 import { withCredentialsInterceptor } from './shared/interceptors/with-credentials.interceptor';
+import { LanguageService } from './shared/services/language.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -30,7 +31,8 @@ export const appConfig: ApplicationConfig = {
       multi: true,
       useFactory: () => {
         const translate = inject(TranslateService);
-        return () => firstValueFrom(translate.use('fr'));
+        const language = inject(LanguageService);
+        return () => firstValueFrom(translate.use(language.lang()));
       }
     },
     ...provideTranslateHttpLoader({

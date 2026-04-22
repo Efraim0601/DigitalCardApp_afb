@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { catchError, finalize, forkJoin, of, tap } from 'rxjs';
 import { Card } from '../../../shared/models/card.model';
 import { AdminService, Label } from '../../../shared/services/admin.service';
+import { LanguageService } from '../../../shared/services/language.service';
 
 type CardForm = {
   email: FormControl<string>;
@@ -17,7 +19,7 @@ type CardForm = {
 @Component({
   selector: 'app-cards-admin-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './cards-admin.page.html'
 })
 export class CardsAdminPageComponent {
@@ -38,14 +40,11 @@ export class CardsAdminPageComponent {
 
   readonly selectedCount = computed(() => Object.values(this.selected()).filter(Boolean).length);
 
-  readonly pageLabel = computed(() => {
-    return `${this.page()} / ${this.maxPage()}`;
-  });
-
-  readonly resultCountLabel = computed(() => `${this.total()} résultat(s)`);
-
   readonly isEditing = signal(false);
-  readonly formTitle = computed(() => (this.isEditing() ? 'Modifier une carte' : 'Créer une carte'));
+  readonly editingId = signal<string | null>(null);
+  readonly formTitle = computed(() =>
+    this.isEditing() ? 'admin.cards.formTitleEdit' : 'admin.cards.formTitleCreate'
+  );
 
   readonly form = new FormGroup<CardForm>({
     email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
@@ -56,9 +55,27 @@ export class CardsAdminPageComponent {
     mobile: new FormControl('', { nonNullable: true })
   });
 
-  constructor(private readonly admin: AdminService) {
+  constructor(
+    private readonly admin: AdminService,
+    private readonly translate: TranslateService,
+    private readonly language: LanguageService
+  ) {
     this.loadReferenceData();
     this.load();
+  }
+
+  departmentLabel(dep: { labelFr?: string | null; labelEn?: string | null } | null | undefined): string {
+    if (!dep) return '';
+    return this.language.lang() === 'en'
+      ? dep.labelEn || dep.labelFr || ''
+      : dep.labelFr || dep.labelEn || '';
+  }
+
+  jobTitleLabel(job: { labelFr?: string | null; labelEn?: string | null } | null | undefined): string {
+    if (!job) return '';
+    return this.language.lang() === 'en'
+      ? job.labelEn || job.labelFr || ''
+      : job.labelFr || job.labelEn || '';
   }
 
   loadReferenceData() {
@@ -96,7 +113,7 @@ export class CardsAdminPageComponent {
           this.selected.set({});
         }),
         catchError(() => {
-          this.error.set('Impossible de charger les cartes.');
+          this.error.set('admin.cards.errors.loadError');
           this.cards.set([]);
           this.total.set(0);
           this.selected.set({});
@@ -140,6 +157,7 @@ export class CardsAdminPageComponent {
 
   startCreate() {
     this.isEditing.set(false);
+    this.editingId.set(null);
     this.loadReferenceData();
     this.form.reset({
       email: '',
@@ -153,6 +171,7 @@ export class CardsAdminPageComponent {
 
   startEdit(card: Card) {
     this.isEditing.set(true);
+    this.editingId.set(card.id ?? null);
     this.loadReferenceData();
     this.form.reset({
       email: card.email ?? '',
@@ -167,6 +186,7 @@ export class CardsAdminPageComponent {
 
   cancelEdit() {
     this.isEditing.set(false);
+    this.editingId.set(null);
     this.form.reset({
       email: '',
       firstName: '',
@@ -189,20 +209,23 @@ export class CardsAdminPageComponent {
       firstName: this.form.controls.firstName.value.trim() || null,
       lastName: this.form.controls.lastName.value.trim() || null,
       title: this.labelForJobTitle(this.form.controls.jobTitleId.value) || null,
-      mobile: this.form.controls.mobile.value.trim() || null
-      ,
+      mobile: this.form.controls.mobile.value.trim() || null,
       departmentId: this.form.controls.departmentId.value || null,
       jobTitleId: this.form.controls.jobTitleId.value || null
     };
 
+    const editingId = this.editingId();
+    const request$ = editingId
+      ? this.admin.updateCard(editingId, payload)
+      : this.admin.createOrUpsertCard(payload);
+
     this.isLoading.set(true);
-    this.admin
-      .createOrUpsertCard(payload)
+    request$
       .pipe(
         tap(() => this.cancelEdit()),
         tap(() => this.load()),
         catchError(() => {
-          this.error.set("Impossible d'enregistrer.");
+          this.error.set('admin.cards.errors.saveError');
           return of(null);
         }),
         finalize(() => this.isLoading.set(false))
@@ -221,7 +244,7 @@ export class CardsAdminPageComponent {
       .filter(([, v]) => v)
       .map(([k]) => k);
     if (!ids.length) return;
-    if (!confirm(`Supprimer ${ids.length} carte(s) ?`)) return;
+    if (!confirm(this.translate.instant('admin.cards.confirmBulkDelete', { count: ids.length }))) return;
 
     this.isLoading.set(true);
     this.admin
@@ -229,7 +252,7 @@ export class CardsAdminPageComponent {
       .pipe(
         tap(() => this.load()),
         catchError(() => {
-          this.error.set('Impossible de supprimer.');
+          this.error.set('admin.cards.errors.deleteError');
           return of(null);
         }),
         finalize(() => this.isLoading.set(false))
@@ -238,14 +261,14 @@ export class CardsAdminPageComponent {
   }
 
   deleteOne(id: string) {
-    if (!confirm('Supprimer cette carte ?')) return;
+    if (!confirm(this.translate.instant('admin.cards.confirmDeleteOne'))) return;
     this.isLoading.set(true);
     this.admin
       .bulkDeleteCards([id])
       .pipe(
         tap(() => this.load()),
         catchError(() => {
-          this.error.set('Impossible de supprimer.');
+          this.error.set('admin.cards.errors.deleteError');
           return of(null);
         }),
         finalize(() => this.isLoading.set(false))
@@ -253,4 +276,3 @@ export class CardsAdminPageComponent {
       .subscribe();
   }
 }
-

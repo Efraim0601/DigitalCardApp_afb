@@ -1,6 +1,24 @@
 {
   "common": {
-    "close": "Close"
+    "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading…",
+    "previous": "Previous",
+    "next": "Next",
+    "shortPrev": "← Prev",
+    "shortNext": "Next →",
+    "search": "Search…",
+    "required": "*",
+    "resultsCount": "{{count}} result(s)",
+    "pageOf": "{{current}} / {{total}}",
+    "logout": "Log out",
+    "themeTitle": "Theme",
+    "pdfPrintTitle": "PDF/Print",
+    "backToPortal": "Back to portal",
+    "languageToggleTitle": "Change language"
   },
   "nav": {
     "card": "Card",
@@ -82,6 +100,148 @@
     "errors": {
       "missingEmail": "Please provide an email (?email=...).",
       "notFound": "Card not found for this email."
+    }
+  },
+  "admin": {
+    "shell": {
+      "title": "Business cards management",
+      "transferBanner": "Export: ZIP archive with three CSV files. Import: .xlsx, .zip (departments.csv, job_titles.csv, cards.csv) or a single .csv depending on the type. Re-import: merge by identifiers (labels and cards by email).",
+      "exportBtn": "Export (CSV in ZIP)",
+      "importBtn": "Import (Excel / CSV / ZIP)"
+    },
+    "tabs": {
+      "cards": "Cards",
+      "departments": "Directorates / Departments",
+      "jobTitles": "Titles / Positions",
+      "account": "Admin account",
+      "shareStats": "Sharing statistics",
+      "smtp": "SMTP"
+    },
+    "cards": {
+      "create": "Create a card",
+      "deleteSelected": "Delete ({{count}})",
+      "selectAllPage": "Select all (page)",
+      "searchPlaceholder": "Search (email, first name…)",
+      "formTitleCreate": "Create a card",
+      "formTitleEdit": "Edit a card",
+      "formHint": "HR can create or update cards. The employee accesses it via their email only.",
+      "sections": {
+        "identity": "Identity",
+        "organization": "Organization",
+        "contact": "Contact details"
+      },
+      "fields": {
+        "email": "Email",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "department": "Department",
+        "jobTitle": "Title / Position",
+        "phone": "Phone",
+        "fax": "Fax",
+        "mobile": "Mobile"
+      },
+      "selectDepartment": "-- Select a directorate / department --",
+      "selectJobTitle": "-- Select a title / position --",
+      "departmentHint": "Directorates created in the dedicated tab appear here after refresh.",
+      "jobTitleHint": "Titles / positions created in the dedicated tab appear here after refresh.",
+      "table": {
+        "email": "Email",
+        "name": "Name",
+        "department": "Department",
+        "title": "Title",
+        "actions": "Actions"
+      },
+      "confirmBulkDelete": "Delete {{count}} card(s)?",
+      "confirmDeleteOne": "Delete this card?",
+      "errors": {
+        "loadError": "Unable to load cards.",
+        "saveError": "Unable to save.",
+        "deleteError": "Unable to delete."
+      }
+    },
+    "label": {
+      "labelFr": "Label (French)",
+      "labelEn": "Label (English)"
+    },
+    "departments": {
+      "addBtn": "Add a directorate",
+      "formTitle": "Add a directorate",
+      "editTitle": "Edit directorate",
+      "empty": "No directorate registered.",
+      "loadError": "Unable to load directorates.",
+      "saveError": "Unable to save.",
+      "deleteError": "Unable to delete.",
+      "deleteConfirm": "Delete this directorate?"
+    },
+    "jobTitles": {
+      "addBtn": "Add a title",
+      "formTitle": "Add a title / position",
+      "editTitle": "Edit title / position",
+      "empty": "No title / position registered.",
+      "loadError": "Unable to load titles.",
+      "saveError": "Unable to save.",
+      "deleteError": "Unable to delete.",
+      "deleteConfirm": "Delete this title?"
+    },
+    "account": {
+      "title": "Administrator login credentials",
+      "description": "After saving, credentials are stored in the database and replace environment variables for login.",
+      "source": "Source: configuration (environment variables)",
+      "currentPassword": "Current password",
+      "newEmail": "New email (optional)",
+      "newPassword": "New password (optional)",
+      "submit": "Update credentials",
+      "success": "Credentials updated successfully.",
+      "errors": {
+        "currentPasswordRequired": "Current password is required.",
+        "noChanges": "No changes to save.",
+        "saveError": "Unable to save."
+      }
+    },
+    "smtp": {
+      "title": "SMTP configuration and employee notifications",
+      "description": "When enabled, an email is automatically sent to the employee after creating or updating their card.",
+      "saved": "SMTP configuration saved.",
+      "testSent": "Test email sent.",
+      "enableAuto": "Enable automatic email notifications",
+      "smtpAuth": "SMTP Auth",
+      "starttls": "STARTTLS",
+      "sslTls": "SSL/TLS",
+      "host": "SMTP host",
+      "port": "Port",
+      "protocol": "Protocol",
+      "username": "SMTP username",
+      "password": "SMTP password",
+      "passwordPlaceholder": "Leave empty to keep",
+      "clearPassword": "Clear stored password",
+      "fromEmail": "From email",
+      "fromName": "From name",
+      "testSection": "SMTP send test",
+      "testDescription": "Sends a test email with the current configuration.",
+      "testTo": "Test recipient email",
+      "sendTest": "Send a test",
+      "errors": {
+        "loadError": "Unable to load SMTP configuration.",
+        "invalidFields": "Please correct the invalid fields.",
+        "saveError": "Unable to save SMTP configuration.",
+        "testToRequired": "Please enter the test recipient email.",
+        "testSendError": "Unable to send the test email."
+      }
+    },
+    "shareStats": {
+      "title": "Sharing statistics",
+      "description": "Tracking the number of business card shares per person",
+      "total": "Total shares:",
+      "searchPlaceholder": "Search by name, email or title...",
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "shareCount": "Share count"
+      },
+      "empty": "No card found",
+      "errors": {
+        "loadError": "Error while loading cards"
+      }
     }
   }
 }

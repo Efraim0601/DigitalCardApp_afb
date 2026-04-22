@@ -1,13 +1,13 @@
 <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
   <div>
-    <h2 class="text-xl font-semibold text-slate-900">Statistiques de partage</h2>
+    <h2 class="text-xl font-semibold text-slate-900">{{ 'admin.shareStats.title' | translate }}</h2>
     <p class="text-sm text-slate-600">
-      Suivi du nombre de partages de cartes de visite par personne
+      {{ 'admin.shareStats.description' | translate }}
     </p>
   </div>
   <div class="flex items-center gap-4">
     <div class="text-sm text-slate-600">
-      Total des partages: <span class="font-semibold text-slate-900">{{ getTotalShares() }}</span>
+      {{ 'admin.shareStats.total' | translate }} <span class="font-semibold text-slate-900">{{ getTotalShares() }}</span>
     </div>
   </div>
 </div>
@@ -24,7 +24,7 @@
       type="text"
       [value]="searchQuery()"
       (input)="onSearchChange($any($event.target).value)"
-      placeholder="Rechercher par nom, email ou titre..."
+      [placeholder]="'admin.shareStats.searchPlaceholder' | translate"
       class="block w-full rounded-lg border border-slate-300 bg-white py-2 pl-10 pr-3 text-sm placeholder-slate-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
     />
   </div>
@@ -42,7 +42,7 @@
             (click)="toggleSort('firstName')"
           >
             <div class="flex items-center gap-1">
-              Nom
+              {{ 'admin.shareStats.columns.name' | translate }}
               <svg
                 *ngIf="sortBy() === 'firstName'"
                 class="h-4 w-4"
@@ -60,7 +60,7 @@
             (click)="toggleSort('email')"
           >
             <div class="flex items-center gap-1">
-              Email
+              {{ 'admin.shareStats.columns.email' | translate }}
               <svg
                 *ngIf="sortBy() === 'email'"
                 class="h-4 w-4"
@@ -78,7 +78,7 @@
             (click)="toggleSort('shareCount')"
           >
             <div class="flex items-center gap-1">
-              Nombre de partages
+              {{ 'admin.shareStats.columns.shareCount' | translate }}
               <svg
                 *ngIf="sortBy() === 'shareCount'"
                 class="h-4 w-4"
@@ -100,13 +100,13 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              Chargement...
+              {{ 'common.loading' | translate }}
             </div>
           </td>
         </tr>
         <tr *ngIf="!isLoading() && filteredCards().length === 0" class="hover:bg-slate-50">
           <td colspan="3" class="px-6 py-4 text-center text-sm text-slate-500">
-            Aucune carte trouvée
+            {{ 'admin.shareStats.empty' | translate }}
           </td>
         </tr>
         <tr *ngFor="let card of filteredCards()" class="hover:bg-slate-50">
@@ -136,7 +136,7 @@
       </svg>
     </div>
     <div class="ml-3">
-      <p class="text-sm text-red-800">{{ error() }}</p>
+      <p class="text-sm text-red-800">{{ error()! | translate }}</p>
     </div>
   </div>
 </div>

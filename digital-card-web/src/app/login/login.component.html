@@ -1,5 +1,15 @@
 <div class="flex min-h-[calc(100vh-3rem)] items-center justify-center px-4 py-10">
   <div class="w-full max-w-[440px]">
+    <div class="mb-3 flex justify-end">
+      <button
+        type="button"
+        class="inline-flex h-9 items-center justify-center rounded-lg border border-[#f5c6c6] bg-[#fff5f5] px-3 text-[13px] font-bold text-[#d32f2f] transition hover:bg-[#fce8e8]"
+        [title]="'common.languageToggleTitle' | translate"
+        (click)="lang.toggle()"
+      >
+        {{ lang.lang() === 'fr' ? 'EN' : 'FR' }}
+      </button>
+    </div>
     <h1 class="text-center text-2xl font-bold tracking-[-0.5px] text-slate-900">
       {{ 'login.brand' | translate }}
     </h1>

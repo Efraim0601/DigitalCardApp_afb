@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { catchError, finalize, of } from 'rxjs';
 import { AdminService, SmtpSettingsUpdatePayload } from '../../../shared/services/admin.service';
 
@@ -23,78 +24,78 @@ type SmtpForm = {
 @Component({
   selector: 'app-smtp-admin-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   template: `
     <div class="space-y-5">
       <div class="max-w-[900px] rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 class="text-[17px] font-semibold text-slate-900">Configuration SMTP et notifications employé</h2>
+        <h2 class="text-[17px] font-semibold text-slate-900">{{ 'admin.smtp.title' | translate }}</h2>
         <p class="mt-2 text-sm leading-[1.55] text-slate-500">
-          Lorsqu'activé, un email est envoyé automatiquement à l'employé après création ou mise à jour de sa carte.
+          {{ 'admin.smtp.description' | translate }}
         </p>
 
         @if (error()) {
-          <p class="mt-3 text-sm text-[#d32f2f]">{{ error() }}</p>
+          <p class="mt-3 text-sm text-[#d32f2f]">{{ error()! | translate }}</p>
         }
         @if (success()) {
-          <p class="mt-3 text-sm text-green-700">Configuration SMTP enregistrée.</p>
+          <p class="mt-3 text-sm text-green-700">{{ 'admin.smtp.saved' | translate }}</p>
         }
         @if (testSuccess()) {
-          <p class="mt-2 text-sm text-green-700">Email de test envoyé.</p>
+          <p class="mt-2 text-sm text-green-700">{{ 'admin.smtp.testSent' | translate }}</p>
         }
 
         <form class="mt-5" [formGroup]="form" (ngSubmit)="save()">
           <div class="grid gap-3 sm:grid-cols-2">
             <label class="inline-flex items-center gap-2 text-sm text-slate-700">
               <input type="checkbox" formControlName="enabled" />
-              Activer les notifications email automatiques
+              {{ 'admin.smtp.enableAuto' | translate }}
             </label>
             <label class="inline-flex items-center gap-2 text-sm text-slate-700">
               <input type="checkbox" formControlName="auth" />
-              SMTP Auth
+              {{ 'admin.smtp.smtpAuth' | translate }}
             </label>
             <label class="inline-flex items-center gap-2 text-sm text-slate-700">
               <input type="checkbox" formControlName="starttlsEnabled" />
-              STARTTLS
+              {{ 'admin.smtp.starttls' | translate }}
             </label>
             <label class="inline-flex items-center gap-2 text-sm text-slate-700">
               <input type="checkbox" formControlName="sslEnabled" />
-              SSL/TLS
+              {{ 'admin.smtp.sslTls' | translate }}
             </label>
           </div>
 
           <div class="mt-4 grid gap-3 sm:grid-cols-2">
             <div>
-              <label class="mb-1 block text-xs font-semibold text-slate-700">Hôte SMTP</label>
+              <label class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.smtp.host' | translate }}</label>
               <input class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500" formControlName="host" placeholder="smtp.office365.com" />
             </div>
             <div>
-              <label class="mb-1 block text-xs font-semibold text-slate-700">Port</label>
+              <label class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.smtp.port' | translate }}</label>
               <input class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500" type="number" formControlName="port" />
             </div>
             <div>
-              <label class="mb-1 block text-xs font-semibold text-slate-700">Protocole</label>
+              <label class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.smtp.protocol' | translate }}</label>
               <input class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500" formControlName="protocol" placeholder="smtp" />
             </div>
             <div>
-              <label class="mb-1 block text-xs font-semibold text-slate-700">Username SMTP</label>
+              <label class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.smtp.username' | translate }}</label>
               <input class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500" formControlName="username" placeholder="no-reply@afriland..." />
             </div>
             <div>
-              <label class="mb-1 block text-xs font-semibold text-slate-700">Mot de passe SMTP</label>
-              <input class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500" type="password" formControlName="password" placeholder="Laisser vide pour conserver" />
+              <label class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.smtp.password' | translate }}</label>
+              <input class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500" type="password" formControlName="password" [placeholder]="'admin.smtp.passwordPlaceholder' | translate" />
             </div>
             <div class="pt-6">
               <label class="inline-flex items-center gap-2 text-sm text-slate-700">
                 <input type="checkbox" formControlName="clearPassword" />
-                Effacer le mot de passe stocké
+                {{ 'admin.smtp.clearPassword' | translate }}
               </label>
             </div>
             <div>
-              <label class="mb-1 block text-xs font-semibold text-slate-700">Email expéditeur</label>
+              <label class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.smtp.fromEmail' | translate }}</label>
               <input class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500" type="email" formControlName="fromEmail" placeholder="no-reply@afriland..." />
             </div>
             <div>
-              <label class="mb-1 block text-xs font-semibold text-slate-700">Nom expéditeur</label>
+              <label class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.smtp.fromName' | translate }}</label>
               <input class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500" formControlName="fromName" placeholder="Cardyo RH" />
             </div>
           </div>
@@ -105,19 +106,19 @@ type SmtpForm = {
               type="submit"
               [disabled]="isSaving() || isLoading()"
             >
-              Enregistrer
+              {{ 'common.save' | translate }}
             </button>
           </div>
         </form>
       </div>
 
       <div class="max-w-[900px] rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h3 class="text-[15px] font-semibold text-slate-900">Test d'envoi SMTP</h3>
-        <p class="mt-1 text-sm text-slate-500">Envoie un email de test avec la configuration courante.</p>
+        <h3 class="text-[15px] font-semibold text-slate-900">{{ 'admin.smtp.testSection' | translate }}</h3>
+        <p class="mt-1 text-sm text-slate-500">{{ 'admin.smtp.testDescription' | translate }}</p>
 
         <div class="mt-4 flex flex-wrap items-end gap-3">
           <div class="w-full sm:max-w-[420px]">
-            <label class="mb-1 block text-xs font-semibold text-slate-700">Email destinataire du test</label>
+            <label class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.smtp.testTo' | translate }}</label>
             <input
               class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500"
               type="email"
@@ -132,7 +133,7 @@ type SmtpForm = {
             [disabled]="isTesting() || isLoading()"
             (click)="sendTest()"
           >
-            Envoyer un test
+            {{ 'admin.smtp.sendTest' | translate }}
           </button>
         </div>
       </div>
@@ -175,7 +176,7 @@ export class SmtpAdminPageComponent {
       .getSmtpSettings()
       .pipe(
         catchError(() => {
-          this.error.set('Impossible de charger la configuration SMTP.');
+          this.error.set('admin.smtp.errors.loadError');
           return of(null);
         }),
         finalize(() => this.isLoading.set(false))
@@ -208,7 +209,7 @@ export class SmtpAdminPageComponent {
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.error.set('Veuillez corriger les champs invalides.');
+      this.error.set('admin.smtp.errors.invalidFields');
       return;
     }
 
@@ -236,7 +237,7 @@ export class SmtpAdminPageComponent {
       .updateSmtpSettings(payload)
       .pipe(
         catchError((err: { error?: { error?: string } }) => {
-          this.error.set(err?.error?.error ?? "Impossible d'enregistrer la configuration SMTP.");
+          this.error.set(err?.error?.error ?? 'admin.smtp.errors.saveError');
           return of(null);
         }),
         finalize(() => this.isSaving.set(false))
@@ -256,7 +257,7 @@ export class SmtpAdminPageComponent {
 
     const toEmail = this.form.controls.testToEmail.value.trim();
     if (!toEmail) {
-      this.error.set("Veuillez saisir l'email destinataire du test.");
+      this.error.set('admin.smtp.errors.testToRequired');
       return;
     }
 
@@ -265,7 +266,7 @@ export class SmtpAdminPageComponent {
       .sendSmtpTestEmail(toEmail)
       .pipe(
         catchError((err: { error?: { error?: string } }) => {
-          this.error.set(err?.error?.error ?? "Impossible d'envoyer l'email de test.");
+          this.error.set(err?.error?.error ?? 'admin.smtp.errors.testSendError');
           return of(null);
         }),
         finalize(() => this.isTesting.set(false))
