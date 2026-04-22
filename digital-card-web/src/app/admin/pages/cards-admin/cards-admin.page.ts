@@ -264,7 +264,7 @@ export class CardsAdminPageComponent {
     if (!confirm(this.translate.instant('admin.cards.confirmDeleteOne'))) return;
     this.isLoading.set(true);
     this.admin
-      .bulkDeleteCards([id])
+      .deleteCard(id)
       .pipe(
         tap(() => this.load()),
         catchError(() => {

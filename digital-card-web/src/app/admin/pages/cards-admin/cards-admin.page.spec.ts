@@ -16,6 +16,7 @@ describe('CardsAdminPageComponent', () => {
       listCards: jasmine.createSpy().and.returnValue(of({ items: [{ id: 'c1', email: 'a@b.com' }], total: 1, limit: 20, offset: 0 })),
       createOrUpsertCard: jasmine.createSpy().and.returnValue(of({ id: 'c1', email: 'a@b.com' })),
       updateCard: jasmine.createSpy().and.returnValue(of({ id: 'c1', email: 'a@b.com' })),
+      deleteCard: jasmine.createSpy().and.returnValue(of(null)),
       bulkDeleteCards: jasmine.createSpy().and.returnValue(of({ success: true, deleted: 1 })),
       ...overrides
     };
@@ -144,13 +145,14 @@ describe('CardsAdminPageComponent', () => {
   it('deleteOne cancel skips API', () => {
     spyOn(window, 'confirm').and.returnValue(false);
     component.deleteOne('x');
-    expect(admin.bulkDeleteCards).not.toHaveBeenCalled();
+    expect(admin.deleteCard).not.toHaveBeenCalled();
   });
 
-  it('deleteOne confirm calls API', () => {
+  it('deleteOne confirm calls deleteCard', () => {
     spyOn(window, 'confirm').and.returnValue(true);
     component.deleteOne('x');
-    expect(admin.bulkDeleteCards).toHaveBeenCalledWith(['x']);
+    expect(admin.deleteCard).toHaveBeenCalledWith('x');
+    expect(admin.bulkDeleteCards).not.toHaveBeenCalled();
   });
 
   it('load error sets message', fakeAsync(() => {
@@ -170,7 +172,7 @@ describe('CardsAdminPageComponent', () => {
   }));
 
   it('deleteOne failure sets error', fakeAsync(() => {
-    admin.bulkDeleteCards.and.returnValue(throwError(() => new Error('x')));
+    admin.deleteCard.and.returnValue(throwError(() => new Error('x')));
     spyOn(window, 'confirm').and.returnValue(true);
     component.deleteOne('x');
     tick();
