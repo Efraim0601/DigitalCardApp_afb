@@ -21,7 +21,8 @@ services:
   app:
     build: .
     ports:
-      - "8766:9999"
+      # Host port configurable; container keeps listening on 9999.
+      - "${APP_HOST_PORT:-8766}:9999"
     environment:
       PGHOST: db
       PGPORT: "5432"
