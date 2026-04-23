@@ -8,6 +8,7 @@ import { CardActionsComponent } from '../../../shared/components/card-actions/ca
 import { Card } from '../../../shared/models/card.model';
 import { CardsService } from '../../../shared/services/cards.service';
 import { LanguageService } from '../../../shared/services/language.service';
+import { ThemeService } from '../../../shared/services/theme.service';
 import { buildPublicCardUrl, withEmployeeQuery } from '../../../shared/utils/card-urls';
 
 @Component({
@@ -35,7 +36,8 @@ export class CardPageComponent {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly cards: CardsService,
-    readonly lang: LanguageService
+    readonly lang: LanguageService,
+    readonly theme: ThemeService
   ) {
     this.route.queryParamMap
       .pipe(

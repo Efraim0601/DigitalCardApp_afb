@@ -4,6 +4,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../shared/services/auth.service';
 import { LanguageService } from '../../../shared/services/language.service';
+import { ThemeService } from '../../../shared/services/theme.service';
 
 @Component({
   selector: 'app-admin-shell',
@@ -14,7 +15,8 @@ import { LanguageService } from '../../../shared/services/language.service';
 export class AdminShellComponent {
   constructor(
     private readonly auth: AuthService,
-    readonly lang: LanguageService
+    readonly lang: LanguageService,
+    readonly theme: ThemeService
   ) {}
 
   logout() {
