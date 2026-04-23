@@ -46,16 +46,29 @@ export type SmtpSettingsUpdatePayload = {
 export class AdminService {
   constructor(private readonly http: HttpClient) {}
 
-  export(scope: 'cards' | 'departments' | 'job_titles'): Observable<Blob> {
-    const params = new HttpParams().set('scope', scope);
+  export(
+    scope: 'cards' | 'departments' | 'job_titles',
+    format: 'csv' | 'xlsx' = 'xlsx'
+  ): Observable<Blob> {
+    const params = new HttpParams().set('scope', scope).set('format', format);
     return this.http.get('/api/admin/data-export', { params, responseType: 'blob' });
   }
 
-  import(scope: 'cards' | 'departments' | 'job_titles', file: File): Observable<void> {
+  downloadTemplate(scope: 'cards' | 'departments' | 'job_titles'): Observable<Blob> {
+    const params = new HttpParams().set('scope', scope);
+    return this.http.get('/api/admin/data-template', { params, responseType: 'blob' });
+  }
+
+  import(
+    scope: 'cards' | 'departments' | 'job_titles',
+    file: File
+  ): Observable<{ success: boolean; imported: { cards: number; departments: number; jobTitles: number }; warnings: string[] }> {
     const params = new HttpParams().set('scope', scope);
     const form = new FormData();
     form.append('file', file);
-    return this.http.post<void>('/api/admin/data-import', form, { params });
+    return this.http.post<{ success: boolean; imported: { cards: number; departments: number; jobTitles: number }; warnings: string[] }>(
+      '/api/admin/data-import', form, { params }
+    );
   }
 
   listCards(params: { q?: string; limit: number; offset: number }): Observable<PagedResult<Card>> {

@@ -28,11 +28,6 @@ export const ADMIN_ROUTES: Routes = [
           )
       },
       {
-        path: 'account',
-        loadComponent: () =>
-          import('./pages/account-admin/account-admin.page').then((m) => m.AccountAdminPageComponent)
-      },
-      {
         path: 'share-stats',
         loadComponent: () =>
           import('./pages/share-stats-admin/share-stats-admin.page').then(

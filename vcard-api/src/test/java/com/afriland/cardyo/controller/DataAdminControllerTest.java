@@ -68,4 +68,29 @@ class DataAdminControllerTest {
                 .andExpect(header().string("Content-Disposition", "attachment; filename=\"cartes.csv\""))
                 .andExpect(content().string("email\nx@y.com"));
     }
+
+    @Test
+    void exportData_xlsxFormatReturnsXlsxAttachment() throws Exception {
+        byte[] xlsx = new byte[]{1, 2, 3};
+        when(exportService.exportXlsx("cards")).thenReturn(xlsx);
+        when(exportService.getXlsxFilename("cards")).thenReturn("cartes.xlsx");
+
+        mvc.perform(get("/api/admin/data-export").param("scope", "cards").param("format", "xlsx"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Disposition", "attachment; filename=\"cartes.xlsx\""))
+                .andExpect(header().string("Content-Type",
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+    }
+
+    @Test
+    void exportTemplate_returnsXlsxAttachment() throws Exception {
+        byte[] tpl = new byte[]{9, 8, 7};
+        when(exportService.exportTemplateXlsx("cards")).thenReturn(tpl);
+        when(exportService.getTemplateFilename("cards")).thenReturn("modele-cartes.xlsx");
+
+        mvc.perform(get("/api/admin/data-template").param("scope", "cards"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Disposition",
+                        "attachment; filename=\"modele-cartes.xlsx\""));
+    }
 }

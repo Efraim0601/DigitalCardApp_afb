@@ -6,7 +6,7 @@ describe('ADMIN_ROUTES', () => {
     const root = ADMIN_ROUTES[0];
     expect(root.path).toBe('');
     const children = (root.children ?? []).map((c) => c.path);
-    expect(children).toEqual(jasmine.arrayContaining(['cards', 'departments', 'job-titles', 'account', 'share-stats', '']));
+    expect(children).toEqual(jasmine.arrayContaining(['cards', 'departments', 'job-titles', 'share-stats', '']));
   });
 
   it('wildcard redirects to cards', () => {

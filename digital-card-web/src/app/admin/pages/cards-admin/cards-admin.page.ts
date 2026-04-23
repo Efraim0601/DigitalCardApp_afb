@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, signal } from '@angular/core';
+import { Component, ElementRef, ViewChild, computed, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { catchError, finalize, forkJoin, of, tap } from 'rxjs';
@@ -31,12 +31,17 @@ export class CardsAdminPageComponent {
   readonly maxPage = computed(() => Math.max(1, Math.ceil(this.total() / this.pageSize)));
   readonly isLoading = signal(false);
   readonly isOptionsLoading = signal(false);
+  readonly isTransferring = signal(false);
   readonly error = signal<string | null>(null);
+  readonly transferMessage = signal<string | null>(null);
+  readonly transferWarnings = signal<string[]>([]);
 
   readonly cards = signal<Card[]>([]);
   readonly departments = signal<Label[]>([]);
   readonly jobTitles = signal<Label[]>([]);
   readonly selected = signal<Record<string, boolean>>({});
+
+  @ViewChild('importFileInput') importFileInput?: ElementRef<HTMLInputElement>;
 
   readonly selectedCount = computed(() => Object.values(this.selected()).filter(Boolean).length);
 
@@ -274,5 +279,94 @@ export class CardsAdminPageComponent {
         finalize(() => this.isLoading.set(false))
       )
       .subscribe();
+  }
+
+  downloadTemplate() {
+    this.clearTransferState();
+    this.isTransferring.set(true);
+    this.admin
+      .downloadTemplate('cards')
+      .pipe(
+        tap((blob) => this.saveBlob(blob, 'modele-cartes.xlsx')),
+        catchError(() => {
+          this.error.set('admin.cards.errors.templateError');
+          return of(null);
+        }),
+        finalize(() => this.isTransferring.set(false))
+      )
+      .subscribe();
+  }
+
+  exportCards(format: 'csv' | 'xlsx') {
+    this.clearTransferState();
+    this.isTransferring.set(true);
+    const filename = format === 'xlsx' ? 'cartes.xlsx' : 'cartes.csv';
+    this.admin
+      .export('cards', format)
+      .pipe(
+        tap((blob) => this.saveBlob(blob, filename)),
+        catchError(() => {
+          this.error.set('admin.cards.errors.exportError');
+          return of(null);
+        }),
+        finalize(() => this.isTransferring.set(false))
+      )
+      .subscribe();
+  }
+
+  triggerImport() {
+    this.importFileInput?.nativeElement.click();
+  }
+
+  onImportFile(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) return;
+
+    this.clearTransferState();
+    this.isTransferring.set(true);
+    this.admin
+      .import('cards', file)
+      .pipe(
+        tap((res) => {
+          const imported = res?.imported?.cards ?? 0;
+          this.transferMessage.set(
+            this.translate.instant('admin.cards.transfer.importSuccess', { count: imported })
+          );
+          this.transferWarnings.set(res?.warnings ?? []);
+          this.load();
+        }),
+        catchError((err) => {
+          const msg = err?.error?.message || err?.message || '';
+          this.error.set(msg
+            ? this.translate.instant('admin.cards.errors.importErrorWithReason', { reason: msg })
+            : 'admin.cards.errors.importError');
+          return of(null);
+        }),
+        finalize(() => this.isTransferring.set(false))
+      )
+      .subscribe();
+  }
+
+  dismissTransfer() {
+    this.clearTransferState();
+  }
+
+  private clearTransferState() {
+    this.error.set(null);
+    this.transferMessage.set(null);
+    this.transferWarnings.set([]);
+  }
+
+  private saveBlob(blob: Blob, filename: string) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 }

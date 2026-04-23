@@ -16,7 +16,6 @@
     "pageOf": "{{current}} / {{total}}",
     "logout": "Déconnexion",
     "themeTitle": "Thème",
-    "pdfPrintTitle": "PDF/Impression",
     "backToPortal": "Retour au portail",
     "languageToggleTitle": "Changer la langue"
   },
@@ -104,16 +103,12 @@
   },
   "admin": {
     "shell": {
-      "title": "Gestion des cartes de visite",
-      "transferBanner": "Export : archive ZIP avec trois fichiers CSV. Import : .xlsx, .zip (departments.csv, job_titles.csv, cards.csv) ou un seul .csv selon le type. Réimport : fusion par identifiants (libellés et cartes par email).",
-      "exportBtn": "Exporter (CSV en ZIP)",
-      "importBtn": "Importer (Excel / CSV / ZIP)"
+      "title": "Gestion des cartes de visite"
     },
     "tabs": {
       "cards": "Cartes",
       "departments": "Directions / Départements",
       "jobTitles": "Titres / Postes",
-      "account": "Compte admin",
       "shareStats": "Statistiques de partage",
       "smtp": "SMTP"
     },
@@ -153,10 +148,23 @@
       },
       "confirmBulkDelete": "Supprimer {{count}} carte(s) ?",
       "confirmDeleteOne": "Supprimer cette carte ?",
+      "transfer": {
+        "templateBtn": "Modèle Excel",
+        "importBtn": "Importer (Excel / CSV)",
+        "exportXlsxBtn": "Exporter (Excel)",
+        "exportCsvBtn": "Exporter (CSV)",
+        "importSuccess": "{{count}} carte(s) importée(s) avec succès.",
+        "warningsHeader": "Avertissements",
+        "formatHint": "Colonnes attendues : email* | first_name | last_name | company | title | phone | fax | mobile | department_fr | department_en | job_title_fr | job_title_en. Seul l'email est obligatoire ; la mise à jour se fait par email (upsert)."
+      },
       "errors": {
         "loadError": "Impossible de charger les cartes.",
         "saveError": "Impossible d'enregistrer.",
-        "deleteError": "Impossible de supprimer."
+        "deleteError": "Impossible de supprimer.",
+        "exportError": "Impossible d'exporter.",
+        "importError": "Impossible d'importer le fichier.",
+        "importErrorWithReason": "Impossible d'importer : {{reason}}",
+        "templateError": "Impossible de télécharger le modèle."
       }
     },
     "label": {
@@ -182,21 +190,6 @@
       "saveError": "Impossible d'enregistrer.",
       "deleteError": "Impossible de supprimer.",
       "deleteConfirm": "Supprimer ce titre ?"
-    },
-    "account": {
-      "title": "Identifiants de connexion administrateur",
-      "description": "Après enregistrement, les identifiants sont stockés en base et remplacent les variables d'environnement pour la connexion.",
-      "source": "Source : configuration (variables d'environnement)",
-      "currentPassword": "Mot de passe actuel",
-      "newEmail": "Nouvel email (optionnel)",
-      "newPassword": "Nouveau mot de passe (optionnel)",
-      "submit": "Mettre à jour les identifiants",
-      "success": "Identifiants mis à jour avec succès.",
-      "errors": {
-        "currentPasswordRequired": "Le mot de passe actuel est requis.",
-        "noChanges": "Aucune modification à enregistrer.",
-        "saveError": "Impossible d'enregistrer."
-      }
     },
     "smtp": {
       "title": "Configuration SMTP et notifications employé",

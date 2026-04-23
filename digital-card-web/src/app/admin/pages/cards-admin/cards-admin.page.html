@@ -36,6 +36,52 @@
       >
         {{ 'admin.cards.selectAllPage' | translate }}
       </button>
+
+      <span class="mx-1 h-5 w-px bg-slate-200" aria-hidden="true"></span>
+
+      <button
+        type="button"
+        class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+        [disabled]="isTransferring()"
+        (click)="downloadTemplate()"
+      >
+        {{ 'admin.cards.transfer.templateBtn' | translate }}
+      </button>
+
+      <button
+        type="button"
+        class="inline-flex items-center gap-2 rounded-lg border border-[#d32f2f] bg-white px-3 py-1.5 text-xs font-semibold text-[#d32f2f] transition hover:bg-[#fff5f5] disabled:opacity-60"
+        [disabled]="isTransferring()"
+        (click)="triggerImport()"
+      >
+        {{ 'admin.cards.transfer.importBtn' | translate }}
+      </button>
+
+      <button
+        type="button"
+        class="inline-flex items-center gap-2 rounded-lg border border-[#d32f2f] bg-white px-3 py-1.5 text-xs font-semibold text-[#d32f2f] transition hover:bg-[#fff5f5] disabled:opacity-60"
+        [disabled]="isTransferring()"
+        (click)="exportCards('xlsx')"
+      >
+        {{ 'admin.cards.transfer.exportXlsxBtn' | translate }}
+      </button>
+
+      <button
+        type="button"
+        class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+        [disabled]="isTransferring()"
+        (click)="exportCards('csv')"
+      >
+        {{ 'admin.cards.transfer.exportCsvBtn' | translate }}
+      </button>
+
+      <input
+        #importFileInput
+        type="file"
+        class="hidden"
+        accept=".xlsx,.xls,.csv"
+        (change)="onImportFile($event)"
+      />
     </div>
 
     <input
@@ -45,6 +91,39 @@
       (input)="onSearch(($any($event.target).value))"
     />
   </div>
+
+  @if (transferMessage() || transferWarnings().length > 0) {
+    <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          @if (transferMessage()) {
+            <p class="font-semibold">{{ transferMessage() }}</p>
+          }
+          @if (transferWarnings().length > 0) {
+            <p class="mt-2 text-xs font-semibold uppercase tracking-[.08em] text-emerald-700">
+              {{ 'admin.cards.transfer.warningsHeader' | translate }}
+            </p>
+            <ul class="mt-1 list-disc pl-5 text-xs text-emerald-900">
+              @for (w of transferWarnings(); track $index) {
+                <li>{{ w }}</li>
+              }
+            </ul>
+          }
+        </div>
+        <button
+          type="button"
+          class="text-xs font-semibold text-emerald-700 hover:text-emerald-900"
+          (click)="dismissTransfer()"
+        >
+          ✕
+        </button>
+      </div>
+    </div>
+  }
+
+  <p class="text-xs text-slate-500">
+    {{ 'admin.cards.transfer.formatHint' | translate }}
+  </p>
 
   <!-- Form panel -->
   <div id="edit-form-anchor" class="rounded-xl border border-slate-200 bg-white p-5">

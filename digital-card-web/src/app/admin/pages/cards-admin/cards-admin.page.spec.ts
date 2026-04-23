@@ -18,6 +18,9 @@ describe('CardsAdminPageComponent', () => {
       updateCard: jasmine.createSpy().and.returnValue(of({ id: 'c1', email: 'a@b.com' })),
       deleteCard: jasmine.createSpy().and.returnValue(of(null)),
       bulkDeleteCards: jasmine.createSpy().and.returnValue(of({ success: true, deleted: 1 })),
+      export: jasmine.createSpy().and.returnValue(of(new Blob(['x']))),
+      downloadTemplate: jasmine.createSpy().and.returnValue(of(new Blob(['x']))),
+      import: jasmine.createSpy().and.returnValue(of({ success: true, imported: { cards: 2, departments: 0, jobTitles: 0 }, warnings: [] })),
       ...overrides
     };
     TestBed.configureTestingModule({
@@ -175,6 +178,40 @@ describe('CardsAdminPageComponent', () => {
     admin.deleteCard.and.returnValue(throwError(() => new Error('x')));
     spyOn(window, 'confirm').and.returnValue(true);
     component.deleteOne('x');
+    tick();
+    expect(component.error()).toBeTruthy();
+  }));
+
+  it('exportCards calls admin.export with scope and format', fakeAsync(() => {
+    spyOn(document.body, 'appendChild').and.callThrough();
+    component.exportCards('xlsx');
+    tick();
+    expect(admin.export).toHaveBeenCalledWith('cards', 'xlsx');
+  }));
+
+  it('downloadTemplate calls admin.downloadTemplate', fakeAsync(() => {
+    component.downloadTemplate();
+    tick();
+    expect(admin.downloadTemplate).toHaveBeenCalledWith('cards');
+  }));
+
+  it('onImportFile imports and reloads', fakeAsync(() => {
+    const file = new File(['x'], 'cards.xlsx');
+    const input = document.createElement('input');
+    Object.defineProperty(input, 'files', { value: [file] });
+    const event = { target: input } as unknown as Event;
+    component.onImportFile(event);
+    tick();
+    expect(admin.import).toHaveBeenCalledWith('cards', file);
+    expect(component.transferMessage()).toContain('admin.cards.transfer.importSuccess');
+  }));
+
+  it('onImportFile sets error on failure', fakeAsync(() => {
+    admin.import.and.returnValue(throwError(() => new Error('boom')));
+    const file = new File(['x'], 'cards.xlsx');
+    const input = document.createElement('input');
+    Object.defineProperty(input, 'files', { value: [file] });
+    component.onImportFile({ target: input } as unknown as Event);
     tick();
     expect(component.error()).toBeTruthy();
   }));

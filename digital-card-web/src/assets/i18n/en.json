@@ -16,7 +16,6 @@
     "pageOf": "{{current}} / {{total}}",
     "logout": "Log out",
     "themeTitle": "Theme",
-    "pdfPrintTitle": "PDF/Print",
     "backToPortal": "Back to portal",
     "languageToggleTitle": "Change language"
   },
@@ -104,16 +103,12 @@
   },
   "admin": {
     "shell": {
-      "title": "Business cards management",
-      "transferBanner": "Export: ZIP archive with three CSV files. Import: .xlsx, .zip (departments.csv, job_titles.csv, cards.csv) or a single .csv depending on the type. Re-import: merge by identifiers (labels and cards by email).",
-      "exportBtn": "Export (CSV in ZIP)",
-      "importBtn": "Import (Excel / CSV / ZIP)"
+      "title": "Business cards management"
     },
     "tabs": {
       "cards": "Cards",
       "departments": "Directorates / Departments",
       "jobTitles": "Titles / Positions",
-      "account": "Admin account",
       "shareStats": "Sharing statistics",
       "smtp": "SMTP"
     },
@@ -153,10 +148,23 @@
       },
       "confirmBulkDelete": "Delete {{count}} card(s)?",
       "confirmDeleteOne": "Delete this card?",
+      "transfer": {
+        "templateBtn": "Excel template",
+        "importBtn": "Import (Excel / CSV)",
+        "exportXlsxBtn": "Export (Excel)",
+        "exportCsvBtn": "Export (CSV)",
+        "importSuccess": "{{count}} card(s) imported successfully.",
+        "warningsHeader": "Warnings",
+        "formatHint": "Expected columns: email* | first_name | last_name | company | title | phone | fax | mobile | department_fr | department_en | job_title_fr | job_title_en. Only email is required; updates happen by email (upsert)."
+      },
       "errors": {
         "loadError": "Unable to load cards.",
         "saveError": "Unable to save.",
-        "deleteError": "Unable to delete."
+        "deleteError": "Unable to delete.",
+        "exportError": "Unable to export.",
+        "importError": "Unable to import the file.",
+        "importErrorWithReason": "Unable to import: {{reason}}",
+        "templateError": "Unable to download the template."
       }
     },
     "label": {
@@ -182,21 +190,6 @@
       "saveError": "Unable to save.",
       "deleteError": "Unable to delete.",
       "deleteConfirm": "Delete this title?"
-    },
-    "account": {
-      "title": "Administrator login credentials",
-      "description": "After saving, credentials are stored in the database and replace environment variables for login.",
-      "source": "Source: configuration (environment variables)",
-      "currentPassword": "Current password",
-      "newEmail": "New email (optional)",
-      "newPassword": "New password (optional)",
-      "submit": "Update credentials",
-      "success": "Credentials updated successfully.",
-      "errors": {
-        "currentPasswordRequired": "Current password is required.",
-        "noChanges": "No changes to save.",
-        "saveError": "Unable to save."
-      }
     },
     "smtp": {
       "title": "SMTP configuration and employee notifications",

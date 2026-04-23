@@ -67,12 +67,4 @@ describe('AuthService', () => {
     req.flush(null);
   });
 
-  it('updateAdminCredentials PUTs the payload', (done) => {
-    const payload = { currentPassword: 'x', newEmail: 'n@e.com', newPassword: 'y' };
-    service.updateAdminCredentials(payload).subscribe(() => done());
-    const req = httpMock.expectOne('/api/auth/admin/credentials');
-    expect(req.request.method).toBe('PUT');
-    expect(req.request.body).toEqual(payload);
-    req.flush(null);
-  });
 });

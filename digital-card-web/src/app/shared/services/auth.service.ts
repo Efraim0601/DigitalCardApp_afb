@@ -40,13 +40,5 @@ export class AuthService {
   adminLogout(): Observable<void> {
     return this.http.post<void>('/api/auth/admin/logout', {});
   }
-
-  updateAdminCredentials(payload: {
-    currentPassword: string;
-    newEmail?: string | null;
-    newPassword?: string | null;
-  }): Observable<void> {
-    return this.http.put<void>('/api/auth/admin/credentials', payload);
-  }
 }
 
