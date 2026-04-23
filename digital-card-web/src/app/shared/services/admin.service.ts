@@ -12,6 +12,14 @@ export type PagedResult<T> = {
 
 export type Label = { id: string; labelFr: string; labelEn: string };
 
+export type DataScope = 'cards' | 'departments' | 'job_titles';
+
+export type ImportResult = {
+  success: boolean;
+  imported: { cards: number; departments: number; jobTitles: number };
+  warnings: string[];
+};
+
 export type SmtpSettings = {
   enabled: boolean;
   host: string | null;
@@ -46,29 +54,21 @@ export type SmtpSettingsUpdatePayload = {
 export class AdminService {
   constructor(private readonly http: HttpClient) {}
 
-  export(
-    scope: 'cards' | 'departments' | 'job_titles',
-    format: 'csv' | 'xlsx' = 'xlsx'
-  ): Observable<Blob> {
+  export(scope: DataScope, format: 'csv' | 'xlsx' = 'xlsx'): Observable<Blob> {
     const params = new HttpParams().set('scope', scope).set('format', format);
     return this.http.get('/api/admin/data-export', { params, responseType: 'blob' });
   }
 
-  downloadTemplate(scope: 'cards' | 'departments' | 'job_titles'): Observable<Blob> {
+  downloadTemplate(scope: DataScope): Observable<Blob> {
     const params = new HttpParams().set('scope', scope);
     return this.http.get('/api/admin/data-template', { params, responseType: 'blob' });
   }
 
-  import(
-    scope: 'cards' | 'departments' | 'job_titles',
-    file: File
-  ): Observable<{ success: boolean; imported: { cards: number; departments: number; jobTitles: number }; warnings: string[] }> {
+  import(scope: DataScope, file: File): Observable<ImportResult> {
     const params = new HttpParams().set('scope', scope);
     const form = new FormData();
     form.append('file', file);
-    return this.http.post<{ success: boolean; imported: { cards: number; departments: number; jobTitles: number }; warnings: string[] }>(
-      '/api/admin/data-import', form, { params }
-    );
+    return this.http.post<ImportResult>('/api/admin/data-import', form, { params });
   }
 
   listCards(params: { q?: string; limit: number; offset: number }): Observable<PagedResult<Card>> {

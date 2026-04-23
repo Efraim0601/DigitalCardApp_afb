@@ -143,10 +143,11 @@
 
       <div class="mt-4 grid gap-3 sm:grid-cols-2">
         <div class="sm:col-span-2">
-          <label class="mb-1 block text-xs font-semibold text-slate-700">
+          <label for="card-email" class="mb-1 block text-xs font-semibold text-slate-700">
             {{ 'admin.cards.fields.email' | translate }} <span class="text-[#d32f2f]">*</span>
           </label>
           <input
+            id="card-email"
             class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500"
             type="email"
             placeholder="email@afrilandfirstbank.com"
@@ -154,12 +155,12 @@
           />
         </div>
         <div>
-          <label class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.cards.fields.firstName' | translate }}</label>
-          <input class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500" formControlName="firstName" />
+          <label for="card-firstName" class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.cards.fields.firstName' | translate }}</label>
+          <input id="card-firstName" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500" formControlName="firstName" />
         </div>
         <div>
-          <label class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.cards.fields.lastName' | translate }}</label>
-          <input class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500" formControlName="lastName" />
+          <label for="card-lastName" class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.cards.fields.lastName' | translate }}</label>
+          <input id="card-lastName" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500" formControlName="lastName" />
         </div>
       </div>
 
@@ -169,9 +170,10 @@
 
       <div class="mt-4 grid gap-3 sm:grid-cols-2">
         <div>
-          <label class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.cards.fields.department' | translate }}</label>
+          <label for="card-departmentId" class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.cards.fields.department' | translate }}</label>
           <div class="flex items-center gap-2">
             <select
+              id="card-departmentId"
               class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500"
               formControlName="departmentId"
               (focus)="loadReferenceData()"
@@ -195,9 +197,10 @@
           </p>
         </div>
         <div>
-          <label class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.cards.fields.jobTitle' | translate }}</label>
+          <label for="card-jobTitleId" class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.cards.fields.jobTitle' | translate }}</label>
           <div class="flex items-center gap-2">
             <select
+              id="card-jobTitleId"
               class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500"
               formControlName="jobTitleId"
               (focus)="loadReferenceData()"
@@ -228,24 +231,26 @@
 
       <div class="mt-4 grid gap-3 sm:grid-cols-3">
         <div>
-          <label class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.cards.fields.phone' | translate }}</label>
+          <label for="card-phone" class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.cards.fields.phone' | translate }}</label>
           <input
+            id="card-phone"
             class="w-full rounded-lg border border-slate-300 bg-slate-100 px-3 py-2 text-sm text-slate-500 outline-none"
             value="222 233 068"
             readonly
           />
         </div>
         <div>
-          <label class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.cards.fields.fax' | translate }}</label>
+          <label for="card-fax" class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.cards.fields.fax' | translate }}</label>
           <input
+            id="card-fax"
             class="w-full rounded-lg border border-slate-300 bg-slate-100 px-3 py-2 text-sm text-slate-500 outline-none"
             value="222 221 785"
             readonly
           />
         </div>
         <div>
-          <label class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.cards.fields.mobile' | translate }}</label>
-          <input class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500" formControlName="mobile" placeholder="6XX XXX XXX" />
+          <label for="card-mobile" class="mb-1 block text-xs font-semibold text-slate-700">{{ 'admin.cards.fields.mobile' | translate }}</label>
+          <input id="card-mobile" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500" formControlName="mobile" placeholder="6XX XXX XXX" />
         </div>
       </div>
 
