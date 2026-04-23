@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: vcard
       POSTGRES_PASSWORD: vcard
     ports:
-      - "5555:5432"
+      - "${DB_HOST_PORT:-5555}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -22,7 +22,7 @@ services:
       dockerfile: Dockerfile
       network: host
     ports:
-      - "8767:9999"
+      - "${BACKEND_HOST_PORT:-8767}:9999"
     environment:
       PGHOST: db
       PGPORT: "5432"
@@ -44,7 +44,7 @@ services:
       dockerfile: Dockerfile
       network: host
     ports:
-      - "8766:8080"
+      - "${FRONTEND_HOST_PORT:-8766}:8080"
     depends_on:
       - backend
     restart: unless-stopped
