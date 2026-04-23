@@ -25,6 +25,11 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class DataExportService {
 
+    private static final String SCOPE_CARDS = "cards";
+    private static final String SCOPE_DEPARTMENTS = "departments";
+    private static final String SCOPE_JOB_TITLES = "job_titles";
+    private static final String JOB_TITLE_SAMPLE_FR = "Ingénieur";
+
     private static final String[] CARD_HEADERS = {
             "email", "first_name", "last_name", "company",
             "title", "phone", "fax", "mobile",
@@ -39,56 +44,56 @@ public class DataExportService {
 
     public byte[] exportCsv(String scope) {
         return switch (scope) {
-            case "cards"       -> exportCards();
-            case "departments" -> exportDepartments();
-            case "job_titles"  -> exportJobTitles();
+            case SCOPE_CARDS       -> exportCards();
+            case SCOPE_DEPARTMENTS -> exportDepartments();
+            case SCOPE_JOB_TITLES  -> exportJobTitles();
             default -> throw new IllegalArgumentException("Invalid scope: " + scope);
         };
     }
 
     public byte[] exportXlsx(String scope) {
         return switch (scope) {
-            case "cards"       -> exportCardsXlsx();
-            case "departments" -> exportDepartmentsXlsx();
-            case "job_titles"  -> exportJobTitlesXlsx();
+            case SCOPE_CARDS       -> exportCardsXlsx();
+            case SCOPE_DEPARTMENTS -> exportDepartmentsXlsx();
+            case SCOPE_JOB_TITLES  -> exportJobTitlesXlsx();
             default -> throw new IllegalArgumentException("Invalid scope: " + scope);
         };
     }
 
     public byte[] exportTemplateXlsx(String scope) {
         return switch (scope) {
-            case "cards"       -> buildTemplateXlsx("Cartes", CARD_HEADERS, sampleCardRow());
-            case "departments" -> buildTemplateXlsx("Directions", LABEL_HEADERS,
+            case SCOPE_CARDS       -> buildTemplateXlsx("Cartes", CARD_HEADERS, sampleCardRow());
+            case SCOPE_DEPARTMENTS -> buildTemplateXlsx("Directions", LABEL_HEADERS,
                     new String[]{"Direction Financière", "Financial Department"});
-            case "job_titles"  -> buildTemplateXlsx("Titres-Postes", LABEL_HEADERS,
-                    new String[]{"Ingénieur", "Engineer"});
+            case SCOPE_JOB_TITLES  -> buildTemplateXlsx("Titres-Postes", LABEL_HEADERS,
+                    new String[]{JOB_TITLE_SAMPLE_FR, "Engineer"});
             default -> throw new IllegalArgumentException("Invalid scope: " + scope);
         };
     }
 
     public String getFilename(String scope) {
         return switch (scope) {
-            case "cards"       -> "cartes.csv";
-            case "departments" -> "directions.csv";
-            case "job_titles"  -> "titres-postes.csv";
+            case SCOPE_CARDS       -> "cartes.csv";
+            case SCOPE_DEPARTMENTS -> "directions.csv";
+            case SCOPE_JOB_TITLES  -> "titres-postes.csv";
             default -> "export.csv";
         };
     }
 
     public String getXlsxFilename(String scope) {
         return switch (scope) {
-            case "cards"       -> "cartes.xlsx";
-            case "departments" -> "directions.xlsx";
-            case "job_titles"  -> "titres-postes.xlsx";
+            case SCOPE_CARDS       -> "cartes.xlsx";
+            case SCOPE_DEPARTMENTS -> "directions.xlsx";
+            case SCOPE_JOB_TITLES  -> "titres-postes.xlsx";
             default -> "export.xlsx";
         };
     }
 
     public String getTemplateFilename(String scope) {
         return switch (scope) {
-            case "cards"       -> "modele-cartes.xlsx";
-            case "departments" -> "modele-directions.xlsx";
-            case "job_titles"  -> "modele-titres-postes.xlsx";
+            case SCOPE_CARDS       -> "modele-cartes.xlsx";
+            case SCOPE_DEPARTMENTS -> "modele-directions.xlsx";
+            case SCOPE_JOB_TITLES  -> "modele-titres-postes.xlsx";
             default -> "modele.xlsx";
         };
     }
@@ -219,10 +224,10 @@ public class DataExportService {
     private String[] sampleCardRow() {
         return new String[]{
                 "jean.dupont@afrilandfirstbank.com",
-                "Jean", "Dupont", "Afriland First Bank", "Ingénieur",
+                "Jean", "Dupont", "Afriland First Bank", JOB_TITLE_SAMPLE_FR,
                 "222 233 068", "222 221 785", "690 000 000",
                 "Direction Financière", "Financial Department",
-                "Ingénieur", "Engineer"
+                JOB_TITLE_SAMPLE_FR, "Engineer"
         };
     }
 

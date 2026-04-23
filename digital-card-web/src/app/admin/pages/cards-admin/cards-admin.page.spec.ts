@@ -215,4 +215,74 @@ describe('CardsAdminPageComponent', () => {
     tick();
     expect(component.error()).toBeTruthy();
   }));
+
+  it('exportCards csv exports with csv filename', fakeAsync(() => {
+    component.exportCards('csv');
+    tick();
+    expect(admin.export).toHaveBeenCalledWith('cards', 'csv');
+    expect(component.isTransferring()).toBeFalse();
+  }));
+
+  it('exportCards error sets exportError and clears transferring', fakeAsync(() => {
+    admin.export.and.returnValue(throwError(() => new Error('x')));
+    component.exportCards('xlsx');
+    tick();
+    expect(component.error()).toBe('admin.cards.errors.exportError');
+    expect(component.isTransferring()).toBeFalse();
+  }));
+
+  it('downloadTemplate error sets templateError', fakeAsync(() => {
+    admin.downloadTemplate.and.returnValue(throwError(() => new Error('x')));
+    component.downloadTemplate();
+    tick();
+    expect(component.error()).toBe('admin.cards.errors.templateError');
+  }));
+
+  it('triggerImport clicks the file input when present', () => {
+    const clickSpy = jasmine.createSpy('click');
+    (component as any).importFileInput = { nativeElement: { click: clickSpy } };
+    component.triggerImport();
+    expect(clickSpy).toHaveBeenCalled();
+  });
+
+  it('onImportFile is a no-op when no file is selected', () => {
+    const input = document.createElement('input');
+    Object.defineProperty(input, 'files', { value: [] });
+    component.onImportFile({ target: input } as unknown as Event);
+    expect(admin.import).not.toHaveBeenCalled();
+  });
+
+  it('onImportFile surfaces backend error message', fakeAsync(() => {
+    admin.import.and.returnValue(throwError(() => ({ error: { message: 'Invalid row 3' } })));
+    const file = new File(['x'], 'cards.xlsx');
+    const input = document.createElement('input');
+    Object.defineProperty(input, 'files', { value: [file] });
+    component.onImportFile({ target: input } as unknown as Event);
+    tick();
+    expect(component.error()).toContain('importErrorWithReason');
+  }));
+
+  it('onImportFile stores warnings from import result', fakeAsync(() => {
+    admin.import.and.returnValue(of({
+      success: true,
+      imported: { cards: 1, departments: 0, jobTitles: 0 },
+      warnings: ['Row 2: missing email, skipped']
+    }));
+    const file = new File(['x'], 'cards.xlsx');
+    const input = document.createElement('input');
+    Object.defineProperty(input, 'files', { value: [file] });
+    component.onImportFile({ target: input } as unknown as Event);
+    tick();
+    expect(component.transferWarnings().length).toBe(1);
+  }));
+
+  it('dismissTransfer clears transfer message and warnings', () => {
+    component.transferMessage.set('hello');
+    component.transferWarnings.set(['w']);
+    component.error.set('e');
+    component.dismissTransfer();
+    expect(component.transferMessage()).toBeNull();
+    expect(component.transferWarnings()).toEqual([]);
+    expect(component.error()).toBeNull();
+  });
 });
