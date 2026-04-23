@@ -68,7 +68,7 @@ export class QrCodeComponent {
     if (this.card.mobile) vcard.addPhoneNumber({ number: this.card.mobile, type: ['cell'] });
 
     const blob = new Blob([vcard.toString()], { type: 'text/vcard;charset=utf-8' });
-    const fileName = `${(this.card.firstName || 'contact').replace(/[^a-z0-9_.-]/gi, '_')}_${(this.card.lastName || 'card').replace(/[^a-z0-9_.-]/gi, '_')}.vcf`;
+    const fileName = `${(this.card.firstName || 'contact').replaceAll(/[^a-z0-9_.-]/gi, '_')}_${(this.card.lastName || 'card').replaceAll(/[^a-z0-9_.-]/gi, '_')}.vcf`;
     const file = new File([blob], fileName, { type: 'text/vcard;charset=utf-8' });
 
     if (navigator.share && navigator.canShare?.({ files: [file] })) {

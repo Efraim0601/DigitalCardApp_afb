@@ -166,12 +166,12 @@ export class BusinessCardComponent implements AfterViewInit, OnDestroy {
   }
 
   private buildImageFileName(): string {
-    const base = (this.fullName() || this.card.email || 'business-card').replace(/[^a-z0-9_.-]/gi, '_');
+    const base = (this.fullName() || this.card.email || 'business-card').replaceAll(/[^a-z0-9_.-]/gi, '_');
     return `${base}.png`;
   }
 
   telHref(value: string | null | undefined): string {
-    return `tel:${(value || '').replace(/\s+/g, '')}`;
+    return `tel:${(value || '').replaceAll(/\s+/g, '')}`;
   }
 }
 

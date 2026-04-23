@@ -27,21 +27,21 @@
                 <div class="text-[11.5px] font-bold">Place de l'Indépendance</div>
                 <table class="border-collapse">
                   <tr>
-                    <td class="whitespace-nowrap pr-2 align-top text-[11px] leading-[1.55] text-[#333]">{{ 'card.bp' | translate }}</td>
+                    <th scope="row" class="whitespace-nowrap pr-2 align-top text-[11px] font-normal leading-[1.55] text-[#333]">{{ 'card.bp' | translate }}</th>
                     <td class="align-top text-[11px] leading-[1.55]">11834 Yaoundé - Cameroun</td>
                   </tr>
                   <tr>
-                    <td class="whitespace-nowrap pr-2 align-top text-[11px] leading-[1.55] text-[#333]">{{ 'card.telex' | translate }}</td>
+                    <th scope="row" class="whitespace-nowrap pr-2 align-top text-[11px] font-normal leading-[1.55] text-[#333]">{{ 'card.telex' | translate }}</th>
                     <td class="align-top text-[11px] leading-[1.55]">8907 KN</td>
                   </tr>
                   <tr>
-                    <td class="whitespace-nowrap pr-2 align-top text-[11px] leading-[1.55] text-[#333]">{{ 'card.email' | translate }}</td>
+                    <th scope="row" class="whitespace-nowrap pr-2 align-top text-[11px] font-normal leading-[1.55] text-[#333]">{{ 'card.email' | translate }}</th>
                     <td class="align-top text-[11px] leading-[1.55]">
                       <a class="break-all text-[#222] hover:underline" [href]="'mailto:' + (card.email || '')">{{ card.email }}</a>
                     </td>
                   </tr>
                   <tr>
-                    <td class="whitespace-nowrap pr-2 align-top text-[11px] leading-[1.55] text-[#333]">{{ 'card.website' | translate }}</td>
+                    <th scope="row" class="whitespace-nowrap pr-2 align-top text-[11px] font-normal leading-[1.55] text-[#333]">{{ 'card.website' | translate }}</th>
                     <td class="align-top text-[11px] leading-[1.55]">
                       <a class="text-[#222] hover:underline" [href]="websiteUrl" target="_blank" rel="noopener noreferrer">
                         {{ website }}
@@ -54,20 +54,20 @@
               <div class="text-right text-[11px] text-[#222]">
                 <table class="border-collapse">
                   <tr>
-                    <td class="whitespace-nowrap pl-1.5 text-left text-[11px] leading-[1.55] text-[#333]">{{ 'card.phone' | translate }}</td>
+                    <th scope="row" class="whitespace-nowrap pl-1.5 text-left text-[11px] font-normal leading-[1.55] text-[#333]">{{ 'card.phone' | translate }}</th>
                     <td class="whitespace-nowrap pl-1.5 text-[11px] leading-[1.55]">
                       <a class="text-[#222] hover:underline" [href]="telHref(fixedPhone())">{{ fixedPhone() }}</a>
                     </td>
                   </tr>
                   <tr>
-                    <td class="whitespace-nowrap pl-1.5 text-left text-[11px] leading-[1.55] text-[#333]">{{ 'card.fax' | translate }}</td>
+                    <th scope="row" class="whitespace-nowrap pl-1.5 text-left text-[11px] font-normal leading-[1.55] text-[#333]">{{ 'card.fax' | translate }}</th>
                     <td class="whitespace-nowrap pl-1.5 text-[11px] leading-[1.55]">
                       <a class="text-[#222] hover:underline" [href]="telHref(fixedFax())">{{ fixedFax() }}</a>
                     </td>
                   </tr>
                   @if (card.mobile) {
                     <tr>
-                      <td class="whitespace-nowrap pl-1.5 text-left text-[11px] leading-[1.55] text-[#333]">{{ 'card.mobile' | translate }}</td>
+                      <th scope="row" class="whitespace-nowrap pl-1.5 text-left text-[11px] font-normal leading-[1.55] text-[#333]">{{ 'card.mobile' | translate }}</th>
                       <td class="whitespace-nowrap pl-1.5 text-[11px] leading-[1.55]">
                         <a class="text-[#222] hover:underline" [href]="telHref(card.mobile)">{{ card.mobile }}</a>
                       </td>
