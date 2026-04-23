@@ -12,7 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
 /**
  * Stateless admin security:
@@ -20,7 +20,9 @@ import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler
  *   <li>Session cookie is {@code HttpOnly + Secure + SameSite=Strict} (see AdminAuthController).</li>
  *   <li>CSRF protection is active on every mutating request: token issued via a cookie
  *       ({@link CookieCsrfTokenRepository#withHttpOnlyFalse()}) and validated against the
- *       {@code X-XSRF-TOKEN} header (Spring Security's XOR handler adds BREACH protection).</li>
+ *       {@code X-XSRF-TOKEN} header using the plain {@link CsrfTokenRequestAttributeHandler}
+ *       so that Angular's built-in XSRF interceptor (which echoes the raw cookie value back
+ *       in the header) matches what the server has stored.</li>
  *   <li>Eager resolution ({@code setCsrfRequestAttributeName(null)}) ensures the XSRF-TOKEN
  *       cookie is emitted on the first GET, so the SPA has a token before the login POST.</li>
  * </ul>
@@ -48,7 +50,7 @@ public class SecurityConfig {
                 .secure(appProperties.getCookie().isSecure())
                 .path("/"));
 
-        XorCsrfTokenRequestAttributeHandler csrfHandler = new XorCsrfTokenRequestAttributeHandler();
+        CsrfTokenRequestAttributeHandler csrfHandler = new CsrfTokenRequestAttributeHandler();
         csrfHandler.setCsrfRequestAttributeName(null);
 
         http
