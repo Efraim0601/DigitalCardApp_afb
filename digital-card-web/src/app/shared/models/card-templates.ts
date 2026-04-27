@@ -14,14 +14,14 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     id: 'classic',
     background: 'assets/carte-digitale-bg.png',
     labelKey: 'admin.appearance.templates.classic',
-    contentPadding: { top: 113, right: 32, bottom: 20, left: 32 },
+    contentPadding: { top: 113, right: 32, bottom: 20, left: 100 },
     backgroundSize: 'cover'
   },
   {
     id: 'modern',
     background: 'assets/background_new.jpg',
     labelKey: 'admin.appearance.templates.modern',
-    contentPadding: { top: 95, right: 24, bottom: 45, left: 110 },
+    contentPadding: { top: 95, right: 24, bottom: 45, left: 130 },
     backgroundSize: '100% 100%'
   }
 ];
