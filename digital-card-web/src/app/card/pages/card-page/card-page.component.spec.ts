@@ -6,7 +6,7 @@ import { CardsService } from '../../../shared/services/cards.service';
 import { CardPageComponent } from './card-page.component';
 
 describe('CardPageComponent', () => {
-  let cards: { getByEmail: jasmine.Spy };
+  let cards: { getByEmail: jasmine.Spy; getAppearanceSettings: jasmine.Spy; updateTemplate: jasmine.Spy };
   let router: any;
   let queryParamMap$: BehaviorSubject<any>;
 
@@ -18,8 +18,20 @@ describe('CardPageComponent', () => {
     } as unknown as ActivatedRoute;
   }
 
+  function buildCardsMock(getByEmail: jasmine.Spy) {
+    return {
+      getByEmail,
+      getAppearanceSettings: jasmine
+        .createSpy('getAppearanceSettings')
+        .and.returnValue(of({ allowUserTemplate: false, defaultTemplate: 'classic' })),
+      updateTemplate: jasmine.createSpy('updateTemplate')
+    };
+  }
+
   function setup(params: Record<string, string>) {
-    cards = { getByEmail: jasmine.createSpy().and.returnValue(of({ id: '1', email: params['email'] ?? '' })) };
+    cards = buildCardsMock(
+      jasmine.createSpy('getByEmail').and.returnValue(of({ id: '1', email: params['email'] ?? '' }))
+    );
     router = { navigate: jasmine.createSpy('navigate'), url: '/card?email=' + (params['email'] ?? '') };
 
     TestBed.configureTestingModule({
@@ -47,7 +59,7 @@ describe('CardPageComponent', () => {
   });
 
   it('sets not-found when getByEmail errors', () => {
-    cards = { getByEmail: jasmine.createSpy().and.returnValue(throwError(() => new Error('nope'))) };
+    cards = buildCardsMock(jasmine.createSpy('getByEmail').and.returnValue(throwError(() => new Error('nope'))));
     router = { navigate: jasmine.createSpy(), url: '/card?email=a' };
     TestBed.configureTestingModule({
       imports: [CardPageComponent, TranslateModule.forRoot()],

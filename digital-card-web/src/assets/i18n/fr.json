@@ -96,9 +96,13 @@
     "phone": "Tél :",
     "fax": "Fax :",
     "mobile": "Mob :",
+    "template": {
+      "choose": "Choisissez votre modèle"
+    },
     "errors": {
       "missingEmail": "Veuillez fournir un email (paramètre ?email=...).",
-      "notFound": "Carte introuvable pour cet email."
+      "notFound": "Carte introuvable pour cet email.",
+      "templateSaveError": "Impossible d'enregistrer le modèle choisi."
     }
   },
   "admin": {
@@ -109,6 +113,7 @@
       "cards": "Cartes",
       "departments": "Directions / Départements",
       "jobTitles": "Titres / Postes",
+      "appearance": "Apparence",
       "shareStats": "Statistiques de partage",
       "smtp": "SMTP"
     },
@@ -219,6 +224,23 @@
         "saveError": "Impossible d'enregistrer la configuration SMTP.",
         "testToRequired": "Veuillez saisir l'email destinataire du test.",
         "testSendError": "Impossible d'envoyer l'email de test."
+      }
+    },
+    "appearance": {
+      "title": "Modèle de carte",
+      "description": "Choisissez le modèle par défaut affiché aux employés et décidez s'ils peuvent changer le modèle depuis leur carte.",
+      "allowUser": "Autoriser l'employé à choisir son modèle",
+      "allowUserHint": "Si activé, l'employé verra un sélecteur de modèle depuis sa carte. Si désactivé, le modèle par défaut ci-dessous s'applique à tous.",
+      "defaultTemplate": "Modèle par défaut",
+      "defaultTemplateHint": "Appliqué quand l'employé n'a pas fait son propre choix (ou quand le choix utilisateur est désactivé).",
+      "saved": "Apparence enregistrée.",
+      "templates": {
+        "classic": "Classique",
+        "modern": "Moderne"
+      },
+      "errors": {
+        "loadError": "Impossible de charger les paramètres d'apparence.",
+        "saveError": "Impossible d'enregistrer les paramètres d'apparence."
       }
     },
     "shareStats": {

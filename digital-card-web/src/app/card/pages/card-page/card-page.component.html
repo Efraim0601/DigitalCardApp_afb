@@ -75,9 +75,52 @@
           <app-business-card
             #businessCard
             [card]="card()!"
-            [config]="{ cardBackground: 'assets/carte-digitale-bg.png' }"
+            [config]="cardConfig()"
           />
         </div>
+
+        @if (canChooseTemplate()) {
+          <div class="w-full max-w-md flex flex-col items-center gap-3">
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              {{ 'card.template.choose' | translate }}
+            </p>
+            <div class="grid w-full grid-cols-2 gap-3">
+              @for (tpl of templates; track tpl.id) {
+                <button
+                  type="button"
+                  class="group relative overflow-hidden rounded-xl border-2 transition focus:outline-none focus:ring-2 focus:ring-[#d32f2f]/40"
+                  [class.border-[#d32f2f]]="selectedTemplateId() === tpl.id"
+                  [class.shadow-md]="selectedTemplateId() === tpl.id"
+                  [class.border-slate-200]="selectedTemplateId() !== tpl.id"
+                  [class.hover:border-slate-400]="selectedTemplateId() !== tpl.id"
+                  [disabled]="templatePickerSaving()"
+                  [attr.aria-pressed]="selectedTemplateId() === tpl.id"
+                  (click)="selectTemplate(tpl.id)"
+                >
+                  <img
+                    [src]="tpl.background"
+                    [alt]="tpl.labelKey | translate"
+                    class="block h-24 w-full object-cover"
+                    loading="lazy"
+                  />
+                  <span class="block bg-white px-2 py-1.5 text-center text-xs font-medium text-slate-700">
+                    {{ tpl.labelKey | translate }}
+                  </span>
+                  @if (selectedTemplateId() === tpl.id) {
+                    <span class="absolute right-1 top-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#d32f2f] text-white shadow">
+                      <svg viewBox="0 0 16 16" fill="none" class="h-3.5 w-3.5">
+                        <path d="M3 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </span>
+                  }
+                </button>
+              }
+            </div>
+            @if (templatePickerError()) {
+              <p class="text-xs text-[#d32f2f]">{{ templatePickerError()! | translate }}</p>
+            }
+          </div>
+        }
 
         <div class="w-full max-w-2xl">
           <app-card-actions

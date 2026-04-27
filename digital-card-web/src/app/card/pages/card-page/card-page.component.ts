@@ -5,8 +5,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { catchError, finalize, of, switchMap } from 'rxjs';
 import { BusinessCardComponent } from '../../../shared/components/business-card/business-card.component';
 import { CardActionsComponent } from '../../../shared/components/card-actions/card-actions.component';
-import { Card } from '../../../shared/models/card.model';
-import { CardsService } from '../../../shared/services/cards.service';
+import { CARD_TEMPLATES, getTemplate } from '../../../shared/models/card-templates';
+import { Card, CardBackgroundConfig, TemplateId } from '../../../shared/models/card.model';
+import { CardsService, PublicAppearanceSettings } from '../../../shared/services/cards.service';
 import { LanguageService } from '../../../shared/services/language.service';
 import { ThemeService } from '../../../shared/services/theme.service';
 import { buildPublicCardUrl, withEmployeeQuery } from '../../../shared/utils/card-urls';
@@ -23,12 +24,36 @@ import { buildPublicCardUrl, withEmployeeQuery } from '../../../shared/utils/car
   `]
 })
 export class CardPageComponent {
+  readonly templates = CARD_TEMPLATES;
   readonly isLoading = signal(true);
   readonly errorKey = signal<string | null>(null);
   readonly card = signal<Card | null>(null);
   readonly publicUrl = signal('');
   readonly employeeUrl = signal('');
   readonly isCreator = signal(false);
+
+  readonly appearance = signal<PublicAppearanceSettings>({
+    allowUserTemplate: false,
+    defaultTemplate: 'classic'
+  });
+  readonly selectedTemplateId = signal<TemplateId>('classic');
+  readonly templatePickerSaving = signal(false);
+  readonly templatePickerError = signal<string | null>(null);
+
+  readonly canChooseTemplate = computed(
+    () => this.appearance().allowUserTemplate && this.card() !== null
+  );
+
+  readonly currentTemplate = computed(() => getTemplate(this.selectedTemplateId()));
+
+  readonly cardConfig = computed<CardBackgroundConfig>(() => {
+    const tpl = this.currentTemplate();
+    return {
+      cardBackground: tpl.background,
+      contentPadding: tpl.contentPadding,
+      backgroundSize: tpl.backgroundSize
+    };
+  });
 
   readonly email = computed(() => this.route.snapshot.queryParamMap.get('email') ?? '');
 
@@ -39,6 +64,19 @@ export class CardPageComponent {
     readonly lang: LanguageService,
     readonly theme: ThemeService
   ) {
+    this.cards
+      .getAppearanceSettings()
+      .pipe(catchError(() => of(null)))
+      .subscribe((settings) => {
+        if (settings) {
+          this.appearance.set({
+            allowUserTemplate: !!settings.allowUserTemplate,
+            defaultTemplate: settings.defaultTemplate ?? 'classic'
+          });
+          this.applyTemplateFromState();
+        }
+      });
+
     this.route.queryParamMap
       .pipe(
         switchMap((params) => {
@@ -81,11 +119,53 @@ export class CardPageComponent {
         })
       )
       .subscribe((card) => {
-        if (card) this.card.set(card);
+        if (card) {
+          this.card.set(card);
+          this.applyTemplateFromState();
+        }
       });
   }
 
   backToLogin() {
     this.router.navigate(['/login']);
+  }
+
+  selectTemplate(id: TemplateId) {
+    if (!this.canChooseTemplate()) return;
+    if (id === this.selectedTemplateId()) return;
+    const card = this.card();
+    if (!card) return;
+
+    const previous = this.selectedTemplateId();
+    this.selectedTemplateId.set(id);
+    this.templatePickerError.set(null);
+    this.templatePickerSaving.set(true);
+
+    this.cards
+      .updateTemplate(card.email, id)
+      .pipe(
+        catchError((err: { error?: { error?: string } }) => {
+          this.selectedTemplateId.set(previous);
+          this.templatePickerError.set(err?.error?.error ?? 'card.errors.templateSaveError');
+          return of(null);
+        }),
+        finalize(() => this.templatePickerSaving.set(false))
+      )
+      .subscribe((updated) => {
+        if (!updated) return;
+        this.card.set({ ...card, templateId: updated.templateId ?? id });
+      });
+  }
+
+  /** Resolve the active template using the same priority as the cardyo backend:
+   * if the admin allows user choice and the card has a saved templateId, use it; otherwise fall back to the admin default. */
+  private applyTemplateFromState() {
+    const settings = this.appearance();
+    const card = this.card();
+    if (settings.allowUserTemplate && card?.templateId) {
+      this.selectedTemplateId.set(card.templateId as TemplateId);
+    } else {
+      this.selectedTemplateId.set(settings.defaultTemplate ?? 'classic');
+    }
   }
 }

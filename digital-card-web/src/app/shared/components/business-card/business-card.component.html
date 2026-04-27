@@ -6,10 +6,16 @@
           [style.transform]="'scale(' + scale() + ')'"
           style="transform-origin: top left"
           [style.backgroundImage]="config.cardBackground ? 'url(' + config.cardBackground + ')' : null"
-          [style.backgroundSize]="'cover'"
+          [style.backgroundSize]="resolvedBackgroundSize()"
           [style.backgroundPosition]="'center'"
         >
-          <div class="relative z-[1] flex h-full flex-col px-8 pb-5 pt-[113px] font-[Arial,Helvetica,sans-serif]">
+          <div
+            class="relative z-[1] flex h-full flex-col font-[Arial,Helvetica,sans-serif]"
+            [style.paddingTop.px]="resolvedPadding().top"
+            [style.paddingRight.px]="resolvedPadding().right"
+            [style.paddingBottom.px]="resolvedPadding().bottom"
+            [style.paddingLeft.px]="resolvedPadding().left"
+          >
             <div class="mb-2">
               <h1 class="text-[20px] font-bold leading-tight text-[#1a1a2e]">
                 {{ fullName() }}

@@ -47,6 +47,9 @@ public class Card {
     @Column(name = "share_count", columnDefinition = "integer default 0")
     private Integer shareCount = 0;
 
+    @Column(name = "template_id")
+    private String templateId;
+
     @PrePersist
     void onCreate() {
         Instant now = Instant.now();

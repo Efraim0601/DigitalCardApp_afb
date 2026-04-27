@@ -34,6 +34,13 @@ export const ADMIN_ROUTES: Routes = [
             (m) => m.ShareStatsAdminPageComponent
           )
       },
+      {
+        path: 'appearance',
+        loadComponent: () =>
+          import('./pages/appearance-admin/appearance-admin.page').then(
+            (m) => m.AppearanceAdminPageComponent
+          )
+      },
       { path: '', pathMatch: 'full', redirectTo: 'cards' }
     ]
   },

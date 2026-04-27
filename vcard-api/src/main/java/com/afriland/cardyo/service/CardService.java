@@ -163,8 +163,18 @@ public class CardService {
                 .department(deptDto)
                 .jobTitle(jtDto)
                 .shareCount(card.getShareCount())
+                .templateId(card.getTemplateId())
                 .createdAt(card.getCreatedAt())
                 .updatedAt(card.getUpdatedAt())
                 .build();
+    }
+
+    @Transactional
+    public CardDto updateTemplate(String email, String templateId) {
+        Card card = cardRepository.findByEmailWithRelations(email.toLowerCase().trim())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Card not found for email: " + email));
+        card.setTemplateId(templateId);
+        return toDto(cardRepository.save(card));
     }
 }

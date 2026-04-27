@@ -96,9 +96,13 @@
     "phone": "Phone:",
     "fax": "Fax:",
     "mobile": "Mobile:",
+    "template": {
+      "choose": "Choose your template"
+    },
     "errors": {
       "missingEmail": "Please provide an email (?email=...).",
-      "notFound": "Card not found for this email."
+      "notFound": "Card not found for this email.",
+      "templateSaveError": "Unable to save the selected template."
     }
   },
   "admin": {
@@ -109,6 +113,7 @@
       "cards": "Cards",
       "departments": "Directorates / Departments",
       "jobTitles": "Titles / Positions",
+      "appearance": "Appearance",
       "shareStats": "Sharing statistics",
       "smtp": "SMTP"
     },
@@ -219,6 +224,23 @@
         "saveError": "Unable to save SMTP configuration.",
         "testToRequired": "Please enter the test recipient email.",
         "testSendError": "Unable to send the test email."
+      }
+    },
+    "appearance": {
+      "title": "Card template",
+      "description": "Choose the default template shown to employees and decide whether they can switch templates from their card.",
+      "allowUser": "Allow employee to choose their template",
+      "allowUserHint": "When enabled, the employee gets a template picker on their card page. When disabled, the default template below is applied to everyone.",
+      "defaultTemplate": "Default template",
+      "defaultTemplateHint": "Applied when the employee has not made their own choice (or when user-side selection is disabled).",
+      "saved": "Appearance saved.",
+      "templates": {
+        "classic": "Classic",
+        "modern": "Modern"
+      },
+      "errors": {
+        "loadError": "Unable to load appearance settings.",
+        "saveError": "Unable to save appearance settings."
       }
     },
     "shareStats": {

@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { toPng } from 'html-to-image';
-import { Card, CardBackgroundConfig } from '../../models/card.model';
+import { Card, CardBackgroundConfig, CardBackgroundSize, CardPadding } from '../../models/card.model';
 import { LanguageService } from '../../services/language.service';
 import { nextPaint } from '../../utils/next-paint';
 
@@ -27,6 +27,9 @@ export class BusinessCardComponent implements AfterViewInit, OnDestroy {
   readonly cardWidth = 600;
   readonly cardHeight = 340;
 
+  private static readonly DEFAULT_PADDING: CardPadding = { top: 113, right: 32, bottom: 20, left: 32 };
+  private static readonly DEFAULT_BACKGROUND_SIZE: CardBackgroundSize = 'cover';
+
   @Input({ required: true }) card!: Card;
   @Input() config: CardBackgroundConfig = { cardBackground: 'assets/carte-digitale-bg.png' };
 
@@ -34,6 +37,14 @@ export class BusinessCardComponent implements AfterViewInit, OnDestroy {
   @ViewChild('outerEl', { static: true }) outerEl!: ElementRef<HTMLElement>;
 
   readonly scale = signal(1);
+
+  readonly resolvedPadding = computed<CardPadding>(
+    () => this.config?.contentPadding ?? BusinessCardComponent.DEFAULT_PADDING
+  );
+
+  readonly resolvedBackgroundSize = computed<CardBackgroundSize>(
+    () => this.config?.backgroundSize ?? BusinessCardComponent.DEFAULT_BACKGROUND_SIZE
+  );
 
   readonly fullName = computed(() => {
     const f = (this.card?.firstName ?? '').trim();

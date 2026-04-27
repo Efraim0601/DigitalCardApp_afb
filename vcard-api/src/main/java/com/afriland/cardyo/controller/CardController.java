@@ -2,7 +2,9 @@ package com.afriland.cardyo.controller;
 
 import com.afriland.cardyo.dto.BulkDeleteRequest;
 import com.afriland.cardyo.dto.CardCreateRequest;
+import com.afriland.cardyo.dto.CardTemplateUpdateRequest;
 import com.afriland.cardyo.dto.CardUpdateRequest;
+import com.afriland.cardyo.service.AppearanceSettingsService;
 import com.afriland.cardyo.service.CardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import java.util.UUID;
 public class CardController {
 
     private final CardService cardService;
+    private final AppearanceSettingsService appearanceSettingsService;
 
     @GetMapping
     public ResponseEntity<Object> getCards(
@@ -61,5 +64,26 @@ public class CardController {
     public ResponseEntity<Object> incrementShareCount(@PathVariable String email) {
         cardService.incrementShareCount(email);
         return ResponseEntity.ok(Map.of(ApiKeys.SUCCESS, true));
+    }
+
+    /**
+     * Public endpoint allowing an employee to switch their card template.
+     * Only honoured when the admin has enabled "Autoriser l'employé à choisir son modèle".
+     */
+    @PutMapping("/template")
+    public ResponseEntity<Object> updateTemplate(
+            @Valid @RequestBody CardTemplateUpdateRequest request) {
+
+        if (!appearanceSettingsService.isUserTemplateAllowed()) {
+            return ResponseEntity.status(403)
+                    .body(Map.of(ApiKeys.ERROR, "User template selection is disabled"));
+        }
+        if (!appearanceSettingsService.isTemplateSupported(request.getTemplateId())) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of(ApiKeys.ERROR, "Unsupported template: " + request.getTemplateId()));
+        }
+        return ResponseEntity.ok(cardService.updateTemplate(
+                request.getEmail(),
+                request.getTemplateId().trim().toLowerCase()));
     }
 }

@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Card } from '../models/card.model';
+import { Card, TemplateId } from '../models/card.model';
 
 export type PagedResult<T> = {
   items: T[];
@@ -48,6 +48,17 @@ export type SmtpSettingsUpdatePayload = {
   sslEnabled: boolean;
   fromEmail: string;
   fromName: string;
+};
+
+export type AppearanceSettings = {
+  allowUserTemplate: boolean;
+  defaultTemplate: TemplateId;
+  updatedAt: string | null;
+};
+
+export type AppearanceSettingsUpdatePayload = {
+  allowUserTemplate: boolean;
+  defaultTemplate: TemplateId;
 };
 
 @Injectable({ providedIn: 'root' })
@@ -155,6 +166,14 @@ export class AdminService {
 
   sendSmtpTestEmail(toEmail: string): Observable<{ success: boolean }> {
     return this.http.post<{ success: boolean }>('/api/admin/smtp-settings/test', { toEmail });
+  }
+
+  getAppearanceSettings(): Observable<AppearanceSettings> {
+    return this.http.get<AppearanceSettings>('/api/admin/appearance-settings');
+  }
+
+  updateAppearanceSettings(payload: AppearanceSettingsUpdatePayload): Observable<AppearanceSettings> {
+    return this.http.put<AppearanceSettings>('/api/admin/appearance-settings', payload);
   }
 }
 
