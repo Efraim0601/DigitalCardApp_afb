@@ -32,7 +32,7 @@ services:
       ADMIN_EMAIL: admin@afrilandfirstbank.com
       ADMIN_PASSWORD: admin
       ADMIN_SESSION_SECRET: change-me-in-production
-      CORS_ORIGINS: http://localhost:8766,http://62.169.26.178:8766
+      CORS_ORIGINS: http://localhost:8766,http://62.169.26.178:8766,https://afbvcard.afbdei.com
     depends_on:
       db:
         condition: service_healthy
