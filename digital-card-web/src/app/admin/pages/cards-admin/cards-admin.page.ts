@@ -86,8 +86,8 @@ export class CardsAdminPageComponent {
   loadReferenceData() {
     this.isOptionsLoading.set(true);
     forkJoin({
-      departments: this.admin.listDepartments({ limit: 200, offset: 0 }),
-      jobTitles: this.admin.listJobTitles({ limit: 200, offset: 0 })
+      departments: this.admin.listDepartments({ limit: 1000, offset: 0 }),
+      jobTitles: this.admin.listJobTitles({ limit: 1000, offset: 0 })
     })
       .pipe(finalize(() => this.isOptionsLoading.set(false)))
       .subscribe({
