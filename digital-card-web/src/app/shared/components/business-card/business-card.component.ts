@@ -127,7 +127,12 @@ export class BusinessCardComponent implements AfterViewInit, OnDestroy {
       const dataUrl = await toPng(this.cardEl.nativeElement, {
         cacheBust: true,
         pixelRatio: 2,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        width: this.cardWidth,
+        height: this.cardHeight,
+        canvasWidth: this.cardWidth,
+        canvasHeight: this.cardHeight,
+        style: { transform: 'none', margin: '0' }
       });
       const res = await fetch(dataUrl);
       const blob = await res.blob();
@@ -177,8 +182,9 @@ export class BusinessCardComponent implements AfterViewInit, OnDestroy {
   }
 
   private buildImageFileName(): string {
-    const base = (this.fullName() || this.card.email || 'business-card').replaceAll(/[^a-z0-9_.-]/gi, '_');
-    return `${base}.png`;
+    const ownerName = this.fullName() || this.card.email || '';
+    const safe = ownerName.replaceAll(/[^a-z0-9_.\- ]/gi, '_').trim() || 'carte';
+    return `Carte de ${safe}.png`;
   }
 
   telHref(value: string | null | undefined): string {

@@ -90,7 +90,7 @@ export class CardPageComponent {
           if (globalThis.window !== undefined) {
             const publicUrl = buildPublicCardUrl(
               globalThis.window.location.origin,
-              this.router.url.split('?')[0] || '/card',
+              '/card',
               query
             );
             this.publicUrl.set(publicUrl);
