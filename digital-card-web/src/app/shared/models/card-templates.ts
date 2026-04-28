@@ -21,7 +21,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     id: 'modern',
     background: 'assets/background_new.jpg',
     labelKey: 'admin.appearance.templates.modern',
-    contentPadding: { top: 95, right: 24, bottom: 45, left: 130 },
+    contentPadding: { top: 90, right: 24, bottom: 45, left: 65 },
     backgroundSize: '100% 100%'
   }
 ];
