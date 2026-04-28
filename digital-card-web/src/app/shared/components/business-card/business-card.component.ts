@@ -121,12 +121,16 @@ export class BusinessCardComponent implements AfterViewInit, OnDestroy {
     this.applyScale(1);
     await nextPaint();
 
+    const pixelRatio = 2;
+    const targetW = this.cardWidth * pixelRatio;
+    const targetH = this.cardHeight * pixelRatio;
+
     try {
       await this.waitForBackgroundImage(this.config.cardBackground ?? undefined);
       await this.waitForImages(this.cardEl.nativeElement);
-      const dataUrl = await toPng(this.cardEl.nativeElement, {
+      const rawDataUrl = await toPng(this.cardEl.nativeElement, {
         cacheBust: true,
-        pixelRatio: 2,
+        pixelRatio,
         backgroundColor: '#ffffff',
         width: this.cardWidth,
         height: this.cardHeight,
@@ -134,8 +138,7 @@ export class BusinessCardComponent implements AfterViewInit, OnDestroy {
         canvasHeight: this.cardHeight,
         style: { transform: 'none', margin: '0' }
       });
-      const res = await fetch(dataUrl);
-      const blob = await res.blob();
+      const blob = await this.cropToExactSize(rawDataUrl, targetW, targetH);
       return new File([blob], this.buildImageFileName(), { type: 'image/png' });
     } finally {
       this.applyScale(previousScale);
@@ -149,6 +152,37 @@ export class BusinessCardComponent implements AfterViewInit, OnDestroy {
     const outer = this.outerEl.nativeElement;
     outer.style.height = `${this.cardHeight * scale}px`;
     outer.style.width = `${this.cardWidth * scale}px`;
+  }
+
+  /**
+   * Re-draw the html-to-image output onto a canvas of the exact card size.
+   * html-to-image inflates the bounding rect with the box-shadow on some
+   * browsers, leaving a blank strip on the right of the captured PNG —
+   * this crop guarantees the output is strictly cardWidth*pr × cardHeight*pr.
+   */
+  private async cropToExactSize(dataUrl: string, targetW: number, targetH: number): Promise<Blob> {
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const i = new Image();
+      i.onload = () => resolve(i);
+      i.onerror = () => reject(new Error('Captured image failed to decode'));
+      i.src = dataUrl;
+    });
+
+    const canvas = document.createElement('canvas');
+    canvas.width = targetW;
+    canvas.height = targetH;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('Canvas 2D context unavailable');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, targetW, targetH);
+    ctx.drawImage(img, 0, 0, targetW, targetH, 0, 0, targetW, targetH);
+
+    return new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob(
+        (b) => (b ? resolve(b) : reject(new Error('Canvas toBlob returned null'))),
+        'image/png'
+      );
+    });
   }
 
   private async waitForBackgroundImage(url?: string): Promise<void> {
