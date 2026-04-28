@@ -195,18 +195,30 @@ describe('CardsAdminPageComponent', () => {
     expect(admin.downloadTemplate).toHaveBeenCalledWith('cards');
   }));
 
-  it('onImportFile imports and reloads', fakeAsync(() => {
+  it('onImportFile imports with overwrite when user confirms', fakeAsync(() => {
+    spyOn(window, 'confirm').and.returnValue(true);
     const file = new File(['x'], 'cards.xlsx');
     const input = document.createElement('input');
     Object.defineProperty(input, 'files', { value: [file] });
     const event = { target: input } as unknown as Event;
     component.onImportFile(event);
     tick();
-    expect(admin.import).toHaveBeenCalledWith('cards', file);
+    expect(admin.import).toHaveBeenCalledWith('cards', file, 'overwrite');
     expect(component.transferMessage()).toContain('admin.cards.transfer.importSuccess');
   }));
 
+  it('onImportFile imports with ignore when user cancels confirm', fakeAsync(() => {
+    spyOn(window, 'confirm').and.returnValue(false);
+    const file = new File(['x'], 'cards.xlsx');
+    const input = document.createElement('input');
+    Object.defineProperty(input, 'files', { value: [file] });
+    component.onImportFile({ target: input } as unknown as Event);
+    tick();
+    expect(admin.import).toHaveBeenCalledWith('cards', file, 'ignore');
+  }));
+
   it('onImportFile sets error on failure', fakeAsync(() => {
+    spyOn(window, 'confirm').and.returnValue(true);
     admin.import.and.returnValue(throwError(() => new Error('boom')));
     const file = new File(['x'], 'cards.xlsx');
     const input = document.createElement('input');
@@ -253,6 +265,7 @@ describe('CardsAdminPageComponent', () => {
   });
 
   it('onImportFile surfaces backend error message', fakeAsync(() => {
+    spyOn(window, 'confirm').and.returnValue(true);
     admin.import.and.returnValue(throwError(() => ({ error: { message: 'Invalid row 3' } })));
     const file = new File(['x'], 'cards.xlsx');
     const input = document.createElement('input');
@@ -263,6 +276,7 @@ describe('CardsAdminPageComponent', () => {
   }));
 
   it('onImportFile stores warnings from import result', fakeAsync(() => {
+    spyOn(window, 'confirm').and.returnValue(true);
     admin.import.and.returnValue(of({
       success: true,
       imported: { cards: 1, departments: 0, jobTitles: 0 },

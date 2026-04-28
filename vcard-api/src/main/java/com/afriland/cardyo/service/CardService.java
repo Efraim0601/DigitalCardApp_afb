@@ -126,6 +126,12 @@ public class CardService {
     }
 
     @Transactional
+    public int bulkDelete(List<UUID> ids) {
+        if (ids == null || ids.isEmpty()) return 0;
+        return cardRepository.bulkDeleteByIds(ids);
+    }
+
+    @Transactional
     public void incrementShareCount(String email) {
         int updated = cardRepository.incrementShareCount(email.toLowerCase().trim());
         if (updated == 0) {

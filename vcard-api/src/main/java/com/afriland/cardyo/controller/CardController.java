@@ -60,6 +60,14 @@ public class CardController {
         return ResponseEntity.ok(Map.of(ApiKeys.SUCCESS, true));
     }
 
+    @PostMapping("/bulk-delete")
+    public ResponseEntity<Object> bulkDelete(@Valid @RequestBody BulkDeleteRequest request) {
+        int deleted = cardService.bulkDelete(request.getIds());
+        return ResponseEntity.ok(Map.of(
+                ApiKeys.SUCCESS, true,
+                "deleted", deleted));
+    }
+
     @PostMapping("/increment-share/{email}")
     public ResponseEntity<Object> incrementShareCount(@PathVariable String email) {
         cardService.incrementShareCount(email);

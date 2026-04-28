@@ -23,8 +23,9 @@ public class DataAdminController {
     @PostMapping("/data-import")
     public ResponseEntity<Object> importData(
             @RequestParam String scope,
+            @RequestParam(name = "onConflict", defaultValue = "overwrite") String onConflict,
             @RequestParam("file") MultipartFile file) throws Exception {
-        return ResponseEntity.ok(importService.importData(file, scope));
+        return ResponseEntity.ok(importService.importData(file, scope, onConflict));
     }
 
     @GetMapping("/data-export")

@@ -153,6 +153,7 @@
       },
       "confirmBulkDelete": "Supprimer {{count}} carte(s) ?",
       "confirmDeleteOne": "Supprimer cette carte ?",
+      "confirmImportOverwrite": "Si une carte existe déjà pour un email du fichier, voulez-vous écraser ses informations ?\n\nOK = Écraser les cartes existantes\nAnnuler = Ignorer (conserver l'existant)",
       "transfer": {
         "templateBtn": "Modèle Excel",
         "importBtn": "Importer (Excel / CSV)",

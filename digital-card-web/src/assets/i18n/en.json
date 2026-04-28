@@ -153,6 +153,7 @@
       },
       "confirmBulkDelete": "Delete {{count}} card(s)?",
       "confirmDeleteOne": "Delete this card?",
+      "confirmImportOverwrite": "If a card already exists for an email in the file, do you want to overwrite its data?\n\nOK = Overwrite existing cards\nCancel = Ignore (keep existing)",
       "transfer": {
         "templateBtn": "Excel template",
         "importBtn": "Import (Excel / CSV)",

@@ -324,10 +324,13 @@ export class CardsAdminPageComponent {
     input.value = '';
     if (!file) return;
 
+    const overwrite = confirm(this.translate.instant('admin.cards.confirmImportOverwrite'));
+    const onConflict: 'overwrite' | 'ignore' = overwrite ? 'overwrite' : 'ignore';
+
     this.clearTransferState();
     this.isTransferring.set(true);
     this.admin
-      .import('cards', file)
+      .import('cards', file, onConflict)
       .pipe(
         tap((res) => {
           const imported = res?.imported?.cards ?? 0;

@@ -45,7 +45,7 @@ class DataAdminControllerTest {
     void importData_passesFileAndScopeToService() throws Exception {
         MockMultipartFile file = new MockMultipartFile(
                 "file", "sample.csv", "text/csv", "email\nx@y.com".getBytes());
-        when(importService.importData(any(), eq("cards"))).thenReturn(
+        when(importService.importData(any(), eq("cards"), eq("overwrite"))).thenReturn(
                 ImportResultDto.builder().success(true)
                         .warnings(List.of())
                         .imported(ImportResultDto.ImportCounts.builder().cards(1).build())

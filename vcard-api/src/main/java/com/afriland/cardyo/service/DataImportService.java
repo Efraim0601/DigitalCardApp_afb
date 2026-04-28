@@ -32,8 +32,12 @@ public class DataImportService {
     private final CardRepository cardRepository;
     private final AppProperties appProperties;
 
-    @Transactional
     public ImportResultDto importData(MultipartFile file, String scope) throws IOException {
+        return importData(file, scope, "overwrite");
+    }
+
+    @Transactional
+    public ImportResultDto importData(MultipartFile file, String scope, String onConflict) throws IOException {
         String filename = file.getOriginalFilename();
         boolean isCsv = filename != null && filename.toLowerCase().endsWith(".csv");
 
@@ -58,7 +62,7 @@ public class DataImportService {
             case "cards" -> {
                 if (rows.size() > 20000)
                     throw new IllegalArgumentException("Max 20 000 rows for cards");
-                cardCount = importCards(rows, warnings);
+                cardCount = importCards(rows, warnings, "ignore".equalsIgnoreCase(onConflict));
             }
             default -> throw new IllegalArgumentException("Invalid scope: " + scope);
         }
@@ -110,13 +114,19 @@ public class DataImportService {
 
     // ---- cards import ----
 
-    private int importCards(List<Map<String, String>> rows, List<String> warnings) {
+    private int importCards(List<Map<String, String>> rows, List<String> warnings, boolean ignoreExisting) {
         int count = 0;
         for (int i = 0; i < rows.size(); i++) {
             Map<String, String> row = rows.get(i);
             String email = getField(row, "email");
             if (email == null || email.isBlank()) {
                 warnings.add("Row " + (i + 2) + ": missing email, skipped");
+                continue;
+            }
+
+            String normalizedEmail = email.toLowerCase().trim();
+            if (ignoreExisting && cardRepository.existsByEmailIgnoreCase(normalizedEmail)) {
+                warnings.add("Row " + (i + 2) + ": '" + email + "' already exists, skipped");
                 continue;
             }
 
@@ -127,7 +137,7 @@ public class DataImportService {
                 String title = getField(row, "title", "titre", "poste");
 
             cardRepository.upsertByEmail(
-                    email.toLowerCase().trim(),
+                    normalizedEmail,
                     getField(row, "first_name", "firstname", "prenom"),
                     getField(row, "last_name", "lastname", "nom"),
                     getField(row, "company", "entreprise", "societe"),

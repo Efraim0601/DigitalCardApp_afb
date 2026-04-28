@@ -56,8 +56,17 @@ describe('AdminService', () => {
     });
     const req = httpMock.expectOne((r) => r.url === '/api/admin/data-import');
     expect(req.request.params.get('scope')).toBe('departments');
+    expect(req.request.params.get('onConflict')).toBe('overwrite');
     expect(req.request.body instanceof FormData).toBeTrue();
     req.flush({ success: true, imported: { cards: 0, departments: 3, jobTitles: 0 }, warnings: ['w'] });
+  });
+
+  it('import passes ignore as onConflict when requested', (done) => {
+    const file = new File(['data'], 'f.xlsx');
+    service.import('cards', file, 'ignore').subscribe(() => done());
+    const req = httpMock.expectOne((r) => r.url === '/api/admin/data-import');
+    expect(req.request.params.get('onConflict')).toBe('ignore');
+    req.flush({ success: true, imported: { cards: 0, departments: 0, jobTitles: 0 }, warnings: [] });
   });
 
   it('listCards applies q when set', (done) => {

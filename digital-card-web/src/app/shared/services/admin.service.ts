@@ -75,8 +75,8 @@ export class AdminService {
     return this.http.get('/api/admin/data-template', { params, responseType: 'blob' });
   }
 
-  import(scope: DataScope, file: File): Observable<ImportResult> {
-    const params = new HttpParams().set('scope', scope);
+  import(scope: DataScope, file: File, onConflict: 'overwrite' | 'ignore' = 'overwrite'): Observable<ImportResult> {
+    const params = new HttpParams().set('scope', scope).set('onConflict', onConflict);
     const form = new FormData();
     form.append('file', file);
     return this.http.post<ImportResult>('/api/admin/data-import', form, { params });
