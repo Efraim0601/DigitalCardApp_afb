@@ -117,18 +117,42 @@ export class BusinessCardComponent implements AfterViewInit, OnDestroy {
   }
 
   async getCardImageFile(): Promise<File> {
-    const previousScale = this.scale();
-    this.applyScale(1);
-    await nextPaint();
-
     const pixelRatio = 2;
     const targetW = this.cardWidth * pixelRatio;
     const targetH = this.cardHeight * pixelRatio;
 
+    // Clone the card into a fixed-size off-screen sandbox so the capture is
+    // immune to ancestor constraints (max-w-full, overflow:hidden, transform
+    // scale<1 used to fit narrow mobile viewports). On mobile, capturing the
+    // live element produced PNGs with a blank strip because the live tree
+    // was still scaled or clipped at capture time.
+    const sandbox = document.createElement('div');
+    sandbox.style.cssText = [
+      'position: fixed',
+      'top: 0',
+      'left: 0',
+      'pointer-events: none',
+      'visibility: hidden',
+      `width: ${this.cardWidth}px`,
+      `height: ${this.cardHeight}px`,
+      'overflow: visible',
+      'z-index: -1'
+    ].join(';');
+
+    const clone = this.cardEl.nativeElement.cloneNode(true) as HTMLElement;
+    clone.style.transform = 'none';
+    clone.style.margin = '0';
+    clone.style.width = `${this.cardWidth}px`;
+    clone.style.height = `${this.cardHeight}px`;
+    sandbox.appendChild(clone);
+    document.body.appendChild(sandbox);
+
     try {
+      await nextPaint();
       await this.waitForBackgroundImage(this.config.cardBackground ?? undefined);
-      await this.waitForImages(this.cardEl.nativeElement);
-      const rawDataUrl = await toPng(this.cardEl.nativeElement, {
+      await this.waitForImages(clone);
+
+      const rawDataUrl = await toPng(clone, {
         cacheBust: true,
         pixelRatio,
         backgroundColor: '#ffffff',
@@ -141,8 +165,7 @@ export class BusinessCardComponent implements AfterViewInit, OnDestroy {
       const blob = await this.cropToExactSize(rawDataUrl, targetW, targetH);
       return new File([blob], this.buildImageFileName(), { type: 'image/png' });
     } finally {
-      this.applyScale(previousScale);
-      await nextPaint();
+      document.body.removeChild(sandbox);
     }
   }
 
