@@ -41,6 +41,13 @@ export const ADMIN_ROUTES: Routes = [
             (m) => m.AppearanceAdminPageComponent
           )
       },
+      {
+        path: 'smtp',
+        loadComponent: () =>
+          import('./pages/smtp-admin/smtp-admin.page').then(
+            (m) => m.SmtpAdminPageComponent
+          )
+      },
       { path: '', pathMatch: 'full', redirectTo: 'cards' }
     ]
   },

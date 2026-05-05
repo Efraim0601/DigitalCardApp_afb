@@ -1,6 +1,7 @@
 package com.afriland.cardyo.service;
 
 import com.afriland.cardyo.config.AppProperties;
+import com.afriland.cardyo.dto.CardDto;
 import com.afriland.cardyo.dto.ImportResultDto;
 import com.afriland.cardyo.entity.Department;
 import com.afriland.cardyo.entity.JobTitle;
@@ -31,6 +32,7 @@ public class DataImportService {
     private final JobTitleRepository jobTitleRepository;
     private final CardRepository cardRepository;
     private final AppProperties appProperties;
+    private final SmtpSettingsService smtpSettingsService;
 
     public ImportResultDto importData(MultipartFile file, String scope) throws IOException {
         return importData(file, scope, "overwrite");
@@ -125,7 +127,8 @@ public class DataImportService {
             }
 
             String normalizedEmail = email.toLowerCase().trim();
-            if (ignoreExisting && cardRepository.existsByEmailIgnoreCase(normalizedEmail)) {
+            boolean alreadyExists = cardRepository.existsByEmailIgnoreCase(normalizedEmail);
+            if (ignoreExisting && alreadyExists) {
                 warnings.add("Row " + (i + 2) + ": '" + email + "' already exists, skipped");
                 continue;
             }
@@ -136,10 +139,13 @@ public class DataImportService {
                     getField(row, "mobile", "telephone_mobile", "tel_mobile"));
                 String title = getField(row, "title", "titre", "poste");
 
+            String firstName = getField(row, "first_name", "firstname", "prenom");
+            String lastName = getField(row, "last_name", "lastname", "nom");
+
             cardRepository.upsertByEmail(
                     normalizedEmail,
-                    getField(row, "first_name", "firstname", "prenom"),
-                    getField(row, "last_name", "lastname", "nom"),
+                    firstName,
+                    lastName,
                     getField(row, "company", "entreprise", "societe"),
                     title,
                     appProperties.getCard().getFixedPhone(),
@@ -148,6 +154,13 @@ public class DataImportService {
                     departmentId,
                     jobTitleId);
             count++;
+
+            CardDto stub = CardDto.builder()
+                    .email(normalizedEmail)
+                    .firstName(firstName)
+                    .lastName(lastName)
+                    .build();
+            smtpSettingsService.notifyCardCreatedOrUpdated(stub, !alreadyExists);
         }
         return count;
     }

@@ -39,6 +39,7 @@ class DataImportServiceTest {
     @Mock private DepartmentRepository departmentRepository;
     @Mock private JobTitleRepository jobTitleRepository;
     @Mock private CardRepository cardRepository;
+    @Mock private SmtpSettingsService smtpSettingsService;
 
     private AppProperties appProperties;
     private DataImportService service;
@@ -49,7 +50,7 @@ class DataImportServiceTest {
         appProperties.getCard().setFixedPhone("222 233 068");
         appProperties.getCard().setFixedFax("222 221 785");
         service = new DataImportService(departmentRepository, jobTitleRepository,
-                cardRepository, appProperties);
+                cardRepository, appProperties, smtpSettingsService);
     }
 
     @Test
