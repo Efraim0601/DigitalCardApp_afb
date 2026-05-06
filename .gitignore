@@ -40,3 +40,6 @@ build/
 # SonarQube scanner
 .scannerwork/
 **/.scannerwork/
+
+### Claude Code internal state ###
+.claude/
