@@ -126,13 +126,15 @@ export class BusinessCardComponent implements AfterViewInit, OnDestroy {
     // scale<1 used to fit narrow mobile viewports). On mobile, capturing the
     // live element produced PNGs with a blank strip because the live tree
     // was still scaled or clipped at capture time.
+    // Position off-screen instead of using visibility:hidden — the latter
+    // is inherited by descendants, including the clone, so html-to-image
+    // captured an invisible subtree and exported a fully blank PNG.
     const sandbox = document.createElement('div');
     sandbox.style.cssText = [
       'position: fixed',
       'top: 0',
-      'left: 0',
+      'left: -100000px',
       'pointer-events: none',
-      'visibility: hidden',
       `width: ${this.cardWidth}px`,
       `height: ${this.cardHeight}px`,
       'overflow: visible',
