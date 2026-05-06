@@ -136,6 +136,7 @@ export class CardActionsComponent {
       const file = await this.businessCard!.getCardImageFile();
       this.shareService.downloadFile(file, file.name);
       this.showToast('toast.imageDownloaded');
+      await this.incrementShareCount();
     });
   }
 
