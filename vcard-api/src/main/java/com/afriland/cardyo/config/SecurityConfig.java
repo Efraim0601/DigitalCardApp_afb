@@ -84,6 +84,7 @@ public class SecurityConfig {
                     "/api/auth/login-hint/"
                 ).permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/cards").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/cards/increment-share/**").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/api/cards/template").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/appearance-settings").permitAll()
                 .requestMatchers("/api/convertImage").permitAll()
