@@ -8,7 +8,7 @@
   </div>
 
   <div class="card-cta-zone mx-auto w-fit max-w-full">
-    <button type="button" class="card-cta-icon" [title]="'action.share' | translate" (click)="toggleShare($event)">
+    <button type="button" class="card-cta-icon" [title]="'action.share' | translate" [disabled]="!approved" (click)="toggleShare($event)">
       <svg viewBox="0 0 20 20" fill="none" class="h-5 w-5">
         <circle cx="15" cy="4" r="2" stroke="currentColor" stroke-width="1.5" />
         <circle cx="15" cy="16" r="2" stroke="currentColor" stroke-width="1.5" />
@@ -17,7 +17,7 @@
       </svg>
     </button>
 
-    <button type="button" class="card-cta-icon" [title]="'action.showQR' | translate" (click)="toggleQr($event)">
+    <button type="button" class="card-cta-icon" [title]="'action.showQR' | translate" [disabled]="!approved" (click)="toggleQr($event)">
       <svg viewBox="0 0 20 20" fill="none" class="h-5 w-5">
         <rect x="2" y="2" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5" />
         <rect x="4" y="4" width="3" height="3" fill="currentColor" />
@@ -36,7 +36,7 @@
       type="button"
       class="card-cta-icon"
       [title]="'action.downloadCard' | translate"
-      [disabled]="busy()"
+      [disabled]="busy() || !approved"
       (click)="downloadCardImage()"
     >
       <svg viewBox="0 0 20 20" fill="none" class="h-5 w-5">

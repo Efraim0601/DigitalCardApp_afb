@@ -26,6 +26,7 @@ export class CardsAdminPageComponent {
   readonly pageSize = 20;
 
   readonly q = signal('');
+  readonly statusFilter = signal<'' | 'PENDING' | 'APPROVED' | 'REJECTED'>('');
   readonly page = signal(1);
   readonly total = signal(0);
   readonly maxPage = computed(() => Math.max(1, Math.ceil(this.total() / this.pageSize)));
@@ -109,7 +110,8 @@ export class CardsAdminPageComponent {
       .listCards({
         q: this.q() || undefined,
         limit: this.pageSize,
-        offset: (this.page() - 1) * this.pageSize
+        offset: (this.page() - 1) * this.pageSize,
+        status: this.statusFilter() || undefined
       })
       .pipe(
         tap((res) => {
@@ -133,6 +135,55 @@ export class CardsAdminPageComponent {
     this.q.set(v);
     this.page.set(1);
     this.load();
+  }
+
+  setStatusFilter(value: '' | 'PENDING' | 'APPROVED' | 'REJECTED') {
+    this.statusFilter.set(value);
+    this.page.set(1);
+    this.load();
+  }
+
+  validate(id: string) {
+    if (!confirm(this.translate.instant('admin.cards.confirmValidate'))) return;
+    this.isLoading.set(true);
+    this.admin
+      .validateCard(id)
+      .pipe(
+        tap(() => this.load()),
+        catchError(() => {
+          this.error.set('admin.cards.errors.validateError');
+          return of(null);
+        }),
+        finalize(() => this.isLoading.set(false))
+      )
+      .subscribe();
+  }
+
+  reject(id: string) {
+    if (!confirm(this.translate.instant('admin.cards.confirmReject'))) return;
+    this.isLoading.set(true);
+    this.admin
+      .rejectCard(id)
+      .pipe(
+        tap(() => this.load()),
+        catchError(() => {
+          this.error.set('admin.cards.errors.rejectError');
+          return of(null);
+        }),
+        finalize(() => this.isLoading.set(false))
+      )
+      .subscribe();
+  }
+
+  statusLabelKey(status: string | null | undefined): string {
+    switch (status) {
+      case 'PENDING':
+        return 'admin.cards.status.pending';
+      case 'REJECTED':
+        return 'admin.cards.status.rejected';
+      default:
+        return 'admin.cards.status.approved';
+    }
   }
 
   prevPage() {

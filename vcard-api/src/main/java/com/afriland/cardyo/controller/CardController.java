@@ -4,6 +4,7 @@ import com.afriland.cardyo.dto.BulkDeleteRequest;
 import com.afriland.cardyo.dto.CardCreateRequest;
 import com.afriland.cardyo.dto.CardTemplateUpdateRequest;
 import com.afriland.cardyo.dto.CardUpdateRequest;
+import com.afriland.cardyo.entity.CardStatus;
 import com.afriland.cardyo.service.AppearanceSettingsService;
 import com.afriland.cardyo.service.CardService;
 import jakarta.validation.Valid;
@@ -29,6 +30,7 @@ public class CardController {
             @RequestParam(defaultValue = "20") int limit,
             @RequestParam(defaultValue = "0") int offset,
             @RequestParam(required = false) String q,
+            @RequestParam(required = false) String status,
             Authentication auth) {
 
         if (email != null && !email.isBlank()) {
@@ -39,13 +41,43 @@ public class CardController {
             return ResponseEntity.status(401)
                     .body(Map.of(ApiKeys.ERROR, "Unauthorized"));
         }
-        return ResponseEntity.ok(cardService.findAll(limit, offset, q));
+
+        CardStatus statusFilter = null;
+        if (status != null && !status.isBlank()) {
+            try {
+                statusFilter = CardStatus.valueOf(status.trim().toUpperCase());
+            } catch (IllegalArgumentException ex) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of(ApiKeys.ERROR, "Unknown status: " + status));
+            }
+        }
+        return ResponseEntity.ok(cardService.findAll(limit, offset, q, statusFilter));
     }
 
     @PostMapping
     public ResponseEntity<Object> createCard(
             @Valid @RequestBody CardCreateRequest request) {
         return ResponseEntity.ok(cardService.upsert(request));
+    }
+
+    /**
+     * Public client-portal submission. Creates a PENDING card that an admin must
+     * validate before it can be shared or use any application feature.
+     */
+    @PostMapping("/public")
+    public ResponseEntity<Object> createPublicCard(
+            @Valid @RequestBody CardCreateRequest request) {
+        return ResponseEntity.ok(cardService.createPublicRequest(request));
+    }
+
+    @PostMapping("/{id}/validate")
+    public ResponseEntity<Object> validateCard(@PathVariable UUID id) {
+        return ResponseEntity.ok(cardService.validate(id));
+    }
+
+    @PostMapping("/{id}/reject")
+    public ResponseEntity<Object> rejectCard(@PathVariable UUID id) {
+        return ResponseEntity.ok(cardService.reject(id));
     }
 
     @PutMapping("/{id}")

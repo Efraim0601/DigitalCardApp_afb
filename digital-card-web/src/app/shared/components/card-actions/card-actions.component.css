@@ -44,3 +44,18 @@
   outline: 2px solid rgba(16, 185, 129, 0.7);
   outline-offset: 3px;
 }
+
+.card-cta-icon:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(0.6);
+}
+
+.card-cta-icon:disabled:hover {
+  background: linear-gradient(180deg, #ffffff, #f4fffb);
+  border-color: rgba(52, 211, 153, 0.55);
+  color: #065f46;
+  box-shadow: 0 8px 16px rgba(4, 120, 87, 0.16);
+  transform: none;
+  filter: grayscale(0.6);
+}

@@ -76,6 +76,8 @@
     },
     "cta": "View my card",
     "footer": "Secure access for authorized staff only. © 2026 Afriland First Bank Group.",
+    "noCardYet": "Don't have a card yet?",
+    "createCardLink": "Create it here",
     "loading": "Checking email…",
     "errors": {
       "emailRequired": "Email is required.",
@@ -99,10 +101,45 @@
     "template": {
       "choose": "Choose your template"
     },
+    "status": {
+      "pendingTitle": "Card awaiting validation",
+      "pendingText": "Your card has been created. An administrator must validate it before you can share it and use its features. You will receive an email as soon as it is validated.",
+      "rejectedTitle": "Card not validated",
+      "rejectedText": "Your card request was not validated. Please contact your administrator for more information."
+    },
     "errors": {
       "missingEmail": "Please provide an email (?email=...).",
       "notFound": "Card not found for this email.",
       "templateSaveError": "Unable to save the selected template."
+    }
+  },
+  "create": {
+    "title": "Create my business card",
+    "subtitle": "Client portal",
+    "back": "Back",
+    "banner": {
+      "title": "Validation required",
+      "text": "Your card will be created and submitted to an administrator. You can view it right away, but its features (share, download, contact) will only become active once validated."
+    },
+    "fields": {
+      "email": "Work email",
+      "emailPlaceholder": "e.g. name@afrilandfirstbank.com",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "department": "Directorate / Department",
+      "jobTitle": "Title / Position",
+      "mobile": "Mobile",
+      "selectPlaceholder": "-- Select --"
+    },
+    "cta": "Create my card",
+    "footer": "Once validated by an administrator, you will be notified by email.",
+    "errors": {
+      "emailRequired": "Email is required.",
+      "emailInvalid": "Invalid email.",
+      "required": "This field is required.",
+      "generic": "Unable to create the card. Please try again.",
+      "alreadyExists": "A card already exists for this email.",
+      "viewExisting": "View existing card"
     }
   },
   "admin": {
@@ -149,8 +186,25 @@
         "name": "Name",
         "department": "Department",
         "title": "Title",
+        "status": "Status",
         "actions": "Actions"
       },
+      "filter": {
+        "label": "Status:",
+        "all": "All",
+        "pending": "Pending",
+        "approved": "Validated",
+        "rejected": "Rejected"
+      },
+      "status": {
+        "pending": "Pending",
+        "approved": "Validated",
+        "rejected": "Rejected"
+      },
+      "validate": "Validate",
+      "reject": "Reject",
+      "confirmValidate": "Validate this card? The holder will be notified by email.",
+      "confirmReject": "Reject this card? The holder will be notified by email.",
       "confirmBulkDelete": "Delete {{count}} card(s)?",
       "confirmDeleteOne": "Delete this card?",
       "confirmImportOverwrite": "If a card already exists for an email in the file, do you want to overwrite its data?\n\nOK = Overwrite existing cards\nCancel = Ignore (keep existing)",
@@ -170,7 +224,9 @@
         "exportError": "Unable to export.",
         "importError": "Unable to import the file.",
         "importErrorWithReason": "Unable to import: {{reason}}",
-        "templateError": "Unable to download the template."
+        "templateError": "Unable to download the template.",
+        "validateError": "Unable to validate the card.",
+        "rejectError": "Unable to reject the card."
       }
     },
     "label": {

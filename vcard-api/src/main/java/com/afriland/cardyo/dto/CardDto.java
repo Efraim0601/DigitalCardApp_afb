@@ -23,6 +23,8 @@ public class CardDto {
     private LabelDto jobTitle;
     private Integer shareCount;
     private String templateId;
+    private String status;
+    private Instant validatedAt;
     private Instant createdAt;
     private Instant updatedAt;
 }

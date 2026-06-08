@@ -6,6 +6,7 @@ import com.afriland.cardyo.dto.CardDto;
 import com.afriland.cardyo.dto.CardUpdateRequest;
 import com.afriland.cardyo.dto.PagedResponse;
 import com.afriland.cardyo.entity.Card;
+import com.afriland.cardyo.entity.CardStatus;
 import com.afriland.cardyo.entity.Department;
 import com.afriland.cardyo.entity.JobTitle;
 import com.afriland.cardyo.repository.CardRepository;
@@ -122,7 +123,7 @@ class CardServiceTest {
         Page<Card> page = new PageImpl<>(List.of(baseCard));
         when(cardRepository.findAllWithRelations(any(Pageable.class))).thenReturn(page);
 
-        PagedResponse<CardDto> res = cardService.findAll(20, 0, null);
+        PagedResponse<CardDto> res = cardService.findAll(20, 0, null, null);
 
         assertThat(res.getItems()).hasSize(1);
         assertThat(res.getTotal()).isEqualTo(1);
@@ -134,7 +135,7 @@ class CardServiceTest {
         Page<Card> page = new PageImpl<>(List.of(baseCard));
         when(cardRepository.search(eq("john"), any(Pageable.class))).thenReturn(page);
 
-        PagedResponse<CardDto> res = cardService.findAll(20, 0, "  john ");
+        PagedResponse<CardDto> res = cardService.findAll(20, 0, "  john ", null);
 
         assertThat(res.getItems()).hasSize(1);
         verify(cardRepository, never()).findAllWithRelations(any());
@@ -145,8 +146,8 @@ class CardServiceTest {
         Page<Card> empty = new PageImpl<>(List.of());
         when(cardRepository.findAllWithRelations(any(Pageable.class))).thenReturn(empty);
 
-        PagedResponse<CardDto> low = cardService.findAll(0, 0, null);
-        PagedResponse<CardDto> high = cardService.findAll(9999, 0, null);
+        PagedResponse<CardDto> low = cardService.findAll(0, 0, null, null);
+        PagedResponse<CardDto> high = cardService.findAll(9999, 0, null, null);
 
         assertThat(low.getLimit()).isEqualTo(1);
         assertThat(high.getLimit()).isEqualTo(200);
@@ -254,16 +255,27 @@ class CardServiceTest {
 
     @Test
     void incrementShareCount_throwsWhenEmailUnknown() {
-        when(cardRepository.incrementShareCount("x@y.com")).thenReturn(0);
+        when(cardRepository.findByEmailIgnoreCase("x@y.com")).thenReturn(Optional.empty());
         assertThatThrownBy(() -> cardService.incrementShareCount("X@y.com"))
                 .isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
     void incrementShareCount_passesNormalizedEmail() {
+        when(cardRepository.findByEmailIgnoreCase("john@example.com")).thenReturn(Optional.of(baseCard));
         when(cardRepository.incrementShareCount("john@example.com")).thenReturn(1);
         cardService.incrementShareCount(" JOHN@example.com ");
         verify(cardRepository).incrementShareCount("john@example.com");
+    }
+
+    @Test
+    void incrementShareCount_throwsWhenCardNotApproved() {
+        Card pending = Card.builder()
+                .id(cardId).email("john@example.com").status(CardStatus.PENDING).build();
+        when(cardRepository.findByEmailIgnoreCase("john@example.com")).thenReturn(Optional.of(pending));
+        assertThatThrownBy(() -> cardService.incrementShareCount("john@example.com"))
+                .isInstanceOf(IllegalStateException.class);
+        verify(cardRepository, never()).incrementShareCount(anyString());
     }
 
     @Test

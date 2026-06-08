@@ -1,0 +1,175 @@
+<div class="flex min-h-[calc(100vh-3rem)] items-center justify-center px-4 py-10">
+  <div class="w-full max-w-[480px]">
+    <div class="mb-3 flex justify-between">
+      <button
+        type="button"
+        class="inline-flex h-9 items-center justify-center rounded-lg border border-[#f5c6c6] bg-[#fff5f5] px-3 text-[13px] font-bold text-[#d32f2f] transition hover:bg-[#fce8e8]"
+        (click)="backToLogin()"
+      >
+        {{ 'create.back' | translate }}
+      </button>
+      <button
+        type="button"
+        class="inline-flex h-9 items-center justify-center rounded-lg border border-[#f5c6c6] bg-[#fff5f5] px-3 text-[13px] font-bold text-[#d32f2f] transition hover:bg-[#fce8e8]"
+        [title]="'common.languageToggleTitle' | translate"
+        (click)="lang.toggle()"
+      >
+        {{ lang.lang() === 'fr' ? 'EN' : 'FR' }}
+      </button>
+    </div>
+
+    <h1 class="text-center text-2xl font-bold tracking-[-0.5px] text-slate-900">
+      {{ 'create.title' | translate }}
+    </h1>
+    <p class="mb-6 mt-1.5 text-center text-[11px] font-semibold uppercase tracking-[.18em] text-slate-400">
+      {{ 'create.subtitle' | translate }}
+    </p>
+
+    <!-- Banner: validation required -->
+    <div class="mb-6 rounded-[10px] border border-[#f5c6c6] bg-[#fff5f5] px-4 py-3" role="status">
+      <p class="text-[13px] leading-[1.4] text-[#d32f2f]">
+        <strong class="font-bold">{{ 'create.banner.title' | translate }}</strong>
+        – {{ 'create.banner.text' | translate }}
+      </p>
+    </div>
+
+    <div class="rounded-2xl border border-slate-200/90 bg-white p-7 shadow-[0_8px_30px_rgba(15,23,42,0.08)]">
+      <form (ngSubmit)="submit()" [formGroup]="form" novalidate>
+        <!-- Email -->
+        <div class="mb-4">
+          <label class="mb-1.5 block text-[13px] font-semibold text-slate-700" for="email">
+            {{ 'create.fields.email' | translate }}
+          </label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            autocomplete="email"
+            class="w-full rounded-[10px] border border-slate-200 bg-slate-100 px-3 py-2.5 text-sm text-slate-900 outline-none transition
+                   placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
+            [placeholder]="'create.fields.emailPlaceholder' | translate"
+          />
+          @if (form.controls.email.touched && form.controls.email.invalid) {
+            <p class="mt-1 text-[13px] text-[#d32f2f]">
+              @if (form.controls.email.hasError('required')) {
+                {{ 'create.errors.emailRequired' | translate }}
+              } @else {
+                {{ 'create.errors.emailInvalid' | translate }}
+              }
+            </p>
+          }
+        </div>
+
+        <!-- First / last name -->
+        <div class="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label class="mb-1.5 block text-[13px] font-semibold text-slate-700" for="firstName">
+              {{ 'create.fields.firstName' | translate }}
+            </label>
+            <input
+              id="firstName"
+              type="text"
+              formControlName="firstName"
+              class="w-full rounded-[10px] border border-slate-200 bg-slate-100 px-3 py-2.5 text-sm text-slate-900 outline-none transition
+                     placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
+            />
+            @if (form.controls.firstName.touched && form.controls.firstName.invalid) {
+              <p class="mt-1 text-[13px] text-[#d32f2f]">{{ 'create.errors.required' | translate }}</p>
+            }
+          </div>
+          <div>
+            <label class="mb-1.5 block text-[13px] font-semibold text-slate-700" for="lastName">
+              {{ 'create.fields.lastName' | translate }}
+            </label>
+            <input
+              id="lastName"
+              type="text"
+              formControlName="lastName"
+              class="w-full rounded-[10px] border border-slate-200 bg-slate-100 px-3 py-2.5 text-sm text-slate-900 outline-none transition
+                     placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
+            />
+            @if (form.controls.lastName.touched && form.controls.lastName.invalid) {
+              <p class="mt-1 text-[13px] text-[#d32f2f]">{{ 'create.errors.required' | translate }}</p>
+            }
+          </div>
+        </div>
+
+        <!-- Department -->
+        <div class="mb-4">
+          <label class="mb-1.5 block text-[13px] font-semibold text-slate-700" for="departmentId">
+            {{ 'create.fields.department' | translate }}
+          </label>
+          <select
+            id="departmentId"
+            formControlName="departmentId"
+            class="w-full rounded-[10px] border border-slate-200 bg-slate-100 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:bg-white"
+          >
+            <option value="">{{ 'create.fields.selectPlaceholder' | translate }}</option>
+            @for (dep of departments(); track dep.id) {
+              <option [value]="dep.id">{{ labelOf(dep) }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Job title -->
+        <div class="mb-4">
+          <label class="mb-1.5 block text-[13px] font-semibold text-slate-700" for="jobTitleId">
+            {{ 'create.fields.jobTitle' | translate }}
+          </label>
+          <select
+            id="jobTitleId"
+            formControlName="jobTitleId"
+            class="w-full rounded-[10px] border border-slate-200 bg-slate-100 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:bg-white"
+          >
+            <option value="">{{ 'create.fields.selectPlaceholder' | translate }}</option>
+            @for (jt of jobTitles(); track jt.id) {
+              <option [value]="jt.id">{{ labelOf(jt) }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Mobile -->
+        <div class="mb-4">
+          <label class="mb-1.5 block text-[13px] font-semibold text-slate-700" for="mobile">
+            {{ 'create.fields.mobile' | translate }}
+          </label>
+          <input
+            id="mobile"
+            type="tel"
+            formControlName="mobile"
+            class="w-full rounded-[10px] border border-slate-200 bg-slate-100 px-3 py-2.5 text-sm text-slate-900 outline-none transition
+                   placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
+          />
+        </div>
+
+        @if (serverError()) {
+          <div class="mb-3 rounded-[10px] border border-[#f5c6c6] bg-[#fff5f5] px-4 py-3">
+            <p class="text-[13px] text-[#d32f2f]">{{ serverError()! | translate }}</p>
+            @if (conflictEmail()) {
+              <button
+                type="button"
+                class="mt-2 text-[13px] font-semibold text-[#d32f2f] underline"
+                (click)="viewExistingCard()"
+              >
+                {{ 'create.errors.viewExisting' | translate }}
+              </button>
+            }
+          </div>
+        }
+
+        <button
+          class="mt-2 flex w-full items-center justify-center gap-2 rounded-[10px] bg-[#d32f2f] px-6 py-3.5 text-[15px] font-semibold text-white transition
+                 hover:bg-[#b71c1c] disabled:cursor-not-allowed disabled:opacity-60"
+          type="submit"
+          [disabled]="isSubmitting() || isOptionsLoading()"
+        >
+          {{ 'create.cta' | translate }}
+        </button>
+      </form>
+
+      <p class="mt-3.5 text-center text-[11px] leading-[1.55] text-slate-400">
+        {{ 'create.footer' | translate }}
+      </p>
+    </div>
+  </div>
+</div>

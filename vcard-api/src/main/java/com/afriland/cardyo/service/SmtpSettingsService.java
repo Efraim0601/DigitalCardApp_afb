@@ -86,6 +86,36 @@ public class SmtpSettingsService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public void notifyCardValidated(CardDto card) {
+        SmtpSettings settings = getOrDefault();
+        if (!settings.isEnabled()) {
+            return;
+        }
+        try {
+            validateSmtpSettings(settings);
+            String subject = "Votre carte de visite numerique a ete validee";
+            sendEmail(settings, card.getEmail(), subject, buildValidatedEmailBody(card));
+        } catch (Exception ex) {
+            log.warn("Validation email skipped for {}: {}", card.getEmail(), ex.getMessage());
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public void notifyCardRejected(CardDto card) {
+        SmtpSettings settings = getOrDefault();
+        if (!settings.isEnabled()) {
+            return;
+        }
+        try {
+            validateSmtpSettings(settings);
+            String subject = "Votre carte de visite numerique n'a pas ete validee";
+            sendEmail(settings, card.getEmail(), subject, buildRejectedEmailBody(card));
+        } catch (Exception ex) {
+            log.warn("Rejection email skipped for {}: {}", card.getEmail(), ex.getMessage());
+        }
+    }
+
     private void sendEmail(SmtpSettings settings, String toEmail, String subject, String body) {
         JavaMailSenderImpl sender = buildMailSender(settings);
 
@@ -132,6 +162,30 @@ public class SmtpSettingsService {
         return greeting + "\n\n"
                 + "Votre carte de visite numerique a ete " + action + ".\n"
                 + "Vous pouvez la consulter ici: " + cardLink + "\n\n"
+                + "Cordialement,\n"
+                + "Equipe RH";
+    }
+
+    private String buildValidatedEmailBody(CardDto card) {
+        String fullName = (safe(card.getFirstName()) + " " + safe(card.getLastName())).trim();
+        String greeting = fullName.isBlank() ? "Bonjour," : "Bonjour " + fullName + ",";
+        String cardLink = "/card?email=" + URLEncoder.encode(card.getEmail(), StandardCharsets.UTF_8);
+
+        return greeting + "\n\n"
+                + "Bonne nouvelle ! Votre carte de visite numerique a ete validee.\n"
+                + "Vous pouvez desormais la consulter, la partager et utiliser toutes ses fonctionnalites ici: "
+                + cardLink + "\n\n"
+                + "Cordialement,\n"
+                + "Equipe RH";
+    }
+
+    private String buildRejectedEmailBody(CardDto card) {
+        String fullName = (safe(card.getFirstName()) + " " + safe(card.getLastName())).trim();
+        String greeting = fullName.isBlank() ? "Bonjour," : "Bonjour " + fullName + ",";
+
+        return greeting + "\n\n"
+                + "Nous vous informons que votre demande de carte de visite numerique n'a pas ete validee.\n"
+                + "Pour plus d'informations, veuillez contacter votre administrateur.\n\n"
                 + "Cordialement,\n"
                 + "Equipe RH";
     }

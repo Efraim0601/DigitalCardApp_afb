@@ -6,6 +6,8 @@ export type LabelDto = {
 
 export type TemplateId = 'classic' | 'modern';
 
+export type CardStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+
 // Mirrors Spring Boot CardDto (vcard-api)
 export type Card = {
   id: string;
@@ -21,6 +23,8 @@ export type Card = {
   jobTitle?: LabelDto | null;
   shareCount?: number | null;
   templateId?: string | null;
+  status?: CardStatus | null;
+  validatedAt?: string | null;
 };
 
 export type CardPadding = {

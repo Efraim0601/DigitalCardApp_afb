@@ -50,11 +50,20 @@ public class Card {
     @Column(name = "template_id")
     private String templateId;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    @Builder.Default
+    private CardStatus status = CardStatus.APPROVED;
+
+    @Column(name = "validated_at")
+    private Instant validatedAt;
+
     @PrePersist
     void onCreate() {
         Instant now = Instant.now();
         if (createdAt == null) createdAt = now;
         updatedAt = now;
+        if (status == null) status = CardStatus.APPROVED;
     }
 
     @PreUpdate

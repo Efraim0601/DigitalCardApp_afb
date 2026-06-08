@@ -62,7 +62,7 @@ class CardControllerTest {
 
     @Test
     void getCards_withAuthReturnsList() throws Exception {
-        when(cardService.findAll(anyInt(), anyInt(), any()))
+        when(cardService.findAll(anyInt(), anyInt(), any(), any()))
                 .thenReturn(PagedResponse.<CardDto>builder()
                         .items(List.of()).total(0).limit(20).offset(0).build());
 

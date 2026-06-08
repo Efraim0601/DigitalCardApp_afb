@@ -71,6 +71,18 @@
       </div>
 
       <div class="flex flex-1 w-full flex-col items-center justify-center gap-4 py-2">
+        @if (isPending()) {
+          <div class="w-full max-w-2xl rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-center" role="status">
+            <p class="text-sm font-semibold text-amber-800">{{ 'card.status.pendingTitle' | translate }}</p>
+            <p class="mt-1 text-[13px] leading-[1.5] text-amber-700">{{ 'card.status.pendingText' | translate }}</p>
+          </div>
+        } @else if (isRejected()) {
+          <div class="w-full max-w-2xl rounded-xl border border-[#f5c6c6] bg-[#fff5f5] px-4 py-3 text-center" role="status">
+            <p class="text-sm font-semibold text-[#d32f2f]">{{ 'card.status.rejectedTitle' | translate }}</p>
+            <p class="mt-1 text-[13px] leading-[1.5] text-[#d32f2f]">{{ 'card.status.rejectedText' | translate }}</p>
+          </div>
+        }
+
         <div class="w-full touch-manipulation px-1 sm:px-0">
           <app-business-card
             #businessCard
@@ -129,6 +141,7 @@
             [publicUrl]="publicUrl()"
             [employeeUrl]="employeeUrl()"
             [businessCard]="businessCard"
+            [approved]="isApproved()"
           />
         </div>
       </div>

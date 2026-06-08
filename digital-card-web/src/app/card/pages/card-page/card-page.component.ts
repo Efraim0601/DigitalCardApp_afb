@@ -40,8 +40,17 @@ export class CardPageComponent {
   readonly templatePickerSaving = signal(false);
   readonly templatePickerError = signal<string | null>(null);
 
+  /** A card can use the app features only once an admin has approved it. */
+  readonly isApproved = computed(() => {
+    const status = this.card()?.status;
+    // Older cards may not carry a status; treat the absence as approved.
+    return status == null || status === 'APPROVED';
+  });
+  readonly isPending = computed(() => this.card()?.status === 'PENDING');
+  readonly isRejected = computed(() => this.card()?.status === 'REJECTED');
+
   readonly canChooseTemplate = computed(
-    () => this.appearance().allowUserTemplate && this.card() !== null
+    () => this.appearance().allowUserTemplate && this.card() !== null && this.isApproved()
   );
 
   readonly currentTemplate = computed(() => getTemplate(this.selectedTemplateId()));

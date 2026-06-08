@@ -7,6 +7,7 @@ import com.afriland.cardyo.dto.CardUpdateRequest;
 import com.afriland.cardyo.dto.LabelDto;
 import com.afriland.cardyo.dto.PagedResponse;
 import com.afriland.cardyo.entity.Card;
+import com.afriland.cardyo.entity.CardStatus;
 import com.afriland.cardyo.entity.Department;
 import com.afriland.cardyo.entity.JobTitle;
 import com.afriland.cardyo.repository.CardRepository;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,14 +43,19 @@ public class CardService {
         return toDto(card);
     }
 
-    public PagedResponse<CardDto> findAll(int limit, int offset, String q) {
+    public PagedResponse<CardDto> findAll(int limit, int offset, String q, CardStatus status) {
         limit = Math.min(Math.max(limit, 1), 200);
         int page = offset / limit;
         PageRequest pageable = PageRequest.of(page, limit,
                 Sort.by("createdAt").descending());
 
+        boolean hasQuery = q != null && !q.isBlank();
         Page<Card> result;
-        if (q != null && !q.isBlank()) {
+        if (status != null) {
+            result = hasQuery
+                    ? cardRepository.searchByStatus(q.trim(), status, pageable)
+                    : cardRepository.findAllByStatusWithRelations(status, pageable);
+        } else if (hasQuery) {
             result = cardRepository.search(q.trim(), pageable);
         } else {
             result = cardRepository.findAllWithRelations(pageable);
@@ -81,6 +88,69 @@ public class CardService {
         CardDto savedCard = findByEmail(request.getEmail());
         smtpSettingsService.notifyCardCreatedOrUpdated(savedCard, !alreadyExists);
         return savedCard;
+    }
+
+    /**
+     * Card submitted from the public client portal. It is created as
+     * {@link CardStatus#PENDING} and requires admin validation before it can be
+     * shared or use any application feature. Refuses to overwrite an existing card.
+     */
+    @Transactional
+    public CardDto createPublicRequest(CardCreateRequest request) {
+        String email = request.getEmail().toLowerCase().trim();
+        if (cardRepository.existsByEmailIgnoreCase(email)) {
+            throw new IllegalStateException("A card already exists for this email: " + email);
+        }
+
+        Card card = Card.builder()
+                .email(email)
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .company(request.getCompany())
+                .title(request.getTitle())
+                .phone(appProperties.getCard().getFixedPhone())
+                .fax(appProperties.getCard().getFixedFax())
+                .mobile(PhoneFormatter.format(request.getMobile()))
+                .shareCount(0)
+                .status(CardStatus.PENDING)
+                .build();
+
+        if (request.getDepartmentId() != null) {
+            card.setDepartment(departmentRepository.findById(request.getDepartmentId())
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "Department not found: " + request.getDepartmentId())));
+        }
+        if (request.getJobTitleId() != null) {
+            card.setJobTitle(jobTitleRepository.findById(request.getJobTitleId())
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "JobTitle not found: " + request.getJobTitleId())));
+        }
+
+        return toDto(cardRepository.save(card));
+    }
+
+    /** Admin approves a pending card; the holder is notified by email. */
+    @Transactional
+    public CardDto validate(UUID id) {
+        Card card = cardRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Card not found: " + id));
+        card.setStatus(CardStatus.APPROVED);
+        card.setValidatedAt(Instant.now());
+        CardDto dto = toDto(cardRepository.save(card));
+        smtpSettingsService.notifyCardValidated(dto);
+        return dto;
+    }
+
+    /** Admin rejects a card; the holder is notified by email. */
+    @Transactional
+    public CardDto reject(UUID id) {
+        Card card = cardRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Card not found: " + id));
+        card.setStatus(CardStatus.REJECTED);
+        card.setValidatedAt(null);
+        CardDto dto = toDto(cardRepository.save(card));
+        smtpSettingsService.notifyCardRejected(dto);
+        return dto;
     }
 
     @Transactional
@@ -133,10 +203,13 @@ public class CardService {
 
     @Transactional
     public void incrementShareCount(String email) {
-        int updated = cardRepository.incrementShareCount(email.toLowerCase().trim());
-        if (updated == 0) {
-            throw new EntityNotFoundException("Card not found for email: " + email);
+        String normalized = email.toLowerCase().trim();
+        Card card = cardRepository.findByEmailIgnoreCase(normalized)
+                .orElseThrow(() -> new EntityNotFoundException("Card not found for email: " + email));
+        if (card.getStatus() != CardStatus.APPROVED) {
+            throw new IllegalStateException("Card is not validated yet: " + email);
         }
+        cardRepository.incrementShareCount(normalized);
     }
 
     public CardDto toDto(Card card) {
@@ -170,6 +243,8 @@ public class CardService {
                 .jobTitle(jtDto)
                 .shareCount(card.getShareCount())
                 .templateId(card.getTemplateId())
+                .status(card.getStatus() != null ? card.getStatus().name() : CardStatus.APPROVED.name())
+                .validatedAt(card.getValidatedAt())
                 .createdAt(card.getCreatedAt())
                 .updatedAt(card.getUpdatedAt())
                 .build();
@@ -180,6 +255,9 @@ public class CardService {
         Card card = cardRepository.findByEmailWithRelations(email.toLowerCase().trim())
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Card not found for email: " + email));
+        if (card.getStatus() != CardStatus.APPROVED) {
+            throw new IllegalStateException("Card is not validated yet: " + email);
+        }
         card.setTemplateId(templateId);
         return toDto(cardRepository.save(card));
     }

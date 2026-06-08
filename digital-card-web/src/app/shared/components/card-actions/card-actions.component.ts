@@ -22,6 +22,8 @@ export class CardActionsComponent {
   @Input() publicUrl = '';
   @Input() employeeUrl = '';
   @Input() businessCard: BusinessCardComponent | null = null;
+  /** When false (card not validated), sharing/QR/download/save-contact are blocked. */
+  @Input() approved = true;
 
   @ViewChild('qrCode') qrCode?: QrCodeComponent;
 
@@ -55,6 +57,7 @@ export class CardActionsComponent {
 
   toggleShare(event: MouseEvent): void {
     event.stopPropagation();
+    if (!this.approved) return;
     const next = !this.sharePopoverOpen();
     this.sharePopoverOpen.set(next);
     if (next) {
@@ -65,6 +68,7 @@ export class CardActionsComponent {
 
   toggleQr(event: MouseEvent): void {
     event.stopPropagation();
+    if (!this.approved) return;
     const next = !this.qrPopoverOpen();
     this.qrPopoverOpen.set(next);
     if (next) this.sharePopoverOpen.set(false);
@@ -131,6 +135,7 @@ export class CardActionsComponent {
   }
 
   async downloadCardImage(): Promise<void> {
+    if (!this.approved) return;
     if (!this.businessCard) return;
     await this.runBusy(async () => {
       const file = await this.businessCard!.getCardImageFile();
@@ -152,6 +157,7 @@ export class CardActionsComponent {
   }
 
   saveContact(): void {
+    if (!this.approved) return;
     void this.qrCode?.downloadVCard();
   }
 

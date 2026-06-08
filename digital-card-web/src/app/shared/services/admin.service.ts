@@ -82,10 +82,24 @@ export class AdminService {
     return this.http.post<ImportResult>('/api/admin/data-import', form, { params });
   }
 
-  listCards(params: { q?: string; limit: number; offset: number }): Observable<PagedResult<Card>> {
+  listCards(params: {
+    q?: string;
+    limit: number;
+    offset: number;
+    status?: 'PENDING' | 'APPROVED' | 'REJECTED';
+  }): Observable<PagedResult<Card>> {
     let httpParams = new HttpParams().set('limit', params.limit).set('offset', params.offset);
     if (params.q) httpParams = httpParams.set('q', params.q);
+    if (params.status) httpParams = httpParams.set('status', params.status);
     return this.http.get<PagedResult<Card>>('/api/cards', { params: httpParams });
+  }
+
+  validateCard(id: string): Observable<Card> {
+    return this.http.post<Card>(`/api/cards/${id}/validate`, {});
+  }
+
+  rejectCard(id: string): Observable<Card> {
+    return this.http.post<Card>(`/api/cards/${id}/reject`, {});
   }
 
   createOrUpsertCard(payload: {

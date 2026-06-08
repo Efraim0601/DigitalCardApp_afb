@@ -1,6 +1,7 @@
 package com.afriland.cardyo.repository;
 
 import com.afriland.cardyo.entity.Card;
+import com.afriland.cardyo.entity.CardStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -34,16 +35,32 @@ public interface CardRepository extends JpaRepository<Card, UUID> {
         """)
     Page<Card> search(@Param("q") String q, Pageable pageable);
 
+    @EntityGraph(attributePaths = {"department", "jobTitle"})
+    @Query("SELECT c FROM Card c WHERE c.status = :status")
+    Page<Card> findAllByStatusWithRelations(@Param("status") CardStatus status, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"department", "jobTitle"})
+    @Query("""
+        SELECT c FROM Card c
+        WHERE c.status = :status
+          AND (LOWER(c.email)     LIKE LOWER(CONCAT('%', :q, '%'))
+            OR LOWER(c.firstName) LIKE LOWER(CONCAT('%', :q, '%'))
+            OR LOWER(c.lastName)  LIKE LOWER(CONCAT('%', :q, '%')))
+        """)
+    Page<Card> searchByStatus(@Param("q") String q,
+                              @Param("status") CardStatus status,
+                              Pageable pageable);
+
     boolean existsByEmailIgnoreCase(String email);
 
     @Modifying
     @Query(value = """
         INSERT INTO cards (id, email, first_name, last_name, company, title,
                            phone, fax, mobile, department_id, job_title_id,
-                           created_at, updated_at)
+                           status, validated_at, created_at, updated_at)
         VALUES (gen_random_uuid(), :email, :firstName, :lastName, :company, :title,
                 :phone, :fax, :mobile, :departmentId, :jobTitleId,
-                now(), now())
+                'APPROVED', now(), now(), now())
         ON CONFLICT (email) DO UPDATE SET
             first_name    = COALESCE(:firstName,    cards.first_name),
             last_name     = COALESCE(:lastName,     cards.last_name),
@@ -54,6 +71,8 @@ public interface CardRepository extends JpaRepository<Card, UUID> {
             mobile        = COALESCE(:mobile,       cards.mobile),
             department_id = COALESCE(:departmentId, cards.department_id),
             job_title_id  = COALESCE(:jobTitleId,   cards.job_title_id),
+            status        = 'APPROVED',
+            validated_at  = now(),
             updated_at    = now()
         """, nativeQuery = true)
     void upsertByEmail(@Param("email") String email,

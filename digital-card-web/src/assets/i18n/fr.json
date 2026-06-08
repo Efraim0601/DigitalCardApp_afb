@@ -76,6 +76,8 @@
     },
     "cta": "Voir ma carte",
     "footer": "Accès sécurisé réservé au personnel autorisé. © 2026 Afriland First Bank Group.",
+    "noCardYet": "Vous n'avez pas encore de carte ?",
+    "createCardLink": "Créez-la ici",
     "loading": "Vérification de l'email…",
     "errors": {
       "emailRequired": "L'email est requis.",
@@ -99,10 +101,45 @@
     "template": {
       "choose": "Choisissez votre modèle"
     },
+    "status": {
+      "pendingTitle": "Carte en attente de validation",
+      "pendingText": "Votre carte a bien été créée. Un administrateur doit la valider avant que vous puissiez la partager et utiliser ses fonctionnalités. Vous recevrez un email dès la validation.",
+      "rejectedTitle": "Carte non validée",
+      "rejectedText": "Votre demande de carte n'a pas été validée. Veuillez contacter votre administrateur pour plus d'informations."
+    },
     "errors": {
       "missingEmail": "Veuillez fournir un email (paramètre ?email=...).",
       "notFound": "Carte introuvable pour cet email.",
       "templateSaveError": "Impossible d'enregistrer le modèle choisi."
+    }
+  },
+  "create": {
+    "title": "Créer ma carte de visite",
+    "subtitle": "Portail client",
+    "back": "Retour",
+    "banner": {
+      "title": "Validation requise",
+      "text": "Votre carte sera créée puis soumise à un administrateur. Vous pourrez la consulter immédiatement, mais ses fonctionnalités (partage, téléchargement, contact) ne seront actives qu'après validation."
+    },
+    "fields": {
+      "email": "Email professionnel",
+      "emailPlaceholder": "ex. nom@afrilandfirstbank.com",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "department": "Direction / Département",
+      "jobTitle": "Titre / Poste",
+      "mobile": "Mobile",
+      "selectPlaceholder": "-- Sélectionner --"
+    },
+    "cta": "Créer ma carte",
+    "footer": "Une fois validée par un administrateur, vous serez notifié par email.",
+    "errors": {
+      "emailRequired": "L'email est requis.",
+      "emailInvalid": "Email invalide.",
+      "required": "Ce champ est requis.",
+      "generic": "Impossible de créer la carte. Veuillez réessayer.",
+      "alreadyExists": "Une carte existe déjà pour cet email.",
+      "viewExisting": "Voir la carte existante"
     }
   },
   "admin": {
@@ -149,8 +186,25 @@
         "name": "Nom",
         "department": "Département",
         "title": "Titre",
+        "status": "Statut",
         "actions": "Actions"
       },
+      "filter": {
+        "label": "Statut :",
+        "all": "Toutes",
+        "pending": "En attente",
+        "approved": "Validées",
+        "rejected": "Rejetées"
+      },
+      "status": {
+        "pending": "En attente",
+        "approved": "Validée",
+        "rejected": "Rejetée"
+      },
+      "validate": "Valider",
+      "reject": "Rejeter",
+      "confirmValidate": "Valider cette carte ? Le détenteur sera notifié par email.",
+      "confirmReject": "Rejeter cette carte ? Le détenteur sera notifié par email.",
       "confirmBulkDelete": "Supprimer {{count}} carte(s) ?",
       "confirmDeleteOne": "Supprimer cette carte ?",
       "confirmImportOverwrite": "Si une carte existe déjà pour un email du fichier, voulez-vous écraser ses informations ?\n\nOK = Écraser les cartes existantes\nAnnuler = Ignorer (conserver l'existant)",
@@ -170,7 +224,9 @@
         "exportError": "Impossible d'exporter.",
         "importError": "Impossible d'importer le fichier.",
         "importErrorWithReason": "Impossible d'importer : {{reason}}",
-        "templateError": "Impossible de télécharger le modèle."
+        "templateError": "Impossible de télécharger le modèle.",
+        "validateError": "Impossible de valider la carte.",
+        "rejectError": "Impossible de rejeter la carte."
       }
     },
     "label": {
