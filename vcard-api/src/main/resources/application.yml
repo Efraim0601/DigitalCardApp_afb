@@ -1,0 +1,44 @@
+server:
+  port: 9999
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5555}/${PGDATABASE:vcard}
+    username: ${PGUSER:vcard}
+    password: ${PGPASSWORD:vcard}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+app:
+  admin:
+    email: ${ADMIN_EMAIL:admin@afrilandfirstbank.com}
+    password: ${ADMIN_PASSWORD:admin}
+    session-secret: ${ADMIN_SESSION_SECRET:change-me-in-production}
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:[*],http://127.0.0.1:[*]}
+  card:
+    fixed-phone: "222 233 068"
+    fixed-fax: "222 221 785"
+  cookie:
+    # Set APP_COOKIE_SECURE=true in environments served over HTTPS.
+    # Kept false by default so plain-HTTP dev/staging still receives the session cookie.
+    secure: ${APP_COOKIE_SECURE:false}
+    same-site: ${APP_COOKIE_SAME_SITE:Strict}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html

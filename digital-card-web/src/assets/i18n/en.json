@@ -1,0 +1,263 @@
+{
+  "common": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading…",
+    "previous": "Previous",
+    "next": "Next",
+    "shortPrev": "← Prev",
+    "shortNext": "Next →",
+    "search": "Search…",
+    "required": "*",
+    "resultsCount": "{{count}} result(s)",
+    "pageOf": "{{current}} / {{total}}",
+    "logout": "Log out",
+    "themeTitle": "Theme",
+    "backToPortal": "Back to portal",
+    "languageToggleTitle": "Change language"
+  },
+  "nav": {
+    "card": "Card",
+    "login": "Login",
+    "admin": "Admin"
+  },
+  "action": {
+    "share": "Share",
+    "copyLink": "Copy link",
+    "downloadCard": "Download business card",
+    "saveContact": "Save contact",
+    "showQR": "Show QR code",
+    "scanQR": "Scan to open card or save contact",
+    "call": "Call",
+    "sendEmail": "Send email"
+  },
+  "share": {
+    "cardTitle": "Business card - {{name}}",
+    "cardTitleDefault": "Business card - Afriland First Bank",
+    "discover": "Discover my business card: {{name}}",
+    "discoverDefault": "Discover this business card.",
+    "cardImage": "Card image",
+    "shareCardImage": "Share card image",
+    "cardLink": "Card link",
+    "shareCardLink": "Share card link",
+    "shareQRCode": "Share QR code (to card)",
+    "copyEmployeeLink": "Copy employee link (send to employee)",
+    "employeeLinkCopied": "Employee link copied to clipboard."
+  },
+  "copySuccess": "Link copied to clipboard.",
+  "toast": {
+    "linkCopied": "Link copied to clipboard",
+    "imageDownloaded": "Image downloaded",
+    "shared": "Shared"
+  },
+  "login": {
+    "brand": "Afriland First Bank",
+    "subtitle": "Digital identity portal",
+    "banner": {
+      "title": "Employee area",
+      "text": "Access your digital business card"
+    },
+    "welcome": "Welcome",
+    "hint": {
+      "employee": "Enter your professional email to access your digital business card.",
+      "admin": "Admin account detected. Enter your password to continue."
+    },
+    "email": {
+      "label": "Work email",
+      "placeholder": "e.g. name@afrilandfirstbank.com"
+    },
+    "password": {
+      "label": "Admin password",
+      "placeholder": "Secret password",
+      "hint": "Admin-only access. Your session will be secured."
+    },
+    "cta": "View my card",
+    "footer": "Secure access for authorized staff only. © 2026 Afriland First Bank Group.",
+    "loading": "Checking email…",
+    "errors": {
+      "emailRequired": "Email is required.",
+      "emailInvalid": "Invalid email.",
+      "passwordRequired": "Password is required.",
+      "generic": "Invalid email or password.",
+      "noCard": "No card is associated with this email."
+    }
+  },
+  "card": {
+    "title": "Business card",
+    "loading": "Loading your card…",
+    "back": "Back",
+    "bp": "P.O. Box:",
+    "telex": "Telex:",
+    "email": "Email:",
+    "website": "Website:",
+    "phone": "Phone:",
+    "fax": "Fax:",
+    "mobile": "Mobile:",
+    "template": {
+      "choose": "Choose your template"
+    },
+    "errors": {
+      "missingEmail": "Please provide an email (?email=...).",
+      "notFound": "Card not found for this email.",
+      "templateSaveError": "Unable to save the selected template."
+    }
+  },
+  "admin": {
+    "shell": {
+      "title": "Business cards management"
+    },
+    "tabs": {
+      "cards": "Cards",
+      "departments": "Directorates / Departments",
+      "jobTitles": "Titles / Positions",
+      "appearance": "Appearance",
+      "shareStats": "Sharing statistics",
+      "smtp": "SMTP"
+    },
+    "cards": {
+      "create": "Create a card",
+      "deleteSelected": "Delete ({{count}})",
+      "selectAllPage": "Select all (page)",
+      "searchPlaceholder": "Search (email, first name…)",
+      "formTitleCreate": "Create a card",
+      "formTitleEdit": "Edit a card",
+      "formHint": "HR can create or update cards. The employee accesses it via their email only.",
+      "sections": {
+        "identity": "Identity",
+        "organization": "Organization",
+        "contact": "Contact details"
+      },
+      "fields": {
+        "email": "Email",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "department": "Department",
+        "jobTitle": "Title / Position",
+        "phone": "Phone",
+        "fax": "Fax",
+        "mobile": "Mobile"
+      },
+      "selectDepartment": "-- Select a directorate / department --",
+      "selectJobTitle": "-- Select a title / position --",
+      "departmentHint": "Directorates created in the dedicated tab appear here after refresh.",
+      "jobTitleHint": "Titles / positions created in the dedicated tab appear here after refresh.",
+      "table": {
+        "email": "Email",
+        "name": "Name",
+        "department": "Department",
+        "title": "Title",
+        "actions": "Actions"
+      },
+      "confirmBulkDelete": "Delete {{count}} card(s)?",
+      "confirmDeleteOne": "Delete this card?",
+      "confirmImportOverwrite": "If a card already exists for an email in the file, do you want to overwrite its data?\n\nOK = Overwrite existing cards\nCancel = Ignore (keep existing)",
+      "transfer": {
+        "templateBtn": "Excel template",
+        "importBtn": "Import (Excel / CSV)",
+        "exportXlsxBtn": "Export (Excel)",
+        "exportCsvBtn": "Export (CSV)",
+        "importSuccess": "{{count}} card(s) imported successfully.",
+        "warningsHeader": "Warnings",
+        "formatHint": "Expected columns: email* | first_name | last_name | company | title | phone | fax | mobile | department_fr | department_en | job_title_fr | job_title_en. Only email is required; updates happen by email (upsert)."
+      },
+      "errors": {
+        "loadError": "Unable to load cards.",
+        "saveError": "Unable to save.",
+        "deleteError": "Unable to delete.",
+        "exportError": "Unable to export.",
+        "importError": "Unable to import the file.",
+        "importErrorWithReason": "Unable to import: {{reason}}",
+        "templateError": "Unable to download the template."
+      }
+    },
+    "label": {
+      "labelFr": "Label (French)",
+      "labelEn": "Label (English)"
+    },
+    "departments": {
+      "addBtn": "Add a directorate",
+      "formTitle": "Add a directorate",
+      "editTitle": "Edit directorate",
+      "empty": "No directorate registered.",
+      "loadError": "Unable to load directorates.",
+      "saveError": "Unable to save.",
+      "deleteError": "Unable to delete.",
+      "deleteConfirm": "Delete this directorate?"
+    },
+    "jobTitles": {
+      "addBtn": "Add a title",
+      "formTitle": "Add a title / position",
+      "editTitle": "Edit title / position",
+      "empty": "No title / position registered.",
+      "loadError": "Unable to load titles.",
+      "saveError": "Unable to save.",
+      "deleteError": "Unable to delete.",
+      "deleteConfirm": "Delete this title?"
+    },
+    "smtp": {
+      "title": "SMTP configuration and employee notifications",
+      "description": "When enabled, an email is automatically sent to the employee after creating or updating their card.",
+      "saved": "SMTP configuration saved.",
+      "testSent": "Test email sent.",
+      "enableAuto": "Enable automatic email notifications",
+      "smtpAuth": "SMTP Auth",
+      "starttls": "STARTTLS",
+      "sslTls": "SSL/TLS",
+      "host": "SMTP host",
+      "port": "Port",
+      "protocol": "Protocol",
+      "username": "SMTP username",
+      "password": "SMTP password",
+      "passwordPlaceholder": "Leave empty to keep",
+      "clearPassword": "Clear stored password",
+      "fromEmail": "From email",
+      "fromName": "From name",
+      "testSection": "SMTP send test",
+      "testDescription": "Sends a test email with the current configuration.",
+      "testTo": "Test recipient email",
+      "sendTest": "Send a test",
+      "errors": {
+        "loadError": "Unable to load SMTP configuration.",
+        "invalidFields": "Please correct the invalid fields.",
+        "saveError": "Unable to save SMTP configuration.",
+        "testToRequired": "Please enter the test recipient email.",
+        "testSendError": "Unable to send the test email."
+      }
+    },
+    "appearance": {
+      "title": "Card template",
+      "description": "Choose the default template shown to employees and decide whether they can switch templates from their card.",
+      "allowUser": "Allow employee to choose their template",
+      "allowUserHint": "When enabled, the employee gets a template picker on their card page. When disabled, the default template below is applied to everyone.",
+      "defaultTemplate": "Default template",
+      "defaultTemplateHint": "Applied when the employee has not made their own choice (or when user-side selection is disabled).",
+      "saved": "Appearance saved.",
+      "templates": {
+        "classic": "Classic",
+        "modern": "Modern"
+      },
+      "errors": {
+        "loadError": "Unable to load appearance settings.",
+        "saveError": "Unable to save appearance settings."
+      }
+    },
+    "shareStats": {
+      "title": "Sharing statistics",
+      "description": "Tracking the number of business card shares per person",
+      "total": "Total shares:",
+      "searchPlaceholder": "Search by name, email or title...",
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "shareCount": "Share count"
+      },
+      "empty": "No card found",
+      "errors": {
+        "loadError": "Error while loading cards"
+      }
+    }
+  }
+}
