@@ -1,0 +1,88 @@
+<div class="flex w-full justify-center">
+  <div #outerEl class="max-w-full overflow-hidden">
+    <div
+          #cardEl
+          class="business-card relative overflow-hidden rounded-[14px] border-2 border-gray-400 bg-white shadow-[0_4px_20px_rgba(0,0,0,0.15)]"
+          [style.transform]="'scale(' + scale() + ')'"
+          style="transform-origin: top left"
+          [style.backgroundImage]="config.cardBackground ? 'url(' + config.cardBackground + ')' : null"
+          [style.backgroundSize]="resolvedBackgroundSize()"
+          [style.backgroundPosition]="'center'"
+        >
+          <div
+            class="relative z-[1] flex h-full flex-col font-[Arial,Helvetica,sans-serif]"
+            [style.paddingTop.px]="resolvedPadding().top"
+            [style.paddingRight.px]="resolvedPadding().right"
+            [style.paddingBottom.px]="resolvedPadding().bottom"
+            [style.paddingLeft.px]="resolvedPadding().left"
+          >
+            <div class="mb-2">
+              <h1 class="text-[20px] font-bold leading-tight text-[#1a1a2e]">
+                {{ fullName() }}
+              </h1>
+              <p class="mt-1 text-sm font-bold leading-[1.35] text-[#333]">
+                {{ displayedTitle() }}
+              </p>
+              <p class="mt-0.5 text-xs font-medium leading-[1.4] text-[#2d2d2d]">
+                {{ displayedDepartment() }}
+              </p>
+            </div>
+
+            <div class="mt-5 flex items-end justify-between gap-4">
+              <div class="text-[11px] leading-[1.7] text-[#222]">
+                <div class="text-[11.5px] font-bold">Place de l'Indépendance</div>
+                <table class="border-collapse">
+                  <tr>
+                    <th scope="row" class="whitespace-nowrap pr-2 align-top text-[11px] font-normal leading-[1.55] text-[#333]">{{ 'card.bp' | translate }}</th>
+                    <td class="align-top text-[11px] leading-[1.55]">11834 Yaoundé - Cameroun</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="whitespace-nowrap pr-2 align-top text-[11px] font-normal leading-[1.55] text-[#333]">{{ 'card.telex' | translate }}</th>
+                    <td class="align-top text-[11px] leading-[1.55]">8907 KN</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="whitespace-nowrap pr-2 align-top text-[11px] font-normal leading-[1.55] text-[#333]">{{ 'card.email' | translate }}</th>
+                    <td class="align-top text-[11px] leading-[1.55]">
+                      <a class="break-all text-[#222] hover:underline" [href]="'mailto:' + (card.email || '')">{{ card.email }}</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="whitespace-nowrap pr-2 align-top text-[11px] font-normal leading-[1.55] text-[#333]">{{ 'card.website' | translate }}</th>
+                    <td class="align-top text-[11px] leading-[1.55]">
+                      <a class="text-[#222] hover:underline" [href]="websiteUrl" target="_blank" rel="noopener noreferrer">
+                        {{ website }}
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+
+              <div class="text-right text-[11px] text-[#222]">
+                <table class="border-collapse">
+                  <tr>
+                    <th scope="row" class="whitespace-nowrap pl-1.5 text-left text-[11px] font-normal leading-[1.55] text-[#333]">{{ 'card.phone' | translate }}</th>
+                    <td class="whitespace-nowrap pl-1.5 text-[11px] leading-[1.55]">
+                      <a class="text-[#222] hover:underline" [href]="telHref(fixedPhone())">{{ fixedPhone() }}</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="whitespace-nowrap pl-1.5 text-left text-[11px] font-normal leading-[1.55] text-[#333]">{{ 'card.fax' | translate }}</th>
+                    <td class="whitespace-nowrap pl-1.5 text-[11px] leading-[1.55]">
+                      <a class="text-[#222] hover:underline" [href]="telHref(fixedFax())">{{ fixedFax() }}</a>
+                    </td>
+                  </tr>
+                  @if (card.mobile) {
+                    <tr>
+                      <th scope="row" class="whitespace-nowrap pl-1.5 text-left text-[11px] font-normal leading-[1.55] text-[#333]">{{ 'card.mobile' | translate }}</th>
+                      <td class="whitespace-nowrap pl-1.5 text-[11px] leading-[1.55]">
+                        <a class="text-[#222] hover:underline" [href]="telHref(card.mobile)">{{ card.mobile }}</a>
+                      </td>
+                    </tr>
+                  }
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
