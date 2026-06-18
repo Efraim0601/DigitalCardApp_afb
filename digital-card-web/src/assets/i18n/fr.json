@@ -139,7 +139,8 @@
       "required": "Ce champ est requis.",
       "generic": "Impossible de créer la carte. Veuillez réessayer.",
       "alreadyExists": "Une carte existe déjà pour cet email.",
-      "viewExisting": "Voir la carte existante"
+      "viewExisting": "Voir la carte existante",
+      "emailDomain": "Seules les adresses se terminant par @afrilandfirstbank.com sont autorisées."
     }
   },
   "admin": {
@@ -152,7 +153,8 @@
       "jobTitles": "Titres / Postes",
       "appearance": "Apparence",
       "shareStats": "Statistiques de partage",
-      "smtp": "SMTP"
+      "smtp": "SMTP",
+      "pendingTitle": "Cartes en attente de validation"
     },
     "cards": {
       "create": "Créer une carte",

@@ -53,6 +53,8 @@ public interface CardRepository extends JpaRepository<Card, UUID> {
 
     boolean existsByEmailIgnoreCase(String email);
 
+    long countByStatus(CardStatus status);
+
     @Modifying
     @Query(value = """
         INSERT INTO cards (id, email, first_name, last_name, company, title,

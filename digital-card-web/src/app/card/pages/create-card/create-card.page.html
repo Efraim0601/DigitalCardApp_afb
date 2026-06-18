@@ -53,6 +53,8 @@
             <p class="mt-1 text-[13px] text-[#d32f2f]">
               @if (form.controls.email.hasError('required')) {
                 {{ 'create.errors.emailRequired' | translate }}
+              } @else if (form.controls.email.hasError('domain')) {
+                {{ 'create.errors.emailDomain' | translate }}
               } @else {
                 {{ 'create.errors.emailInvalid' | translate }}
               }

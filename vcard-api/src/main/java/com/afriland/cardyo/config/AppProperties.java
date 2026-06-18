@@ -13,6 +13,7 @@ public class AppProperties {
     private Cors cors = new Cors();
     private Card card = new Card();
     private Cookie cookie = new Cookie();
+    private Portal portal = new Portal();
 
     @Data
     public static class Admin {
@@ -30,6 +31,16 @@ public class AppProperties {
     public static class Card {
         private String fixedPhone;
         private String fixedFax;
+    }
+
+    @Data
+    public static class Portal {
+        /**
+         * Email domain an employee must belong to in order to self-create a card
+         * through the public client portal (e.g. "afrilandfirstbank.com").
+         * Leave blank to allow any email address.
+         */
+        private String allowedEmailDomain;
     }
 
     @Data

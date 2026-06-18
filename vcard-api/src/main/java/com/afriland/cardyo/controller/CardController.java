@@ -70,6 +70,12 @@ public class CardController {
         return ResponseEntity.ok(cardService.createPublicRequest(request));
     }
 
+    /** Admin-only: number of cards awaiting validation, used for the dashboard badge. */
+    @GetMapping("/pending-count")
+    public ResponseEntity<Object> pendingCount() {
+        return ResponseEntity.ok(Map.of("count", cardService.countPending()));
+    }
+
     @PostMapping("/{id}/validate")
     public ResponseEntity<Object> validateCard(@PathVariable UUID id) {
         return ResponseEntity.ok(cardService.validate(id));

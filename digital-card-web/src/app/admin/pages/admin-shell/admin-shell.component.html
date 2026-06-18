@@ -62,9 +62,17 @@
     <a
       routerLink="/admin/cards"
       routerLinkActive="text-[#d32f2f] bg-[#fff5f5]"
-      class="rounded-t-lg px-3 py-2 text-sm font-medium text-slate-500 transition hover:text-slate-700 sm:px-5"
+      class="relative flex items-center gap-2 rounded-t-lg px-3 py-2 text-sm font-medium text-slate-500 transition hover:text-slate-700 sm:px-5"
     >
       {{ 'admin.tabs.cards' | translate }}
+      @if (pendingCount() > 0) {
+        <span
+          class="inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#d32f2f] px-1.5 text-[11px] font-bold leading-none text-white"
+          [title]="'admin.tabs.pendingTitle' | translate"
+        >
+          {{ pendingCount() }}
+        </span>
+      }
     </a>
     <a
       routerLink="/admin/departments"

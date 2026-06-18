@@ -98,6 +98,7 @@ public class CardService {
     @Transactional
     public CardDto createPublicRequest(CardCreateRequest request) {
         String email = request.getEmail().toLowerCase().trim();
+        requireAllowedDomain(email);
         if (cardRepository.existsByEmailIgnoreCase(email)) {
             throw new IllegalStateException("A card already exists for this email: " + email);
         }
@@ -127,6 +128,27 @@ public class CardService {
         }
 
         return toDto(cardRepository.save(card));
+    }
+
+    /**
+     * Rejects a portal submission whose email does not belong to the configured
+     * corporate domain. No-op when no domain is configured.
+     */
+    private void requireAllowedDomain(String email) {
+        String domain = appProperties.getPortal().getAllowedEmailDomain();
+        if (domain == null || domain.isBlank()) {
+            return;
+        }
+        String suffix = "@" + domain.toLowerCase().trim();
+        if (!email.endsWith(suffix)) {
+            throw new IllegalArgumentException(
+                    "Only " + suffix + " email addresses may create a card: " + email);
+        }
+    }
+
+    /** Number of cards awaiting admin validation (used for the admin badge). */
+    public long countPending() {
+        return cardRepository.countByStatus(CardStatus.PENDING);
     }
 
     /** Admin approves a pending card; the holder is notified by email. */

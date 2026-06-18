@@ -102,6 +102,11 @@ export class AdminService {
     return this.http.post<Card>(`/api/cards/${id}/reject`, {});
   }
 
+  /** Number of cards awaiting validation, for the admin "Cards" tab badge. */
+  pendingCount(): Observable<{ count: number }> {
+    return this.http.get<{ count: number }>('/api/cards/pending-count');
+  }
+
   createOrUpsertCard(payload: {
     email: string;
     firstName?: string | null;

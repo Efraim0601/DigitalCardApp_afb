@@ -139,7 +139,8 @@
       "required": "This field is required.",
       "generic": "Unable to create the card. Please try again.",
       "alreadyExists": "A card already exists for this email.",
-      "viewExisting": "View existing card"
+      "viewExisting": "View existing card",
+      "emailDomain": "Only addresses ending in @afrilandfirstbank.com are allowed."
     }
   },
   "admin": {
@@ -152,7 +153,8 @@
       "jobTitles": "Titles / Positions",
       "appearance": "Appearance",
       "shareStats": "Sharing statistics",
-      "smtp": "SMTP"
+      "smtp": "SMTP",
+      "pendingTitle": "Cards awaiting validation"
     },
     "cards": {
       "create": "Create a card",

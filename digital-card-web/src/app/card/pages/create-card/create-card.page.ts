@@ -1,12 +1,22 @@
 import { CommonModule } from '@angular/common';
 import { Component, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { catchError, finalize, forkJoin, of, tap } from 'rxjs';
 import { CardsService, PublicLabel } from '../../../shared/services/cards.service';
 import { LanguageService } from '../../../shared/services/language.service';
 import { ThemeService } from '../../../shared/services/theme.service';
+
+/** Corporate email domain employees must belong to in order to self-create a card. */
+const ALLOWED_EMAIL_DOMAIN = 'afrilandfirstbank.com';
+
+/** Rejects any email that does not belong to the corporate domain. */
+function corporateEmailValidator(control: AbstractControl): ValidationErrors | null {
+  const value = (control.value ?? '').trim().toLowerCase();
+  if (!value) return null; // `required` already covers the empty case
+  return value.endsWith('@' + ALLOWED_EMAIL_DOMAIN) ? null : { domain: true };
+}
 
 type CreateCardForm = {
   email: FormControl<string>;
@@ -34,7 +44,7 @@ export class CreateCardPageComponent {
   readonly jobTitles = signal<PublicLabel[]>([]);
 
   readonly form = new FormGroup<CreateCardForm>({
-    email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
+    email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email, corporateEmailValidator] }),
     firstName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     lastName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     departmentId: new FormControl('', { nonNullable: true }),
@@ -115,6 +125,8 @@ export class CreateCardPageComponent {
           if (err?.status === 409) {
             this.conflictEmail.set(email);
             this.serverError.set('create.errors.alreadyExists');
+          } else if (err?.status === 400) {
+            this.serverError.set('create.errors.emailDomain');
           } else {
             this.serverError.set('create.errors.generic');
           }
