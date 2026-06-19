@@ -7,7 +7,6 @@ services:
       POSTGRES_USER: vcard
       POSTGRES_PASSWORD: vcard
     ports:
-      - "5555:5432"
       - "${DB_HOST_PORT:-5555}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -20,7 +19,7 @@ services:
 
   backend:
     build:
-      context: ./DigitalCardApp_afb-master/vcard-api
+      context: ./vcard-api
       dockerfile: Dockerfile
     ports:
       - "8800:9999"
@@ -43,7 +42,7 @@ services:
 
   frontend:
     build:
-      context: ./DigitalCardApp_afb-master/digital-card-web
+      context: ./digital-card-web
       dockerfile: Dockerfile
     depends_on:
       - backend
