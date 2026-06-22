@@ -233,7 +233,23 @@
     },
     "label": {
       "labelFr": "Libellé (français)",
-      "labelEn": "Libellé (anglais)"
+      "labelEn": "Libellé (anglais)",
+      "transfer": {
+        "templateBtn": "Modèle Excel",
+        "importBtn": "Importer (Excel / CSV)",
+        "exportXlsxBtn": "Exporter (Excel)",
+        "exportCsvBtn": "Exporter (CSV)",
+        "importSuccess": "{{count}} ligne(s) importée(s) avec succès.",
+        "warningsHeader": "Avertissements",
+        "formatHint": "Colonnes attendues : label_fr* | label_en. Le libellé français est obligatoire ; la mise à jour se fait par libellé français (upsert)."
+      },
+      "errors": {
+        "exportError": "Impossible d'exporter.",
+        "importError": "Impossible d'importer le fichier.",
+        "importErrorWithReason": "Impossible d'importer : {{reason}}",
+        "templateError": "Impossible de télécharger le modèle."
+      },
+      "confirmImportOverwrite": "Si un libellé du fichier existe déjà, voulez-vous écraser ses informations ?\n\nOK = Écraser les libellés existants\nAnnuler = Ignorer (conserver l'existant)"
     },
     "departments": {
       "addBtn": "Ajouter une direction",

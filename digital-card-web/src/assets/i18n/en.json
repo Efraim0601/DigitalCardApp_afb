@@ -233,7 +233,23 @@
     },
     "label": {
       "labelFr": "Label (French)",
-      "labelEn": "Label (English)"
+      "labelEn": "Label (English)",
+      "transfer": {
+        "templateBtn": "Excel template",
+        "importBtn": "Import (Excel / CSV)",
+        "exportXlsxBtn": "Export (Excel)",
+        "exportCsvBtn": "Export (CSV)",
+        "importSuccess": "{{count}} row(s) imported successfully.",
+        "warningsHeader": "Warnings",
+        "formatHint": "Expected columns: label_fr* | label_en. The French label is required; updates happen by French label (upsert)."
+      },
+      "errors": {
+        "exportError": "Unable to export.",
+        "importError": "Unable to import the file.",
+        "importErrorWithReason": "Unable to import: {{reason}}",
+        "templateError": "Unable to download the template."
+      },
+      "confirmImportOverwrite": "If a label in the file already exists, do you want to overwrite its data?\n\nOK = Overwrite existing labels\nCancel = Ignore (keep existing)"
     },
     "departments": {
       "addBtn": "Add a directorate",

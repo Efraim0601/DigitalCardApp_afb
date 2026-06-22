@@ -1,8 +1,8 @@
-import { Directive, computed, inject, signal } from '@angular/core';
+import { Directive, ElementRef, ViewChild, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, catchError, finalize, of, tap } from 'rxjs';
-import { Label, PagedResult } from '../../../shared/services/admin.service';
+import { AdminService, DataScope, Label, PagedResult } from '../../../shared/services/admin.service';
 
 export type LabelForm = {
   labelFr: FormControl<string>;
@@ -21,8 +21,14 @@ export type LabelAdminKeys = {
 @Directive()
 export abstract class BaseLabelAdminPage {
   protected readonly translate = inject(TranslateService);
+  protected readonly adminApi = inject(AdminService);
 
   readonly pageSize = 20;
+  readonly isTransferring = signal(false);
+  readonly transferMessage = signal<string | null>(null);
+  readonly transferWarnings = signal<string[]>([]);
+
+  @ViewChild('importFileInput') importFileInput?: ElementRef<HTMLInputElement>;
   readonly q = signal('');
   readonly page = signal(1);
   readonly total = signal(0);
@@ -47,6 +53,7 @@ export abstract class BaseLabelAdminPage {
   protected abstract updateItem(id: string, payload: { labelFr: string; labelEn: string }): Observable<Label>;
   protected abstract remove(id: string): Observable<void>;
   protected abstract keys(): LabelAdminKeys;
+  protected abstract scope(): Extract<DataScope, 'departments' | 'job_titles'>;
 
   load(): void {
     this.error.set(null);
@@ -148,5 +155,105 @@ export abstract class BaseLabelAdminPage {
         finalize(() => this.isLoading.set(false))
       )
       .subscribe();
+  }
+
+  // ---- Import / Export ----
+
+  private baseFilename(): string {
+    return this.scope() === 'departments' ? 'directions' : 'titres-postes';
+  }
+
+  downloadTemplate(): void {
+    this.clearTransferState();
+    this.isTransferring.set(true);
+    this.adminApi
+      .downloadTemplate(this.scope())
+      .pipe(
+        tap((blob) => this.saveBlob(blob, `modele-${this.baseFilename()}.xlsx`)),
+        catchError(() => {
+          this.error.set('admin.label.errors.templateError');
+          return of(null);
+        }),
+        finalize(() => this.isTransferring.set(false))
+      )
+      .subscribe();
+  }
+
+  exportData(format: 'csv' | 'xlsx'): void {
+    this.clearTransferState();
+    this.isTransferring.set(true);
+    this.adminApi
+      .export(this.scope(), format)
+      .pipe(
+        tap((blob) => this.saveBlob(blob, `${this.baseFilename()}.${format}`)),
+        catchError(() => {
+          this.error.set('admin.label.errors.exportError');
+          return of(null);
+        }),
+        finalize(() => this.isTransferring.set(false))
+      )
+      .subscribe();
+  }
+
+  triggerImport(): void {
+    this.importFileInput?.nativeElement.click();
+  }
+
+  onImportFile(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) return;
+
+    const overwrite = confirm(this.translate.instant('admin.label.confirmImportOverwrite'));
+    const onConflict: 'overwrite' | 'ignore' = overwrite ? 'overwrite' : 'ignore';
+
+    this.clearTransferState();
+    this.isTransferring.set(true);
+    this.adminApi
+      .import(this.scope(), file, onConflict)
+      .pipe(
+        tap((res) => {
+          const imported = this.scope() === 'departments'
+            ? res?.imported?.departments ?? 0
+            : res?.imported?.jobTitles ?? 0;
+          this.transferMessage.set(
+            this.translate.instant('admin.label.transfer.importSuccess', { count: imported })
+          );
+          this.transferWarnings.set(res?.warnings ?? []);
+          this.page.set(1);
+          this.load();
+        }),
+        catchError((err) => {
+          const msg = err?.error?.message || err?.message || '';
+          this.error.set(msg
+            ? this.translate.instant('admin.label.errors.importErrorWithReason', { reason: msg })
+            : 'admin.label.errors.importError');
+          return of(null);
+        }),
+        finalize(() => this.isTransferring.set(false))
+      )
+      .subscribe();
+  }
+
+  dismissTransfer(): void {
+    this.clearTransferState();
+  }
+
+  private clearTransferState(): void {
+    this.error.set(null);
+    this.transferMessage.set(null);
+    this.transferWarnings.set([]);
+  }
+
+  private saveBlob(blob: Blob, filename: string): void {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
   }
 }

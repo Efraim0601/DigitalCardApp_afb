@@ -37,6 +37,10 @@ export class DepartmentsAdminPageComponent extends BaseLabelAdminPage {
     return this.admin.deleteDepartment(id);
   }
 
+  protected scope(): 'departments' {
+    return 'departments';
+  }
+
   protected keys(): LabelAdminKeys {
     return {
       loadErrorKey: 'admin.departments.loadError',

@@ -37,6 +37,10 @@ export class JobTitlesAdminPageComponent extends BaseLabelAdminPage {
     return this.admin.deleteJobTitle(id);
   }
 
+  protected scope(): 'job_titles' {
+    return 'job_titles';
+  }
+
   protected keys(): LabelAdminKeys {
     return {
       loadErrorKey: 'admin.jobTitles.loadError',
