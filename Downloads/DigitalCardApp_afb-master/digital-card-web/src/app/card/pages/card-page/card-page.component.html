@@ -1,0 +1,150 @@
+<div class="flex min-h-screen flex-col items-center gap-3 px-3 py-3 sm:px-4 sm:py-4">
+  @if (isLoading()) {
+    <div class="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-6 text-center text-sm text-slate-600 shadow-sm">
+      {{ 'card.loading' | translate }}
+    </div>
+  } @else if (errorKey()) {
+    <div class="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm">
+      <div class="text-sm font-semibold text-slate-900">{{ 'card.title' | translate }}</div>
+      <div class="mt-2 text-sm text-slate-600">{{ errorKey()! | translate }}</div>
+      <button
+        type="button"
+        class="mt-4 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+        (click)="backToLogin()"
+      >
+        {{ 'card.back' | translate }}
+      </button>
+    </div>
+  } @else if (card()) {
+    <div class="flex w-full max-w-5xl flex-1 flex-col">
+      <div class="sticky top-0 z-10 flex w-full justify-center px-0">
+        <div class="flex w-full justify-between rounded-xl border border-slate-200 bg-white px-4 py-2 sm:rounded-xl sm:border sm:border-slate-200">
+          <button
+            type="button"
+            class="flex h-9 w-9 items-center justify-center rounded-lg border border-[#f5c6c6] bg-[#fff5f5] text-[#d32f2f] transition hover:bg-[#fce8e8]"
+            [title]="'common.backToPortal' | translate"
+            (click)="backToLogin()"
+          >
+            <svg viewBox="0 0 20 20" fill="none" class="h-4 w-4">
+              <path d="M13 4l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <div class="flex gap-2">
+            <button
+              type="button"
+              class="h-9 rounded-lg border border-[#f5c6c6] bg-[#fff5f5] px-3 text-[13px] font-bold text-[#d32f2f] transition hover:bg-[#fce8e8]"
+              [title]="'common.languageToggleTitle' | translate"
+              (click)="lang.toggle()"
+            >
+              {{ lang.lang() === 'fr' ? 'EN' : 'FR' }}
+            </button>
+            <button
+              type="button"
+              class="flex h-9 w-9 items-center justify-center rounded-lg border border-[#f5c6c6] bg-[#fff5f5] text-[#d32f2f] transition hover:bg-[#fce8e8]"
+              [title]="'common.themeTitle' | translate"
+              (click)="theme.toggle()"
+            >
+              @if (theme.isDark()) {
+                <svg viewBox="0 0 20 20" fill="none" class="h-[18px] w-[18px]">
+                  <path
+                    d="M16 12a6 6 0 0 1-8-8 7 7 0 1 0 8 8z"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              } @else {
+                <svg viewBox="0 0 20 20" fill="none" class="h-[18px] w-[18px]">
+                  <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.5" />
+                  <path
+                    d="M10 2v2M10 16v2M2 10h2M16 10h2M4.22 4.22l1.42 1.42M14.36 14.36l1.42 1.42M4.22 15.78l1.42-1.42M14.36 5.64l1.42-1.42"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-1 w-full flex-col items-center justify-center gap-4 py-2">
+        @if (isPending()) {
+          <div class="w-full max-w-2xl rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-center" role="status">
+            <p class="text-sm font-semibold text-amber-800">{{ 'card.status.pendingTitle' | translate }}</p>
+            <p class="mt-1 text-[13px] leading-[1.5] text-amber-700">{{ 'card.status.pendingText' | translate }}</p>
+          </div>
+        } @else if (isRejected()) {
+          <div class="w-full max-w-2xl rounded-xl border border-[#f5c6c6] bg-[#fff5f5] px-4 py-3 text-center" role="status">
+            <p class="text-sm font-semibold text-[#d32f2f]">{{ 'card.status.rejectedTitle' | translate }}</p>
+            <p class="mt-1 text-[13px] leading-[1.5] text-[#d32f2f]">{{ 'card.status.rejectedText' | translate }}</p>
+          </div>
+        }
+
+        <div class="w-full touch-manipulation px-1 sm:px-0">
+          <app-business-card
+            #businessCard
+            [card]="card()!"
+            [config]="cardConfig()"
+          />
+        </div>
+
+        @if (canChooseTemplate()) {
+          <div class="w-full max-w-md flex flex-col items-center gap-3">
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              {{ 'card.template.choose' | translate }}
+            </p>
+            <div class="grid w-full grid-cols-2 gap-3">
+              @for (tpl of templates; track tpl.id) {
+                <button
+                  type="button"
+                  class="group relative overflow-hidden rounded-xl border-2 transition focus:outline-none focus:ring-2 focus:ring-[#d32f2f]/40"
+                  [class.border-[#d32f2f]]="selectedTemplateId() === tpl.id"
+                  [class.shadow-md]="selectedTemplateId() === tpl.id"
+                  [class.border-slate-200]="selectedTemplateId() !== tpl.id"
+                  [class.hover:border-slate-400]="selectedTemplateId() !== tpl.id"
+                  [disabled]="templatePickerSaving()"
+                  [attr.aria-pressed]="selectedTemplateId() === tpl.id"
+                  (click)="selectTemplate(tpl.id)"
+                >
+                  <img
+                    [src]="tpl.background"
+                    [alt]="tpl.labelKey | translate"
+                    class="block h-24 w-full object-cover"
+                    loading="lazy"
+                  />
+                  <span class="block bg-white px-2 py-1.5 text-center text-xs font-medium text-slate-700">
+                    {{ tpl.labelKey | translate }}
+                  </span>
+                  @if (selectedTemplateId() === tpl.id) {
+                    <span class="absolute right-1 top-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#d32f2f] text-white shadow">
+                      <svg viewBox="0 0 16 16" fill="none" class="h-3.5 w-3.5">
+                        <path d="M3 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </span>
+                  }
+                </button>
+              }
+            </div>
+            @if (templatePickerError()) {
+              <p class="text-xs text-[#d32f2f]">{{ templatePickerError()! | translate }}</p>
+            }
+          </div>
+        }
+
+        <div class="w-full max-w-2xl">
+          <app-card-actions
+            [card]="card()!"
+            [isCreator]="isCreator()"
+            [publicUrl]="publicUrl()"
+            [employeeUrl]="employeeUrl()"
+            [businessCard]="businessCard"
+            [approved]="isApproved()"
+          />
+        </div>
+      </div>
+    </div>
+  }
+</div>

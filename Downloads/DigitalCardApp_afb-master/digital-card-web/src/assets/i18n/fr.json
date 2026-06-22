@@ -1,0 +1,332 @@
+{
+  "common": {
+    "close": "Fermer",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "loading": "Chargement…",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "shortPrev": "← Préc.",
+    "shortNext": "Suiv. →",
+    "search": "Rechercher…",
+    "required": "*",
+    "resultsCount": "{{count}} résultat(s)",
+    "pageOf": "{{current}} / {{total}}",
+    "logout": "Déconnexion",
+    "themeTitle": "Thème",
+    "backToPortal": "Retour au portail",
+    "languageToggleTitle": "Changer la langue"
+  },
+  "nav": {
+    "card": "Carte",
+    "login": "Connexion",
+    "admin": "Admin"
+  },
+  "action": {
+    "share": "Partager",
+    "copyLink": "Copier le lien",
+    "downloadCard": "Télécharger la carte de visite",
+    "saveContact": "Enregistrer le contact",
+    "showQR": "Afficher le QR code",
+    "scanQR": "Scannez pour ouvrir la carte ou enregistrer le contact",
+    "call": "Appeler",
+    "sendEmail": "Envoyer un email"
+  },
+  "share": {
+    "cardTitle": "Carte de visite - {{name}}",
+    "cardTitleDefault": "Carte de visite - Afriland First Bank",
+    "discover": "Découvrez ma carte de visite : {{name}}",
+    "discoverDefault": "Découvrez cette carte de visite.",
+    "cardImage": "Image de la carte",
+    "shareCardImage": "Partager l'image de la carte",
+    "cardLink": "Lien de la carte",
+    "shareCardLink": "Partager le lien de la carte",
+    "shareQRCode": "Partager le QR code (vers la carte)",
+    "copyEmployeeLink": "Copier le lien employé (envoyer à l'employé)",
+    "employeeLinkCopied": "Lien employé copié dans le presse-papier."
+  },
+  "copySuccess": "Lien copié dans le presse-papier.",
+  "toast": {
+    "linkCopied": "Lien copié dans le presse-papier",
+    "imageDownloaded": "Image téléchargée",
+    "shared": "Partagé"
+  },
+  "login": {
+    "brand": "Afriland First Bank",
+    "subtitle": "Portail d'identité numérique",
+    "banner": {
+      "title": "Espace Employé",
+      "text": "Accédez à votre carte de visite numérique"
+    },
+    "welcome": "Bienvenue",
+    "hint": {
+      "employee": "Saisissez votre email professionnel pour accéder à votre carte de visite numérique.",
+      "admin": "Compte administrateur détecté. Saisissez votre mot de passe pour continuer."
+    },
+    "email": {
+      "label": "Email professionnel",
+      "placeholder": "ex. nom@afrilandfirstbank.com"
+    },
+    "password": {
+      "label": "Mot de passe administrateur",
+      "placeholder": "Mot de passe secret",
+      "hint": "Accès réservé aux administrateurs. Votre session sera sécurisée."
+    },
+    "cta": "Voir ma carte",
+    "footer": "Accès sécurisé réservé au personnel autorisé. © 2026 Afriland First Bank Group.",
+    "noCardYet": "Vous n'avez pas encore de carte ?",
+    "createCardLink": "Créez-la ici",
+    "loading": "Vérification de l'email…",
+    "errors": {
+      "emailRequired": "L'email est requis.",
+      "emailInvalid": "Email invalide.",
+      "passwordRequired": "Le mot de passe est requis.",
+      "generic": "Email ou mot de passe incorrect.",
+      "noCard": "Aucune carte n'est associée à cet email."
+    }
+  },
+  "card": {
+    "title": "Carte de visite",
+    "loading": "Chargement de votre carte…",
+    "back": "Retour",
+    "bp": "B.P :",
+    "telex": "Telex :",
+    "email": "E-mail :",
+    "website": "Site Web :",
+    "phone": "Tél :",
+    "fax": "Fax :",
+    "mobile": "Mob :",
+    "template": {
+      "choose": "Choisissez votre modèle"
+    },
+    "status": {
+      "pendingTitle": "Carte en attente de validation",
+      "pendingText": "Votre carte a bien été créée. Un administrateur doit la valider avant que vous puissiez la partager et utiliser ses fonctionnalités. Vous recevrez un email dès la validation.",
+      "rejectedTitle": "Carte non validée",
+      "rejectedText": "Votre demande de carte n'a pas été validée. Veuillez contacter votre administrateur pour plus d'informations."
+    },
+    "errors": {
+      "missingEmail": "Veuillez fournir un email (paramètre ?email=...).",
+      "notFound": "Carte introuvable pour cet email.",
+      "templateSaveError": "Impossible d'enregistrer le modèle choisi."
+    }
+  },
+  "create": {
+    "title": "Créer ma carte de visite",
+    "subtitle": "Portail client",
+    "back": "Retour",
+    "banner": {
+      "title": "Validation requise",
+      "text": "Votre carte sera créée puis soumise à un administrateur. Vous pourrez la consulter immédiatement, mais ses fonctionnalités (partage, téléchargement, contact) ne seront actives qu'après validation."
+    },
+    "fields": {
+      "email": "Email professionnel",
+      "emailPlaceholder": "ex. nom@afrilandfirstbank.com",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "department": "Direction / Département",
+      "jobTitle": "Titre / Poste",
+      "mobile": "Mobile",
+      "selectPlaceholder": "-- Sélectionner --"
+    },
+    "cta": "Créer ma carte",
+    "footer": "Une fois validée par un administrateur, vous serez notifié par email.",
+    "errors": {
+      "emailRequired": "L'email est requis.",
+      "emailInvalid": "Email invalide.",
+      "required": "Ce champ est requis.",
+      "generic": "Impossible de créer la carte. Veuillez réessayer.",
+      "alreadyExists": "Une carte existe déjà pour cet email.",
+      "viewExisting": "Voir la carte existante",
+      "emailDomain": "Seules les adresses se terminant par @afrilandfirstbank.com sont autorisées."
+    }
+  },
+  "admin": {
+    "shell": {
+      "title": "Gestion des cartes de visite"
+    },
+    "tabs": {
+      "cards": "Cartes",
+      "departments": "Directions / Départements",
+      "jobTitles": "Titres / Postes",
+      "appearance": "Apparence",
+      "shareStats": "Statistiques de partage",
+      "smtp": "SMTP",
+      "pendingTitle": "Cartes en attente de validation"
+    },
+    "cards": {
+      "create": "Créer une carte",
+      "deleteSelected": "Supprimer ({{count}})",
+      "selectAllPage": "Tout sélectionner (page)",
+      "searchPlaceholder": "Rechercher (email, prénom…)",
+      "formTitleCreate": "Créer une carte",
+      "formTitleEdit": "Modifier une carte",
+      "formHint": "Les RH peuvent créer ou mettre à jour les cartes. L'employé y accède via son email uniquement.",
+      "sections": {
+        "identity": "Identité",
+        "organization": "Organisation",
+        "contact": "Coordonnées"
+      },
+      "fields": {
+        "email": "Email",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "department": "Département",
+        "jobTitle": "Titre / Poste",
+        "phone": "Téléphone",
+        "fax": "Fax",
+        "mobile": "Mobile"
+      },
+      "selectDepartment": "-- Sélectionner une direction / département --",
+      "selectJobTitle": "-- Sélectionner un titre / poste --",
+      "departmentHint": "Les directions créées dans l'onglet dédié apparaissent ici après rafraîchissement.",
+      "jobTitleHint": "Les titres / postes créés dans l'onglet dédié apparaissent ici après rafraîchissement.",
+      "table": {
+        "email": "Email",
+        "name": "Nom",
+        "department": "Département",
+        "title": "Titre",
+        "status": "Statut",
+        "actions": "Actions"
+      },
+      "filter": {
+        "label": "Statut :",
+        "all": "Toutes",
+        "pending": "En attente",
+        "approved": "Validées",
+        "rejected": "Rejetées"
+      },
+      "status": {
+        "pending": "En attente",
+        "approved": "Validée",
+        "rejected": "Rejetée"
+      },
+      "validate": "Valider",
+      "reject": "Rejeter",
+      "confirmValidate": "Valider cette carte ? Le détenteur sera notifié par email.",
+      "confirmReject": "Rejeter cette carte ? Le détenteur sera notifié par email.",
+      "confirmBulkDelete": "Supprimer {{count}} carte(s) ?",
+      "confirmDeleteOne": "Supprimer cette carte ?",
+      "confirmImportOverwrite": "Si une carte existe déjà pour un email du fichier, voulez-vous écraser ses informations ?\n\nOK = Écraser les cartes existantes\nAnnuler = Ignorer (conserver l'existant)",
+      "transfer": {
+        "templateBtn": "Modèle Excel",
+        "importBtn": "Importer (Excel / CSV)",
+        "exportXlsxBtn": "Exporter (Excel)",
+        "exportCsvBtn": "Exporter (CSV)",
+        "importSuccess": "{{count}} carte(s) importée(s) avec succès.",
+        "warningsHeader": "Avertissements",
+        "formatHint": "Colonnes attendues : email* | first_name | last_name | company | title | phone | fax | mobile | department_fr | department_en | job_title_fr | job_title_en. Seul l'email est obligatoire ; la mise à jour se fait par email (upsert)."
+      },
+      "errors": {
+        "loadError": "Impossible de charger les cartes.",
+        "saveError": "Impossible d'enregistrer.",
+        "deleteError": "Impossible de supprimer.",
+        "exportError": "Impossible d'exporter.",
+        "importError": "Impossible d'importer le fichier.",
+        "importErrorWithReason": "Impossible d'importer : {{reason}}",
+        "templateError": "Impossible de télécharger le modèle.",
+        "validateError": "Impossible de valider la carte.",
+        "rejectError": "Impossible de rejeter la carte."
+      }
+    },
+    "label": {
+      "labelFr": "Libellé (français)",
+      "labelEn": "Libellé (anglais)"
+    },
+    "departments": {
+      "addBtn": "Ajouter une direction",
+      "formTitle": "Ajouter une direction",
+      "editTitle": "Modifier la direction",
+      "empty": "Aucune direction enregistrée.",
+      "loadError": "Impossible de charger les directions.",
+      "saveError": "Impossible d'enregistrer.",
+      "deleteError": "Impossible de supprimer.",
+      "deleteConfirm": "Supprimer cette direction ?"
+    },
+    "jobTitles": {
+      "addBtn": "Ajouter un titre",
+      "formTitle": "Ajouter un titre / poste",
+      "editTitle": "Modifier le titre / poste",
+      "empty": "Aucun titre / poste enregistré.",
+      "loadError": "Impossible de charger les titres.",
+      "saveError": "Impossible d'enregistrer.",
+      "deleteError": "Impossible de supprimer.",
+      "deleteConfirm": "Supprimer ce titre ?"
+    },
+    "smtp": {
+      "title": "Configuration SMTP et notifications employé",
+      "description": "Lorsqu'activé, un email est envoyé automatiquement à l'employé après création ou mise à jour de sa carte.",
+      "saved": "Configuration SMTP enregistrée.",
+      "testSent": "Email de test envoyé.",
+      "enableAuto": "Activer les notifications email automatiques",
+      "smtpAuth": "SMTP Auth",
+      "starttls": "STARTTLS",
+      "sslTls": "SSL/TLS",
+      "host": "Hôte SMTP",
+      "port": "Port",
+      "protocol": "Protocole",
+      "username": "Username SMTP",
+      "password": "Mot de passe SMTP",
+      "passwordPlaceholder": "Laisser vide pour conserver",
+      "clearPassword": "Effacer le mot de passe stocké",
+      "fromEmail": "Email expéditeur",
+      "fromName": "Nom expéditeur",
+      "testSection": "Test d'envoi SMTP",
+      "testDescription": "Envoie un email de test avec la configuration courante.",
+      "testTo": "Email destinataire du test",
+      "sendTest": "Envoyer un test",
+      "errors": {
+        "loadError": "Impossible de charger la configuration SMTP.",
+        "invalidFields": "Veuillez corriger les champs invalides.",
+        "saveError": "Impossible d'enregistrer la configuration SMTP.",
+        "testToRequired": "Veuillez saisir l'email destinataire du test.",
+        "testSendError": "Impossible d'envoyer l'email de test."
+      }
+    },
+    "appearance": {
+      "title": "Modèle de carte",
+      "description": "Choisissez le modèle par défaut affiché aux employés et décidez s'ils peuvent changer le modèle depuis leur carte.",
+      "allowUser": "Autoriser l'employé à choisir son modèle",
+      "allowUserHint": "Si activé, l'employé verra un sélecteur de modèle depuis sa carte. Si désactivé, le modèle par défaut ci-dessous s'applique à tous.",
+      "defaultTemplate": "Modèle par défaut",
+      "defaultTemplateHint": "Appliqué quand l'employé n'a pas fait son propre choix (ou quand le choix utilisateur est désactivé).",
+      "saved": "Apparence enregistrée.",
+      "templates": {
+        "classic": "Classique",
+        "modern": "Moderne"
+      },
+      "errors": {
+        "loadError": "Impossible de charger les paramètres d'apparence.",
+        "saveError": "Impossible d'enregistrer les paramètres d'apparence."
+      }
+    },
+    "shareStats": {
+      "title": "Statistiques de partage",
+      "description": "Suivi du nombre de partages de cartes de visite par personne",
+      "total": "Total des partages:",
+      "searchPlaceholder": "Rechercher par nom, email ou titre...",
+      "columns": {
+        "name": "Nom",
+        "email": "Email",
+        "shareCount": "Nombre de partages"
+      },
+      "empty": "Aucune carte trouvée",
+      "errors": {
+        "loadError": "Erreur lors du chargement des cartes"
+      }
+    },
+    "csv": {
+      "exportBtn": "Exporter (CSV)",
+      "importBtn": "Importer (CSV)",
+      "exporting": "Export en cours…",
+      "importing": "Import en cours…",
+      "importSuccess": "{{count}} entrée(s) importée(s) avec succès.",
+      "importError": "Impossible d'importer le fichier.",
+      "importErrorReason": "Impossible d'importer : {{reason}}",
+      "exportError": "Impossible d'exporter.",
+      "notCsv": "Veuillez sélectionner un fichier .csv"
+    }
+  }
+}
