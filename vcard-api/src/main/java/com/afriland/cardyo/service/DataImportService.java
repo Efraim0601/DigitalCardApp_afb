@@ -33,6 +33,13 @@ public class DataImportService {
     private final CardRepository cardRepository;
     private final AppProperties appProperties;
     private final SmtpSettingsService smtpSettingsService;
+    private final LabelCacheService labelCacheService;
+
+    private static final List<String> DEPT_SHEET_NAMES = List.of(
+            "directions", "departments", "departements", "direction");
+
+    private static final List<String> JT_SHEET_NAMES = List.of(
+            "postes", "job_titles", "jobtitles", "titres", "positions", "titles");
 
     public ImportResultDto importData(MultipartFile file, String scope) throws IOException {
         return importData(file, scope, "overwrite");
@@ -42,6 +49,14 @@ public class DataImportService {
     public ImportResultDto importData(MultipartFile file, String scope, String onConflict) throws IOException {
         String filename = file.getOriginalFilename();
         boolean isCsv = filename != null && filename.toLowerCase().endsWith(".csv");
+
+        if ("combined".equalsIgnoreCase(scope)) {
+            if (isCsv) {
+                throw new IllegalArgumentException(
+                        "Combined import requires an Excel file (.xlsx / .xls), not CSV.");
+            }
+            return importCombined(file, filename);
+        }
 
         List<Map<String, String>> rows = isCsv
                 ? parseCsv(file.getInputStream())
@@ -55,11 +70,13 @@ public class DataImportService {
                 if (rows.size() > 5000)
                     throw new IllegalArgumentException("Max 5 000 rows for departments");
                 deptCount = importLabels(rows, departmentRepository, Department::new, warnings);
+                labelCacheService.invalidate("departments");
             }
             case "job_titles" -> {
                 if (rows.size() > 5000)
                     throw new IllegalArgumentException("Max 5 000 rows for job_titles");
                 jtCount = importLabels(rows, jobTitleRepository, JobTitle::new, warnings);
+                labelCacheService.invalidate("job_titles");
             }
             case "cards" -> {
                 if (rows.size() > 20000)
@@ -78,6 +95,71 @@ public class DataImportService {
                 .build();
     }
 
+    // ================================================================
+    // COMBINED import — one Excel with two sheets:
+    // • "Directions" → departments
+    // • "Postes" → job titles
+    // ================================================================
+
+    private ImportResultDto importCombined(MultipartFile file, String filename)
+            throws IOException {
+
+        Workbook workbook = openWorkbook(file.getInputStream(), filename);
+
+        List<String> warnings = new ArrayList<>();
+        int deptCount = 0;
+        int jtCount = 0;
+
+        Sheet deptSheet = findSheet(workbook, DEPT_SHEET_NAMES);
+        if (deptSheet != null) {
+            List<Map<String, String>> deptRows = parseSheet(deptSheet);
+            if (deptRows.size() > 5000) {
+                warnings.add("Departments sheet has more than 5 000 rows — truncated.");
+                deptRows = deptRows.subList(0, 5000);
+            }
+            deptCount = importLabels(deptRows, departmentRepository, Department::new, warnings);
+        } else {
+            warnings.add("No departments sheet found (expected: Directions, Departments…). Skipped.");
+        }
+
+        Sheet jtSheet = findSheet(workbook, JT_SHEET_NAMES);
+        if (jtSheet != null) {
+            List<Map<String, String>> jtRows = parseSheet(jtSheet);
+            if (jtRows.size() > 5000) {
+                warnings.add("Job-titles sheet has more than 5 000 rows — truncated.");
+                jtRows = jtRows.subList(0, 5000);
+            }
+            jtCount = importLabels(jtRows, jobTitleRepository, JobTitle::new, warnings);
+        } else {
+            warnings.add("No job-titles sheet found (expected: Postes, Job_Titles…). Skipped.");
+        }
+
+        workbook.close();
+
+        labelCacheService.invalidate("departments");
+        labelCacheService.invalidate("job_titles");
+
+        return ImportResultDto.builder()
+                .success(true)
+                .imported(ImportResultDto.ImportCounts.builder()
+                        .departments(deptCount).jobTitles(jtCount).cards(0)
+                        .build())
+                .warnings(warnings)
+                .build();
+    }
+
+    private Sheet findSheet(Workbook workbook, List<String> aliases) {
+        for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+            String name = normalizeHeader(workbook.getSheetName(i));
+            for (String alias : aliases) {
+                if (name.equals(normalizeHeader(alias))) {
+                    return workbook.getSheetAt(i);
+                }
+            }
+        }
+        return null;
+    }
+
     // ---- label import (generic for departments & job_titles) ----
 
     private <T extends LabelEntity> int importLabels(
@@ -89,8 +171,21 @@ public class DataImportService {
         int count = 0;
         for (int i = 0; i < rows.size(); i++) {
             Map<String, String> row = rows.get(i);
-            String labelFr = getField(row, "label_fr", "labelfr", "label");
-            String labelEn = getField(row, "label_en", "labelen");
+
+            String labelFr = getField(row,
+                    "label_fr", "labelfr", "label",
+                    "direction_fr", "directionfr",
+                    "poste_fr", "postefr");
+
+            String labelEn = getField(row,
+                    "label_en", "labelen",
+                    "direction_en", "directionen",
+                    "poste_en", "posteen");
+
+            // Group/category name (used for optgroup display of departments)
+            String groupName = getField(row,
+                    "group", "groupe", "group_name", "groupname",
+                    "categorie", "category");
 
             if (labelFr == null || labelFr.isBlank()) {
                 warnings.add("Row " + (i + 2) + ": missing label_fr, skipped");
@@ -108,6 +203,10 @@ public class DataImportService {
             T entity = existing.orElseGet(factory);
             entity.setLabelFr(labelFr.trim());
             entity.setLabelEn(labelEn.trim());
+            // setGroupName is a no-op for JobTitle, sets the column for Department
+            if (groupName != null && !groupName.isBlank()) {
+                entity.setGroupName(groupName.trim());
+            }
             repository.save(entity);
             count++;
         }
@@ -133,11 +232,11 @@ public class DataImportService {
                 continue;
             }
 
-                UUID departmentId = resolveDepartment(row, warnings, i);
-                UUID jobTitleId = resolveJobTitle(row, warnings, i);
+            UUID departmentId = resolveDepartment(row, warnings, i);
+            UUID jobTitleId = resolveJobTitle(row, warnings, i);
             String mobile = PhoneFormatter.format(
                     getField(row, "mobile", "telephone_mobile", "tel_mobile"));
-                String title = getField(row, "title", "titre", "poste");
+            String title = getField(row, "title", "titre", "poste");
 
             String firstName = getField(row, "first_name", "firstname", "prenom");
             String lastName = getField(row, "last_name", "lastname", "nom");
@@ -166,14 +265,14 @@ public class DataImportService {
     }
 
     private UUID resolveDepartment(Map<String, String> row,
-                                   List<String> warnings, int rowIdx) {
+            List<String> warnings, int rowIdx) {
         return resolveLabel(row, warnings, rowIdx, "department",
                 departmentRepository, Department::new,
                 "department", "direction", "department_fr", "departement");
     }
 
     private UUID resolveJobTitle(Map<String, String> row,
-                                 List<String> warnings, int rowIdx) {
+            List<String> warnings, int rowIdx) {
         return resolveLabel(row, warnings, rowIdx, "job title",
                 jobTitleRepository, JobTitle::new,
                 "job_title", "jobtitle", "titre_poste", "titreposte", "poste");
@@ -188,11 +287,13 @@ public class DataImportService {
             Supplier<T> factory,
             String... fieldKeys) {
         String label = getField(row, fieldKeys);
-        if (label == null || label.isBlank()) return null;
+        if (label == null || label.isBlank())
+            return null;
         String normalizedLabel = label.trim();
 
         Optional<T> found = repository.findByLabelFrIgnoreCase(normalizedLabel);
-        if (found.isEmpty()) found = repository.findByLabelEnIgnoreCase(normalizedLabel);
+        if (found.isEmpty())
+            found = repository.findByLabelEnIgnoreCase(normalizedLabel);
         if (found.isEmpty()) {
             T created = factory.get();
             created.setLabelFr(normalizedLabel);
@@ -206,11 +307,47 @@ public class DataImportService {
 
     // ---- parsing helpers ----
 
+    private Workbook openWorkbook(InputStream is, String filename) throws IOException {
+        return (filename != null && filename.toLowerCase().endsWith(".xls"))
+                ? new HSSFWorkbook(is)
+                : new XSSFWorkbook(is);
+    }
+
+    private List<Map<String, String>> parseSheet(Sheet sheet) {
+        List<Map<String, String>> rows = new ArrayList<>();
+        Row headerRow = sheet.getRow(0);
+        if (headerRow == null)
+            return rows;
+
+        String[] headers = new String[headerRow.getLastCellNum()];
+        for (int i = 0; i < headers.length; i++) {
+            headers[i] = normalizeHeader(getCellString(headerRow.getCell(i)));
+        }
+
+        for (int r = 1; r <= sheet.getLastRowNum(); r++) {
+            Row row = sheet.getRow(r);
+            if (row == null)
+                continue;
+            Map<String, String> map = new HashMap<>();
+            boolean allBlank = true;
+            for (int c = 0; c < headers.length; c++) {
+                String val = getCellString(row.getCell(c));
+                map.put(headers[c], val);
+                if (!val.isBlank())
+                    allBlank = false;
+            }
+            if (!allBlank)
+                rows.add(map);
+        }
+        return rows;
+    }
+
     private List<Map<String, String>> parseCsv(InputStream is) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
         List<Map<String, String>> rows = new ArrayList<>();
         String headerLine = reader.readLine();
-        if (headerLine == null) return rows;
+        if (headerLine == null)
+            return rows;
 
         if (headerLine.startsWith("\uFEFF")) {
             headerLine = headerLine.substring(1);
@@ -223,7 +360,8 @@ public class DataImportService {
 
         String line;
         while ((line = reader.readLine()) != null) {
-            if (line.isBlank()) continue;
+            if (line.isBlank())
+                continue;
             String[] values = splitCsvLine(line);
             Map<String, String> row = new HashMap<>();
             for (int i = 0; i < headers.length && i < values.length; i++) {
@@ -255,39 +393,18 @@ public class DataImportService {
 
     private List<Map<String, String>> parseExcel(InputStream is, String filename)
             throws IOException {
-        Workbook workbook = (filename != null && filename.toLowerCase().endsWith(".xls"))
-                ? new HSSFWorkbook(is)
-                : new XSSFWorkbook(is);
-
+        Workbook workbook = openWorkbook(is, filename);
         Sheet sheet = workbook.getSheetAt(0);
-        List<Map<String, String>> rows = new ArrayList<>();
-
-        Row headerRow = sheet.getRow(0);
-        if (headerRow == null) { workbook.close(); return rows; }
-
-        String[] headers = new String[headerRow.getLastCellNum()];
-        for (int i = 0; i < headers.length; i++) {
-            headers[i] = normalizeHeader(getCellString(headerRow.getCell(i)));
-        }
-
-        for (int r = 1; r <= sheet.getLastRowNum(); r++) {
-            Row row = sheet.getRow(r);
-            if (row == null) continue;
-            Map<String, String> map = new HashMap<>();
-            for (int c = 0; c < headers.length; c++) {
-                map.put(headers[c], getCellString(row.getCell(c)));
-            }
-            rows.add(map);
-        }
-
+        List<Map<String, String>> rows = parseSheet(sheet);
         workbook.close();
         return rows;
     }
 
     private String getCellString(Cell cell) {
-        if (cell == null) return "";
+        if (cell == null)
+            return "";
         return switch (cell.getCellType()) {
-            case STRING  -> cell.getStringCellValue();
+            case STRING -> cell.getStringCellValue();
             case NUMERIC -> {
                 double v = cell.getNumericCellValue();
                 yield (v == Math.floor(v)) ? String.valueOf((long) v) : String.valueOf(v);
@@ -298,7 +415,8 @@ public class DataImportService {
     }
 
     private String normalizeHeader(String header) {
-        if (header == null) return "";
+        if (header == null)
+            return "";
         String s = Normalizer.normalize(header.trim().toLowerCase(), Normalizer.Form.NFD)
                 .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
                 .replaceAll("[^a-z0-9]+", "_")
@@ -310,7 +428,8 @@ public class DataImportService {
     private String getField(Map<String, String> row, String... keys) {
         for (String key : keys) {
             String value = row.get(key);
-            if (value != null && !value.isBlank()) return value;
+            if (value != null && !value.isBlank())
+                return value;
         }
         return null;
     }

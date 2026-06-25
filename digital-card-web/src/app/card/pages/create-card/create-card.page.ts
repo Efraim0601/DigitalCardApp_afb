@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -27,6 +27,11 @@ type CreateCardForm = {
   mobile: FormControl<string>;
 };
 
+export type DepartmentGroup = {
+  groupName: string;
+  items: PublicLabel[];
+};
+
 @Component({
   selector: 'app-create-card-page',
   standalone: true,
@@ -42,6 +47,37 @@ export class CreateCardPageComponent {
 
   readonly departments = signal<PublicLabel[]>([]);
   readonly jobTitles = signal<PublicLabel[]>([]);
+
+  /**
+   * Departments grouped by groupName for <optgroup> rendering.
+   * Departments without a groupName go into a "Autres" / "Other" group.
+   */
+  readonly departmentGroups = computed<DepartmentGroup[]>(() => {
+    const deps = this.departments();
+    const groupMap = new Map<string, PublicLabel[]>();
+    const order: string[] = [];
+
+    for (const dep of deps) {
+      const key = dep.groupName?.trim() || '__ungrouped__';
+      if (!groupMap.has(key)) {
+        groupMap.set(key, []);
+        order.push(key);
+      }
+      groupMap.get(key)!.push(dep);
+    }
+
+    return order.map((key) => ({
+      groupName: key === '__ungrouped__'
+        ? (this.lang.lang() === 'fr' ? 'Autres' : 'Other')
+        : key,
+      items: groupMap.get(key)!
+    }));
+  });
+
+  /** True when at least one department has a groupName (i.e. use optgroup rendering). */
+  readonly hasGroups = computed(() =>
+    this.departments().some((d) => d.groupName && d.groupName.trim().length > 0)
+  );
 
   readonly form = new FormGroup<CreateCardForm>({
     email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email, corporateEmailValidator] }),

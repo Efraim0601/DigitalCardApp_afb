@@ -9,4 +9,5 @@ public class LabelCreateRequest {
     private String labelFr;
     @NotBlank
     private String labelEn;
+    private String groupName;
 }

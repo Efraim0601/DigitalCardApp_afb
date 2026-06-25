@@ -107,8 +107,18 @@
             class="w-full rounded-[10px] border border-slate-200 bg-slate-100 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:bg-white"
           >
             <option value="">{{ 'create.fields.selectPlaceholder' | translate }}</option>
-            @for (dep of departments(); track dep.id) {
-              <option [value]="dep.id">{{ labelOf(dep) }}</option>
+            @if (hasGroups()) {
+              @for (group of departmentGroups(); track group.groupName) {
+                <optgroup [label]="group.groupName">
+                  @for (dep of group.items; track dep.id) {
+                    <option [value]="dep.id">{{ labelOf(dep) }}</option>
+                  }
+                </optgroup>
+              }
+            } @else {
+              @for (dep of departments(); track dep.id) {
+                <option [value]="dep.id">{{ labelOf(dep) }}</option>
+              }
             }
           </select>
         </div>

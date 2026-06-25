@@ -12,7 +12,7 @@ export type PagedResult<T> = {
 
 export type Label = { id: string; labelFr: string; labelEn: string };
 
-export type DataScope = 'cards' | 'departments' | 'job_titles';
+export type DataScope = 'cards' | 'departments' | 'job_titles' | 'combined';
 
 export type ImportResult = {
   success: boolean;
@@ -80,6 +80,10 @@ export class AdminService {
     const form = new FormData();
     form.append('file', file);
     return this.http.post<ImportResult>('/api/admin/data-import', form, { params });
+  }
+
+  importCombined(file: File): Observable<ImportResult> {
+    return this.import('combined', file, 'overwrite');
   }
 
   listCards(params: {
@@ -195,4 +199,3 @@ export class AdminService {
     return this.http.put<AppearanceSettings>('/api/admin/appearance-settings', payload);
   }
 }
-

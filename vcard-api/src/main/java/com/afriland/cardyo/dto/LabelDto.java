@@ -8,10 +8,14 @@ import lombok.NoArgsConstructor;
 import java.time.Instant;
 import java.util.UUID;
 
-@Data @Builder @NoArgsConstructor @AllArgsConstructor
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class LabelDto {
     private UUID id;
     private String labelFr;
     private String labelEn;
+    private String groupName;
     private Instant createdAt;
 }

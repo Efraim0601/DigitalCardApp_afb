@@ -241,7 +241,10 @@
         "exportCsvBtn": "Export (CSV)",
         "importSuccess": "{{count}} row(s) imported successfully.",
         "warningsHeader": "Warnings",
-        "formatHint": "Expected columns: label_fr* | label_en. The French label is required; updates happen by French label (upsert)."
+        "formatHint": "Expected columns: label_fr* | label_en. The French label is required; updates happen by French label (upsert).",
+        "bulkImportBtn": "Bulk Import (Depts + Posts)",
+        "bulkImportHint": "Upload one Excel with a \"Directions\" sheet and a \"Postes\" sheet to import both at once.",
+        "bulkImportSuccess": "{{depts}} department(s) and {{jobs}} position(s) imported successfully."
       },
       "errors": {
         "exportError": "Unable to export.",

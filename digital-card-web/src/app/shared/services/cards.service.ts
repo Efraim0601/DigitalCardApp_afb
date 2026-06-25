@@ -10,7 +10,7 @@ export type PublicAppearanceSettings = {
   updatedAt?: string | null;
 };
 
-export type PublicLabel = { id: string; labelFr: string; labelEn: string };
+export type PublicLabel = { id: string; labelFr: string; labelEn: string; groupName?: string | null };
 
 type PagedLabels = { items: PublicLabel[]; total: number; limit: number; offset: number };
 

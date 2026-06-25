@@ -8,7 +8,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "departments")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Department implements LabelEntity {
 
     @Id
@@ -21,11 +25,15 @@ public class Department implements LabelEntity {
     @Column(name = "label_en", nullable = false)
     private String labelEn;
 
+    @Column(name = "group_name")
+    private String groupName;
+
     @Column(name = "created_at", updatable = false)
     private Instant createdAt;
 
     @PrePersist
     void onCreate() {
-        if (createdAt == null) createdAt = Instant.now();
+        if (createdAt == null)
+            createdAt = Instant.now();
     }
 }

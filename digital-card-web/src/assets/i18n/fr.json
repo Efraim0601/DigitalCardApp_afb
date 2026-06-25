@@ -241,7 +241,10 @@
         "exportCsvBtn": "Exporter (CSV)",
         "importSuccess": "{{count}} ligne(s) importée(s) avec succès.",
         "warningsHeader": "Avertissements",
-        "formatHint": "Colonnes attendues : label_fr* | label_en. Le libellé français est obligatoire ; la mise à jour se fait par libellé français (upsert)."
+        "formatHint": "Colonnes attendues : label_fr* | label_en. Le libellé français est obligatoire ; la mise à jour se fait par libellé français (upsert).",
+        "bulkImportBtn": "Import groupé (Dir. + Postes)",
+        "bulkImportHint": "Téléversez un Excel avec une feuille « Directions » et une feuille « Postes » pour importer les deux en une seule fois.",
+        "bulkImportSuccess": "{{depts}} direction(s) et {{jobs}} poste(s) importé(s) avec succès."
       },
       "errors": {
         "exportError": "Impossible d'exporter.",

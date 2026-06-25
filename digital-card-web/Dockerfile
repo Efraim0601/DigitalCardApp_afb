@@ -3,7 +3,12 @@ WORKDIR /app
 
 # Cache deps separately
 COPY package.json package-lock.json ./
-RUN npm ci
+# Harden npm against flaky networks (ECONNRESET) by retrying aborted downloads.
+RUN npm config set fetch-retries 5 \
+ && npm config set fetch-retry-mintimeout 20000 \
+ && npm config set fetch-retry-maxtimeout 120000 \
+ && npm config set fetch-timeout 600000 \
+ && npm ci
 
 # Copy only what's required to build the SPA — avoid `COPY . .` so secrets,
 # local editor state or CI files can never slip into the image.

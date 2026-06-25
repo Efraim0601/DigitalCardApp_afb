@@ -24,9 +24,9 @@ public class LabelService<T extends LabelEntity> {
     private final LabelCacheService cacheService;
 
     public LabelService(LabelEntityRepository<T> repository,
-                        Supplier<T> factory,
-                        String cacheKey,
-                        LabelCacheService cacheService) {
+            Supplier<T> factory,
+            String cacheKey,
+            LabelCacheService cacheService) {
         this.repository = repository;
         this.factory = factory;
         this.cacheKey = cacheKey;
@@ -47,8 +47,8 @@ public class LabelService<T extends LabelEntity> {
                     .build();
         }
 
-        List<LabelDto> all = cacheService.getOrLoad(cacheKey, () ->
-                repository.findAll(Sort.by("createdAt").descending())
+        List<LabelDto> all = cacheService.getOrLoad(cacheKey,
+                () -> repository.findAll(Sort.by("createdAt").descending())
                         .stream().map(this::toDto).collect(Collectors.toList()));
 
         List<LabelDto> items = all.stream().skip(offset).limit(limit).collect(Collectors.toList());
@@ -63,6 +63,9 @@ public class LabelService<T extends LabelEntity> {
         T entity = factory.get();
         entity.setLabelFr(request.getLabelFr());
         entity.setLabelEn(request.getLabelEn());
+        if (request.getGroupName() != null) {
+            entity.setGroupName(request.getGroupName());
+        }
         T saved = repository.save(entity);
         cacheService.invalidate(cacheKey);
         return toDto(saved);
@@ -72,8 +75,13 @@ public class LabelService<T extends LabelEntity> {
     public LabelDto update(UUID id, LabelCreateRequest request) {
         T entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Not found: " + id));
-        if (request.getLabelFr() != null) entity.setLabelFr(request.getLabelFr());
-        if (request.getLabelEn() != null) entity.setLabelEn(request.getLabelEn());
+        if (request.getLabelFr() != null)
+            entity.setLabelFr(request.getLabelFr());
+        if (request.getLabelEn() != null)
+            entity.setLabelEn(request.getLabelEn());
+        if (request.getGroupName() != null) {
+            entity.setGroupName(request.getGroupName());
+        }
         T saved = repository.save(entity);
         cacheService.invalidate(cacheKey);
         return toDto(saved);
@@ -97,11 +105,13 @@ public class LabelService<T extends LabelEntity> {
     }
 
     public LabelDto toDto(LabelEntity entity) {
-        if (entity == null) return null;
+        if (entity == null)
+            return null;
         return LabelDto.builder()
                 .id(entity.getId())
                 .labelFr(entity.getLabelFr())
                 .labelEn(entity.getLabelEn())
+                .groupName(entity.getGroupName())
                 .createdAt(entity.getCreatedAt())
                 .build();
     }

@@ -29,6 +29,7 @@ export abstract class BaseLabelAdminPage {
   readonly transferWarnings = signal<string[]>([]);
 
   @ViewChild('importFileInput') importFileInput?: ElementRef<HTMLInputElement>;
+  @ViewChild('bulkImportFileInput') bulkImportFileInput?: ElementRef<HTMLInputElement>;
   readonly q = signal('');
   readonly page = signal(1);
   readonly total = signal(0);
@@ -238,6 +239,43 @@ export abstract class BaseLabelAdminPage {
 
   dismissTransfer(): void {
     this.clearTransferState();
+  }
+
+  triggerBulkImport(): void {
+    this.bulkImportFileInput?.nativeElement.click();
+  }
+
+  onBulkImportFile(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) return;
+
+    this.clearTransferState();
+    this.isTransferring.set(true);
+    this.adminApi
+      .importCombined(file)
+      .pipe(
+        tap((res) => {
+          const depts = res?.imported?.departments ?? 0;
+          const jobs = res?.imported?.jobTitles ?? 0;
+          this.transferMessage.set(
+            this.translate.instant('admin.label.transfer.bulkImportSuccess', { depts, jobs })
+          );
+          this.transferWarnings.set(res?.warnings ?? []);
+          this.page.set(1);
+          this.load();
+        }),
+        catchError((err) => {
+          const msg = err?.error?.message || err?.message || '';
+          this.error.set(msg
+            ? this.translate.instant('admin.label.errors.importErrorWithReason', { reason: msg })
+            : 'admin.label.errors.importError');
+          return of(null);
+        }),
+        finalize(() => this.isTransferring.set(false))
+      )
+      .subscribe();
   }
 
   private clearTransferState(): void {
